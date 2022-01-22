@@ -10,6 +10,7 @@
         <div class="panel panel-primary">
           <div class="panel-heading">{{item.name}}</div>
           <div class="panel-body"><img src="{{item.image}}" class="img-responsive" style="width:100%" alt="Image"></div>
+          <a class="btn btn--dark" href="{%url 'product-info' item.id %}">Show info</a>
           <div class="panel-footer">{{item.price}} $</div>
         </div>
       </div>
