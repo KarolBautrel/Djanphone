@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Product, User
+from .models import Product, User, Comment
 from .forms import UserForm, EmailChangeForm, ProductForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
@@ -18,11 +18,17 @@ def products(request):
     return render(request,'base/products.html', context)
 
 def productInfo(request,pk):
-    products = Product.objects.get(id = pk)
-    context = {'products':products}
+    product = Product.objects.get(id = pk)
+    product_comments = product.comment_set.all()
+    if request.method == 'POST':
+        comment = Comment.objects.create(user = request.user,
+                                        product = product,
+                                        body = request.POST.get('body')
+                                        )
+        return redirect ('product-info', pk=product.id)
 
+    context = {'product':product, 'product_comments':product_comments}
     return render(request,'base/product_info.html', context)
-
 
 
 def addProduct(request):
@@ -39,6 +45,16 @@ def addProduct(request):
 
 
 
+def deleteComment(request, pk):
+    comment = Comment.objects.get(id=pk)
+    if request.user != comment.user:
+        messages.error(request, 'You are not allowed to delete')
+        return redirect('home')
+    if request.method == 'POST': 
+        comment.delete() # usuniecie
+        return redirect('home')
+    context ={"comment":comment} 
+    return render(request,'base/delete.html', context)
 
 
 

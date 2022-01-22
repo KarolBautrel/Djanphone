@@ -6,21 +6,67 @@
     <div class="profile">
       <div class="profile__avatar">
         <div class="avatar avatar--large active">
-          <img src="{{products.image.url}}" />
+          <img src="{{product.image.url}}" />
         </div>
       </div>
       <div class="profile__info">
-        <h3>{{products.name}}</h3>
+        <h3>{{product.name}}</h3>
         
       </div>
       <div class="profile__about">
         <h3>About</h3>
         <p>
-          {{products.description}}
+          {{product.description}}
         </p>
       </div>
     </div>
+    <hr>
+    <a class="btn btn--dark" href="#">Buy Product</a>
+    <hr>
 
+    {% for comment in product_comments %}
+    <div class="thread">
+      <div class="thread__top">
+        <div class="thread__author">
+          <a href="{% url 'profile' comment.user.id %}" class="thread__authorInfo">
+            <div class="avatar avatar--small">
+              <img src="{{profile.user.avatar.url}}" />
+            </div>
+            <span>@{{comment.user.username}}</span>
+          </a>
+          <span class="thread__date">{{comment.created | timesince}}</span>
+        </div>
+
+
+        {% if request.user == comment.user %}
+        <a href = "{%url 'delete-comment' comment.id%}">
+        <div class="thread__delete">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+            <title>remove</title>
+            <path
+              d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"
+            ></path>
+          </svg>
+        </div>
+      </a>
+      {%endif%}
+      </div>
+      <div class="thread__details">
+        {{comment.body}}
+      </div>
+    </div>
+    {%endfor%}
+    
+  </div>
+</div>
+</div>
+<div class="room__message">
+<form action="" method = 'POST'>
+{% csrf_token %}
+<input name="body" placeholder="Add your comment" />
+</form>
+</div>
+</div>
 
 
 {%endblock%}
