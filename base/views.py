@@ -33,7 +33,7 @@ def addProduct(request):
                                 price = request.POST.get('price'),
                                 image = request.POST.get('image'),
                                 description = request.POST.get('description'))
-
+    
         return redirect ('home')
     context = {'form': form}
     return render(request,'base/product_form.html', context)

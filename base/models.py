@@ -25,6 +25,7 @@ class Product(models.Model):
     owner = models.ForeignKey(User,on_delete = models.SET_NULL, null=True, blank=True) 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add = True)
+    is_approved = models.BooleanField(default=False)
     
 
     class Meta:

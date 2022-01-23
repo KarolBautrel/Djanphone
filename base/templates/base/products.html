@@ -4,6 +4,7 @@
 {%block content%}
 
 {%for item in products%}
+{%if item.is_approved %}
 <div class="container">    
     <div class="row">
       <div class="col-sm-4">
@@ -14,6 +15,7 @@
           <div class="panel-footer">{{item.price}} $</div>
         </div>
       </div>
+    {%endif%}
    {%endfor%}   
   </html>  
 {%endblock content%}
