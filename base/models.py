@@ -6,7 +6,7 @@ class User(AbstractUser):
     email= models.EmailField(null=True, unique = True)
     bio = models.TextField(null=True)
     avatar = models.ImageField(null=True, default = 'avatar.svg')
-    budget = models.IntegerField(null=True, default=1000000)
+    budget = models.IntegerField(null=True, default=3000)
 
 
     USERNAME_FIELD = 'email'

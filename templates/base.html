@@ -64,8 +64,10 @@
      
       <ul class="nav navbar-nav navbar-right">
         {% if request.user.is_authenticated%}
+        <li><a href="#"><span class="glyphicon glyphicon-euro"></span> {{request.user.budget}}</a></li>
         <li><a href="{%url 'profile' user.id%}"><span class="glyphicon glyphicon-user"></span> {{request.user.username}}</a></li>
         <li><a href="{%url 'user-panel'%}"><span class="glyphicon glyphicon-wrench"></span> User panel</a></li>
+        <li><a href="{%url 'create-product'%}"><span class="glyphicon glyphicon-plus"></span> Add new product</a></li>
         <li><a href="{%url 'account_logout'%}"></span> Logout</a></li>
       </ul>
         {%else%}

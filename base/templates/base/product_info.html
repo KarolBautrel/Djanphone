@@ -21,9 +21,11 @@
       </div>
     </div>
     <hr>
-    <a class="btn btn--dark" href="#">Buy Product</a>
+    <a class="btn btn--dark" href="{%url 'buy-product' product.id%}">Buy Product</a>
     <hr>
-
+    <a class="btn btn--dark" href="{%url 'add-comment' product.id%}">Add comment</a>
+    <hr>
+    <hr>
     {% for comment in product_comments %}
     <div class="thread">
       <div class="thread__top">
@@ -58,13 +60,6 @@
     {%endfor%}
     
   </div>
-</div>
-</div>
-<div class="room__message">
-<form action="" method = 'POST'>
-{% csrf_token %}
-<input name="body" placeholder="Add your comment" />
-</form>
 </div>
 </div>
 

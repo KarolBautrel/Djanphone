@@ -1,5 +1,5 @@
 from django.forms import  ModelForm, EmailField, EmailInput, ValidationError
-from .models import Product, User
+from .models import Product, User, Comment
 
 class UserForm(ModelForm):
     class Meta:
@@ -34,3 +34,9 @@ class ProductForm(ModelForm):
     class Meta:
         model = Product
         fields = ['name','price','image','description']
+
+
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['body']

@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from .models import Product, User, Comment
-from .forms import UserForm, EmailChangeForm, ProductForm
+from .forms import UserForm, EmailChangeForm, ProductForm, CommentForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def home(request):
@@ -20,13 +21,7 @@ def products(request):
 def productInfo(request,pk):
     product = Product.objects.get(id = pk)
     product_comments = product.comment_set.all()
-    if request.method == 'POST':
-        comment = Comment.objects.create(user = request.user,
-                                        product = product,
-                                        body = request.POST.get('body')
-                                        )
-        return redirect ('product-info', pk=product.id)
-
+    
     context = {'product':product, 'product_comments':product_comments}
     return render(request,'base/product_info.html', context)
 
@@ -45,6 +40,46 @@ def addProduct(request):
 
 
 
+def buyProduct(request, pk):
+    product = Product.objects.get(id = pk)
+    user = request.user
+    if request.method == 'POST':
+        if request.user.budget >= product.price:
+            product.owner = user
+            user.budget -= product.price 
+            user.save()
+            product.owner.save()
+            messages.success(request, f'You bought {product.name}')
+            redirect ('home')
+        else:
+            messages.error(request, 'not enough money')
+    
+    return render(request,'base/buy_product.html',)
+    
+
+
+
+
+
+
+@login_required
+def addComment(request,pk):
+    form = CommentForm()
+    product = Product.objects.get(id = pk)
+    if request.method == 'POST':
+        Comment.objects.create(user = request.user,
+                            product = product,
+                            body = request.POST.get('body')
+                                        )
+        return redirect ('product-info', pk=product.id)
+    if request.method == 'GET':
+          product = Product.objects.get(id = pk)
+    context = {'product':product, 'form':form}
+    return render(request,'base/add_comment.html', context)
+
+
+
+@login_required
 def deleteComment(request, pk):
     comment = Comment.objects.get(id=pk)
     if request.user != comment.user:
