@@ -34,10 +34,13 @@ def addProduct(request):
                                 image = request.POST.get('image'),
                                 description = request.POST.get('description'))
     
-        return redirect ('home')
+        return redirect ('confirm-product-creation')
     context = {'form': form}
     return render(request,'base/product_form.html', context)
 
+def addProductConfirmation(request):
+
+    return render(request,'base/product_add_confirmation.html')
 
 
 def buyProduct(request, pk):
