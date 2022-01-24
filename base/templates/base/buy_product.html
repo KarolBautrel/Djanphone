@@ -25,9 +25,9 @@
                 <form class="form" action="#" method = "POST">
                     {%csrf_token%}
                     <div class="form__group">
-                        <p>Are you sure you want to buy this product  ?</p>
+                        <p>Chose delivery  </p>
                     </div>
-
+                        {{shipment_form.inpost}}
                     <div class="for__group">
                         <input class="btn btn--main" type="submit" value="Confirm" />
                     </div>

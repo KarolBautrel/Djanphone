@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Product, User, Comment
-from .forms import UserForm, EmailChangeForm, ProductForm, CommentForm
+from .models import Product, User, Comment, Shipment
+from .forms import UserForm, EmailChangeForm, ProductForm, CommentForm, ShipmentForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
@@ -45,6 +45,7 @@ def addProductConfirmation(request):
 
 def buyProduct(request, pk):
     product = Product.objects.get(id = pk)
+    shipment_form = ShipmentForm()
     user = request.user
     if request.method == 'POST':
         if request.user.budget >= product.price:
@@ -52,12 +53,21 @@ def buyProduct(request, pk):
             user.budget -= product.price 
             user.save()
             product.owner.save()
+            shipment_form = ShipmentForm(request.POST)
+            if shipment_form.is_valid():
+                shipment_form.save(commit=False)
+                shipment_form.ship_to = user
+                shipment_form.ship_to.save()
+                shipment_form.product = product
+                shipment_form.product.save()
+               
+                shipment_form.save()
             messages.success(request, f'You bought {product.name}')
             redirect ('home')
         else:
             messages.error(request, 'not enough money')
-    
-    return render(request,'base/buy_product.html',)
+    context = {'shipment_form':shipment_form}
+    return render(request,'base/buy_product.html',context)
     
 
 
@@ -185,3 +195,6 @@ def changePassword(request):
         form = PasswordChangeForm(request.user)
     context = {'form':form}
     return render(request, 'base/change_password.html', context)
+
+
+
