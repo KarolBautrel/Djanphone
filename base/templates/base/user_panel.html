@@ -20,7 +20,7 @@
       <li><a href="{%url 'change-email'%}" class="btn btn--main btn--pill">Change Email</a></li>
       <li><a href="{%url 'account_reset_password'%}" class="btn btn--main btn--pill">Reset Password</a></li>
       <li><a href="{%url 'socialaccount_connections'%}" class="btn btn--main btn--pill">Connect Account to social</a></li>
-      <li><a href="{%url 'shipments'%}" class="btn btn--main btn--pill">Your shipments</a></li>
+      <li><a href="{%url 'shipments' user.id%}" class="btn btn--main btn--pill">Your shipments</a></li>
 </ul>
    
    {%endblock content%}

@@ -2,11 +2,46 @@
 
 
 {%block content%}
+<style>
+   .row {
+  display: flex;
+}
+
+.column {
+  flex: 50%;
+}
+
+ 
+ /* Clear floats after the columns */
+
+ </style>
+
+<div class='row'>
+   <div class="column">
+<h1>Finished Shipments</h1>
 {%for item in shipments%}
-<div class="container">    
-   <h1>{{item.product}} produkt </h1>
-   <h1>{{item.ship_to}} user</h1>
-   <h1>{{item.created }}</h1>
-      </div>
+{%if item.finished%}
+
+   <h3>Product : {{item.product}}  </h3>
+   <h3>Bought by: {{item.ship_to}}</h3>
+   <h3>Bought at : {{item.created }}</h3>
+   <hr>
+   <br>
+   {%endif%}
+   {%endfor%} 
+</div>
+<div class="column">
+   <h1>In progress Shipments</h1>
+   {%for item in shipments%}
+   {%if not item.finished%}
+
+   <h3>Product : {{item.product}}  </h3>
+   <h3>Bought by: {{item.ship_to}}</h3>
+   <h3>Bought at : {{item.created }}</h3>
+   <hr>
+   </div>
+</div>
+</div>
+      {%endif%}
       {%endfor%} 
 {%endblock%}

@@ -55,13 +55,10 @@ def buyProduct(request, pk):
             product.owner.save()
             shipment_form = ShipmentForm(request.POST)
             if shipment_form.is_valid():
-                shipment_form.save(commit=False)
-                shipment_form.ship_to = user
-                shipment_form.ship_to.save()
-                shipment_form.product = product
-                print(shipment_form.product)
-                print(shipment_form.ship_to)
-                shipment_form.product.save()
+                shipment = shipment_form.save(commit=False)
+                shipment.ship_to = user
+                shipment.product = product
+                shipment.save()
                
                 shipment_form.save()
                 messages.success(request, f'You bought {product.name}')
@@ -203,7 +200,8 @@ def changePassword(request):
 
 
 
-def shipmentsPanel(request):
-    shipments = Shipment.objects.all()
-    context = {'shipments': shipments}
+def shipmentsPanel(request,pk):
+    user = User.objects.get(id = pk)
+    shipments = user.shipment_set.all()
+    context = {'user':user,'shipments': shipments}  
     return render(request,'base/shipments.html', context)

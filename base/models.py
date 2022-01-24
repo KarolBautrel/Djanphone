@@ -53,5 +53,6 @@ class Shipment(models.Model):
     inpost = models.BooleanField(default=False)
     post = models.BooleanField(default=False)
     home = models.BooleanField(default=False)
+    finished = models.BooleanField(default = False)
     ship_to = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     created = models.DateTimeField(auto_now_add = True)
