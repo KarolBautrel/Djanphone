@@ -59,16 +59,21 @@ def buyProduct(request, pk):
                 shipment_form.ship_to = user
                 shipment_form.ship_to.save()
                 shipment_form.product = product
+                print(shipment_form.product)
+                print(shipment_form.ship_to)
                 shipment_form.product.save()
                
                 shipment_form.save()
-            messages.success(request, f'You bought {product.name}')
-            redirect ('home')
+                messages.success(request, f'You bought {product.name}')
+                redirect ('home')
         else:
             messages.error(request, 'not enough money')
     context = {'shipment_form':shipment_form}
     return render(request,'base/buy_product.html',context)
     
+
+
+
 
 
 
@@ -198,3 +203,7 @@ def changePassword(request):
 
 
 
+def shipmentsPanel(request):
+    shipments = Shipment.objects.all()
+    context = {'shipments': shipments}
+    return render(request,'base/shipments.html', context)

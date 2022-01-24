@@ -18,5 +18,6 @@ urlpatterns = [
     path('delete_comment/<str:pk>', views.deleteComment, name = 'delete-comment'),
     path('add_comment/<str:pk>', views.addComment, name='add-comment' ),
     path('buy_product/<str:pk>', views.buyProduct, name = 'buy-product'),
+    path('shipments', views.shipmentsPanel, name = 'shipments'),
 
 ]

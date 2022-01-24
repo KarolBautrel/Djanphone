@@ -8,7 +8,7 @@ class User(AbstractUser):
     bio = models.TextField(null=True)
     avatar = models.ImageField(null=True, default = 'avatar.svg')
     budget = models.IntegerField(null=True, default=3000)
-
+    
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -54,4 +54,4 @@ class Shipment(models.Model):
     post = models.BooleanField(default=False)
     home = models.BooleanField(default=False)
     ship_to = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
-
+    created = models.DateTimeField(auto_now_add = True)

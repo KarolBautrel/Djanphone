@@ -1,0 +1,12 @@
+{%extends 'base.html'%}
+
+
+{%block content%}
+{%for item in shipments%}
+<div class="container">    
+   <h1>{{item.product}} produkt </h1>
+   <h1>{{item.ship_to}} user</h1>
+   <h1>{{item.created }}</h1>
+      </div>
+      {%endfor%} 
+{%endblock%}
