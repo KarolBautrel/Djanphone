@@ -6,6 +6,7 @@
     <form method="POST" action=''>
         {%csrf_token %} <!-- Token do ochrony(zawsze z POST)-->
         {{form.as_p}}
+       
         <input type="submit" value="submit">
 
 
@@ -15,4 +16,4 @@
    
 </div>
 
-{%endblock%}
+{% endblock content%}

@@ -66,3 +66,7 @@ class Ticket(models.Model):
     shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE, null=True, blank=True)
     ticket_creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     is_open = models.BooleanField(default=True)
+
+
+
+    

@@ -242,12 +242,14 @@ def contactPanel(request):
 def ticketPanel(request, pk):
     user = User.objects.get(id = pk)
     shipments = user.shipment_set.all()
-    form = TicketForm()
+    print(shipments)
+    form = TicketForm(user=user)
     if request.method == 'POST':
-        form = TicketForm(request.POST)
+        form = TicketForm(request.POST, user=user)
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.ticket_creator = user
+            ticket.shipment     
             ticket.save()
             return redirect ('ticket-confirm')
     context = {'form':form, 'shipments':shipments}

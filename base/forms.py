@@ -1,4 +1,4 @@
-from django.forms import  ModelForm, EmailField, EmailInput, ValidationError
+from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField
 from .models import Product, User, Comment, Shipment, Ticket
 
 class UserForm(ModelForm):
@@ -60,4 +60,14 @@ class BudgetForm(ModelForm):
 class TicketForm(ModelForm):
     class Meta:
         model = Ticket
-        fields = ['body', 'shipment']
+        fields = ['body']
+        
+
+    def __init__(self, *args, **kwargs):
+    
+        user = kwargs.pop("user")
+        super().__init__(*args, **kwargs)
+        self.fields['shipment'] = ModelChoiceField(queryset=user.shipment_set.all())
+
+    
+
