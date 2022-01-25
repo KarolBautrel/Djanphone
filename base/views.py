@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Product, User, Comment, Shipment
-from .forms import UserForm, EmailChangeForm, ProductForm, CommentForm, ShipmentForm, BudgetForm
+from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, ShipmentForm, BudgetForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
@@ -230,3 +230,30 @@ def addBudget(request, pk):
 
     context = {'form':form}
     return render(request,'base/add_budget.html', context)
+
+
+
+
+def contactPanel(request):
+    
+    return render(request,'base/contact_panel.html')
+
+
+def ticketPanel(request, pk):
+    user = User.objects.get(id = pk)
+    shipments = user.shipment_set.all()
+    form = TicketForm()
+    if request.method == 'POST':
+        form = TicketForm(request.POST)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.ticket_creator = user
+            ticket.save()
+            return redirect ('ticket-confirm')
+    context = {'form':form, 'shipments':shipments}
+
+    return render(request,'base/shipment_ticket.html', context)
+
+
+def ticketConfirmation(request):
+    return render(request, 'base/ticket_confirm.html')

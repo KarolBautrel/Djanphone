@@ -1,5 +1,5 @@
 from django.forms import  ModelForm, EmailField, EmailInput, ValidationError
-from .models import Product, User, Comment, Shipment
+from .models import Product, User, Comment, Shipment, Ticket
 
 class UserForm(ModelForm):
     class Meta:
@@ -55,3 +55,9 @@ class BudgetForm(ModelForm):
     class Meta:
         model = User
         fields = ['budget']
+
+
+class TicketForm(ModelForm):
+    class Meta:
+        model = Ticket
+        fields = ['body', 'shipment']

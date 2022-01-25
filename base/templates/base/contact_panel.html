@@ -1,0 +1,20 @@
+{%extends 'base.html'%}
+
+
+{%block content %}
+<h1>Welcome on contact site</h1>
+
+<hr>
+<h2>Chose subject </h2>
+
+<a class="btn btn-secondary"href ="{%url 'shipment-ticket' user.id%}"> Ticket due to shipment</a>
+<hr>
+<a class="btn btn-secondary"href = '#'> Different issues</a>
+<hr>
+<a class="btn btn-secondary"href = "#"> Add me to newsletter</a>
+
+
+
+
+
+{%endblock%}

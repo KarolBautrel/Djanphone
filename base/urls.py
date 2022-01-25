@@ -22,5 +22,8 @@ urlpatterns = [
     path('budget/<str:pk>', views.budgetPanel, name = 'budget'),
     path('add_budget/<str:pk>', views.addBudget, name='add-budget'),
     path('ratings/', include('star_ratings.urls', namespace='ratings')),
+    path('contact', views.contactPanel, name = 'contact'),
+    path('shipment_ticket/<str:pk>', views.ticketPanel, name = 'shipment-ticket'),
+    path('ticket_confirmation', views.ticketConfirmation, name='ticket-confirm')
 
 ]
