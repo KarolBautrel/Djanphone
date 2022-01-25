@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 
 
     'allauth.socialaccount.providers.google',
-  
+    'star_ratings'
 ]
 
 MIDDLEWARE = [

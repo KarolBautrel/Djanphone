@@ -51,4 +51,7 @@ class ShipmentForm(ModelForm):
         fields = '__all__'
 
 
-  
+class BudgetForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['budget']

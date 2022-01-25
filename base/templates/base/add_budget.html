@@ -1,0 +1,24 @@
+{%extends 'base.html'%}
+
+
+{%block content %}
+
+<div>Write how much money you want to add</h3>
+    <hr>
+    <form method="POST" action=''>
+        {%csrf_token %} <!-- Token do ochrony(zawsze z POST)-->
+        {{form.as_p}}
+        <input type="submit" value="submit">
+
+
+    </form>
+
+</div>
+   
+</div>
+
+
+
+
+
+{%endblock%}

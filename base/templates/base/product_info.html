@@ -1,7 +1,11 @@
 {%extends 'base.html'%}
-
+{% load ratings %}
 
 {%block content%}
+
+
+
+
 <div class="roomList">
     <div class="profile">
       <div class="profile__avatar">
@@ -18,6 +22,10 @@
         <p>
           {{product.description}}
         </p>
+        <hr>
+        <p>
+        {% ratings product %}
+      </p>
       </div>
     </div>
     
@@ -43,6 +51,7 @@
             <span>@{{comment.user.username}}</span>
           </a>
           <span class="thread__date">{{comment.created | timesince}}</span>
+
         </div>
 
 

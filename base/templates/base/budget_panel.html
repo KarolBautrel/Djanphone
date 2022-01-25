@@ -1,0 +1,20 @@
+{%extends 'base.html'%}
+
+
+{%block content %}
+<h1>Your budget is {{request.user.budget}} Euro</h1>
+
+<hr>
+<h2>Chose how you want to add your money </h2>
+
+<a class="btn btn-secondary"href = 'https://login.ingbank.pl/mojeing/app/#login'> Ing Bank Slaski</a>
+<hr>
+<a class="btn btn-secondary"href = 'https://www.paypal.com/pl/home'> PayPal</a>
+<hr>
+<a class="btn btn-secondary"href = "{%url 'add-budget' user.id%}"> By the website form</a>
+
+
+
+
+
+{%endblock%}

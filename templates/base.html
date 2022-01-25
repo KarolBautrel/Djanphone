@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   {%block title%}
-  
+  {% load static %}
   <title>Bootstrap Example</title>
   {%endblock%}
   <meta charset="utf-8">
@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+<script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
   <style>
 
     body{
@@ -64,7 +66,7 @@
      
       <ul class="nav navbar-nav navbar-right">
         {% if request.user.is_authenticated%}
-        <li><a href="#"><span class="glyphicon glyphicon-euro"></span> {{request.user.budget}}</a></li>
+        <li><a href="{%url 'budget' user.id%}"><span class="glyphicon glyphicon-euro"></span> {{request.user.budget}}</a></li>
         <li><a href="{%url 'profile' user.id%}"><span class="glyphicon glyphicon-user"></span> {{request.user.username}}</a></li>
         <li><a href="{%url 'user-panel'%}"><span class="glyphicon glyphicon-wrench"></span> User panel</a></li>
         <li><a href="{%url 'create-product'%}"><span class="glyphicon glyphicon-plus"></span> Add new product</a></li>

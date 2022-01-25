@@ -19,5 +19,8 @@ urlpatterns = [
     path('add_comment/<str:pk>', views.addComment, name='add-comment' ),
     path('buy_product/<str:pk>', views.buyProduct, name = 'buy-product'),
     path('shipments/<str:pk>', views.shipmentsPanel, name = 'shipments'),
+    path('budget/<str:pk>', views.budgetPanel, name = 'budget'),
+    path('add_budget/<str:pk>', views.addBudget, name='add-budget'),
+    path('ratings/', include('star_ratings.urls', namespace='ratings')),
 
 ]

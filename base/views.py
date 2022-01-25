@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Product, User, Comment, Shipment
-from .forms import UserForm, EmailChangeForm, ProductForm, CommentForm, ShipmentForm
+from .forms import UserForm, EmailChangeForm, ProductForm, CommentForm, ShipmentForm, BudgetForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
@@ -82,10 +82,13 @@ def addComment(request,pk):
     form = CommentForm()
     product = Product.objects.get(id = pk)
     if request.method == 'POST':
-        Comment.objects.create(user = request.user,
-                            product = product,
-                            body = request.POST.get('body')
-                                        )
+        form = CommentForm(request.POST)
+        if form.is_valid():
+           comment = form.save(commit=False)
+           comment.user = request.user
+           comment.product = product
+           comment.save()
+        
         return redirect ('product-info', pk=product.id)
     if request.method == 'GET':
           product = Product.objects.get(id = pk)
@@ -205,3 +208,25 @@ def shipmentsPanel(request,pk):
     shipments = user.shipment_set.all()
     context = {'user':user,'shipments': shipments}  
     return render(request,'base/shipments.html', context)
+
+def budgetPanel(request,pk):
+    user = User.objects.get(id = pk) 
+    return render(request,'base/budget_panel.html')
+
+
+
+def addBudget(request, pk):
+    user = User.objects.get(id = pk)
+    if request.method == 'POST':
+        form = BudgetForm(request.POST)
+        if form.is_valid():
+            budget_form = form.save(commit=False)
+            user.budget += budget_form.budget
+            user.save()
+            messages.error(request, f'You added {budget_form.budget}$')
+            return redirect ('home')
+    if request.method == 'GET':
+        form = BudgetForm()
+
+    context = {'form':form}
+    return render(request,'base/add_budget.html', context)
