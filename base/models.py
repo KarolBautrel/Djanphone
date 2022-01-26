@@ -32,7 +32,14 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class Store(models.Model):
+    address = models.CharField(max_length=30)
+    owner = models.CharField(max_length = 20)
+    contact = models.IntegerField(null=True)
+    products = models.ManyToManyField(Product, blank=True)
 
+    def __str__(self):
+        return self.address
 
 
 
@@ -63,7 +70,7 @@ class Shipment(models.Model):
 
 class Ticket(models.Model):
     body = models.TextField()
-    shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE)
+    shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE,null=True, blank=True)
     ticket_creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     is_open = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add = True)
