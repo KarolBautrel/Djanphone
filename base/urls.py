@@ -23,7 +23,10 @@ urlpatterns = [
     path('add_budget/<str:pk>', views.addBudget, name='add-budget'),
     path('ratings/', include('star_ratings.urls', namespace='ratings')),
     path('contact', views.contactPanel, name = 'contact'),
-    path('shipment_ticket/<str:pk>', views.ticketPanel, name = 'shipment-ticket'),
-    path('ticket_confirmation', views.ticketConfirmation, name='ticket-confirm')
+    path('shipment_ticket/<str:pk>', views.ticketCreation, name = 'shipment-ticket'),
+    path('ticket_confirmation', views.ticketConfirmation, name='ticket-confirm'),
+    path('ticket_panel/<str:pk>', views.ticketPanel, name='ticket-panel'),
+    path('ticket_info/<str:pk>', views.ticketInfo, name='ticket-info'),
+    path('stores/', views.stores, name = 'stores')
 
 ]

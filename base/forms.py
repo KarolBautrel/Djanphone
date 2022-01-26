@@ -60,11 +60,10 @@ class BudgetForm(ModelForm):
 class TicketForm(ModelForm):
     class Meta:
         model = Ticket
-        fields = ['body']
+        fields = ['body', 'shipment']
         
 
     def __init__(self, *args, **kwargs):
-    
         user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
         self.fields['shipment'] = ModelChoiceField(queryset=user.shipment_set.all())

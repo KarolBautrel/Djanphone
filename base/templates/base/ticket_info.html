@@ -1,0 +1,22 @@
+{%extends 'base.html'%}
+
+
+
+
+{%block content%}
+
+<h3>Ticket Shipment : {{ticket.shipment}}  </h3>
+<h4>Number of ticket: {{ticket.id}}</h4>
+<hr>
+<p>Description: {{ticket.body}}</p>
+
+<hr>
+
+
+<h4>Created by: {{ticket.ticket_creator}}</h4>
+<h4>Bought at : {{ticket.created }}</h4>
+<hr>
+<br>
+
+
+{%endblock%}

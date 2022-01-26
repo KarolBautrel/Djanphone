@@ -1,0 +1,56 @@
+{%extends 'base.html'%}
+
+{%block content%}
+
+
+
+
+<style>
+   .row {
+  display: flex;
+}
+
+.column {
+  flex: 50%;
+}
+
+ 
+ /* Clear floats after the columns */
+
+ </style>
+
+<div class='row'>
+   <div class="column">
+<h1>Open tickets</h1>
+{%for ticket in tickets%}
+{%if ticket.is_open%}
+
+   <h3><a href="{%url 'ticket-info' ticket.id%}">Ticket Shipment : {{ticket.shipment}}  </a></h3>
+   <h3>Number of ticket: {{ticket.id}}</h3>
+   <h3>Created by: {{ticket.ticket_creator}}</h3>
+   <h3>Bought at : {{ticket.created }}</h3>
+   <hr>
+   <br>
+   {%endif%}
+   {%endfor%} 
+</div>
+<div class="column">
+   <h1>Closed tickets</h1>
+   {%for ticket in tickets%}
+   {%if not ticket.is_open%}
+
+   <h3><a href="{%url 'ticket-info' ticket.id%}">Ticket Shipment : {{ticket.shipment}}  </a></h3>
+   <h3>Number of ticket: {{ticket.id}}</h3>
+   <h3>Created by: {{ticket.ticket_creator}}</h3>
+   <h3>Bought at : {{ticket.created }}</h3>
+   <hr>
+   </div>
+</div>
+</div>
+      {%endif%}
+      {%endfor%} 
+
+
+{%endblock%}
+
+

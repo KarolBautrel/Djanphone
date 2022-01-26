@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Product, User, Comment, Shipment
+from .models import Product, User, Comment, Shipment, Ticket
 from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, ShipmentForm, BudgetForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
@@ -239,17 +239,17 @@ def contactPanel(request):
     return render(request,'base/contact_panel.html')
 
 
-def ticketPanel(request, pk):
+def ticketCreation(request, pk):
     user = User.objects.get(id = pk)
     shipments = user.shipment_set.all()
-    print(shipments)
     form = TicketForm(user=user)
     if request.method == 'POST':
         form = TicketForm(request.POST, user=user)
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.ticket_creator = user
-            ticket.shipment     
+            ticket.shipment
+            print(ticket.shipment) 
             ticket.save()
             return redirect ('ticket-confirm')
     context = {'form':form, 'shipments':shipments}
@@ -259,3 +259,23 @@ def ticketPanel(request, pk):
 
 def ticketConfirmation(request):
     return render(request, 'base/ticket_confirm.html')
+
+
+def ticketPanel (request, pk):
+    user = User.objects.get(id=pk)
+    tickets = user.ticket_set.all()
+    context = {'user':user, 'tickets':tickets}
+    return render (request,'base/tickets.html', context)
+
+
+
+def ticketInfo(request,pk):
+    ticket = Ticket.objects.get(id=pk)
+
+    context= {'ticket':ticket}
+
+    return render(request, 'base/ticket_info.html', context)
+
+
+def stores(request):
+    return render (request, 'base/stores.html')
