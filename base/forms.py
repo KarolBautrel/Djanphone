@@ -1,5 +1,5 @@
 from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField
-from .models import Product, User, Comment, Shipment, Ticket
+from .models import Product, User, Comment, Shipment, Ticket, Delivery
 
 class UserForm(ModelForm):
     class Meta:
@@ -70,3 +70,7 @@ class TicketForm(ModelForm):
 
     
 
+class DeliveryForm(ModelForm):
+    class Meta:
+        model = Delivery
+        fields = '__all__'

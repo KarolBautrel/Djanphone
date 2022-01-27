@@ -1,0 +1,34 @@
+{%extends 'base.html'%}
+
+
+{%block content%}
+
+<h2>Addres : {{store.address}}</h2>
+<h3>Contact: {{store.contact}}</h3>
+<h4>Owner : {{store.owner}}</h4>
+<hr>
+
+{%for item in products %}
+<div class="container">    
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">{{item.name}}</div>
+          <div class="panel-body"><img src="{{item.image}}" class="img-responsive" style="width:100%" alt="Image"></div>
+          <a class="btn btn--dark" href="{%url 'product-info' item.id %}">Show info</a>
+          <div class="panel-footer">{{item.price}} $</div>
+        </div>
+      </div>
+
+      {%endfor%}
+ 
+
+
+
+
+
+
+
+
+
+{%endblock%}

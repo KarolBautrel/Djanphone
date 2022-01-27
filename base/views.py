@@ -1,6 +1,7 @@
+from itertools import product
 from django.shortcuts import render, redirect
-from .models import Product, User, Comment, Shipment, Ticket
-from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, ShipmentForm, BudgetForm
+from .models import Product, User, Comment, Shipment, Ticket,Store
+from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm,DeliveryForm, CommentForm, ShipmentForm, BudgetForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
@@ -46,6 +47,7 @@ def addProductConfirmation(request):
 def buyProduct(request, pk):
     product = Product.objects.get(id = pk)
     shipment_form = ShipmentForm()
+    delivery_form = DeliveryForm()
     user = request.user
     if request.method == 'POST':
         if request.user.budget >= product.price:
@@ -54,18 +56,23 @@ def buyProduct(request, pk):
             user.save()
             product.owner.save()
             shipment_form = ShipmentForm(request.POST)
-            if shipment_form.is_valid():
+            delivery_form = DeliveryForm(request.POST)
+            if shipment_form.is_valid() and delivery_form.is_valid():
                 shipment = shipment_form.save(commit=False)
+                delivery = delivery_form.save(commit=False)
                 shipment.ship_to = user
                 shipment.product = product
+                shipment.delivery = delivery
+                delivery.save()
                 shipment.save()
+               
                
                 shipment_form.save()
                 messages.success(request, f'You bought {product.name}')
                 redirect ('home')
         else:
             messages.error(request, 'not enough money')
-    context = {'shipment_form':shipment_form}
+    context = {'shipment_form':shipment_form, 'delivery_form':delivery_form}
     return render(request,'base/buy_product.html',context)
     
 
@@ -278,4 +285,15 @@ def ticketInfo(request,pk):
 
 
 def stores(request):
-    return render (request, 'base/stores.html')
+    store = Store.objects.get(id=1)
+    store2=Store.objects.get(id=2)
+    context = {'store':store, 'store2':store2}
+    return render (request, 'base/stores.html', context)
+
+def storeInfo(request, pk):
+    store = Store.objects.get(id=pk)
+    products = store.products.all()
+    print(products)
+
+    context = {'store':store, 'products':products}
+    return render (request, 'base/store_info.html', context)

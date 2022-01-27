@@ -27,6 +27,7 @@ urlpatterns = [
     path('ticket_confirmation', views.ticketConfirmation, name='ticket-confirm'),
     path('ticket_panel/<str:pk>', views.ticketPanel, name='ticket-panel'),
     path('ticket_info/<str:pk>', views.ticketInfo, name='ticket-info'),
-    path('stores/', views.stores, name = 'stores')
+    path('stores/', views.stores, name = 'stores'),
+    path('store_info/<int:pk>', views.storeInfo, name='store-info')
 
 ]

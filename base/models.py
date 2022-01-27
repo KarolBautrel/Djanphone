@@ -32,15 +32,16 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+
 class Store(models.Model):
     address = models.CharField(max_length=30)
     owner = models.CharField(max_length = 20)
     contact = models.IntegerField(null=True)
     products = models.ManyToManyField(Product, blank=True)
+    picture = models.ImageField(null=True, default = 'avatar.svg')
 
     def __str__(self):
         return self.address
-
 
 
 class Comment(models.Model):
@@ -54,15 +55,24 @@ class Comment(models.Model):
         return self.body[0:50]
 
 
-class Shipment(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True, blank=True)
+class Delivery(models.Model):
+    home = models.BooleanField(default=False)
     courier = models.BooleanField(default=False)
     inpost = models.BooleanField(default=False)
     post = models.BooleanField(default=False)
-    home = models.BooleanField(default=False)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE,null=True, blank=True)
+
+
+ 
+
+
+
+class Shipment(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True, blank=True)
     finished = models.BooleanField(default = False)
     ship_to = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     created = models.DateTimeField(auto_now_add = True)
+    delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE,null=True, blank=True)
 
 
     def __str__(self):
@@ -79,3 +89,4 @@ class Ticket(models.Model):
         return str(self.shipment)
 
     
+
