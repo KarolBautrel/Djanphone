@@ -1,7 +1,7 @@
 from itertools import product
 from django.shortcuts import render, redirect
 from .models import Product, User, Comment, Shipment, Ticket,Store
-from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm,DeliveryForm, CommentForm, ShipmentForm, BudgetForm
+from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm,DeliveryForm, CommentForm, ShipmentForm, BudgetForm, StoreForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
@@ -80,7 +80,7 @@ def buyProduct(request, pk):
 
 
 
-
+# TODO
 
 
 
@@ -138,7 +138,7 @@ def deleteComment(request, pk):
 
 
 
-
+# TODO
 
 def userProfile(request, pk):
     user = User.objects.get(id = pk)
@@ -293,7 +293,46 @@ def stores(request):
 def storeInfo(request, pk):
     store = Store.objects.get(id=pk)
     products = store.products.all()
-    print(products)
+    print(products[1])
 
     context = {'store':store, 'products':products}
     return render (request, 'base/store_info.html', context)
+
+
+# TODO
+def addStoreProducts(request,pk):
+    store = Store.objects.get(id=pk)
+    products =  Product.objects.all()
+    if request.method == 'POST':
+        product = request.POST.get('store')
+        store.products.add(product)
+        store.save()
+        messages.success(request, f'You added product    to your shop')
+        return redirect ('home')
+    if request.method == 'GET':
+        pass
+    context = { "products":products}
+    return render (request, 'base/add_product_store.html', context)
+
+
+# TODO
+def deleteStoreProduct(request,pk):
+    store = Store.objects.get(id = pk)
+    products = store.products.all()
+
+    if request.method == 'POST':
+        
+        product = request.POST.get('store')
+        print("Tutaj produkt", product)
+        store.products.remove(product)
+        store.save()
+        messages.success(request, f'You deleted product from your shop')
+        return redirect ('home')
+    if request.method == 'GET':
+        store_form = StoreForm()
+    context = {'store_form': store_form, "products":products}
+
+    return render (request, 'base/delete_product_store.html', context)
+
+
+

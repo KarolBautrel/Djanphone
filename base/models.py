@@ -39,6 +39,7 @@ class Store(models.Model):
     contact = models.IntegerField(null=True)
     products = models.ManyToManyField(Product, blank=True)
     picture = models.ImageField(null=True, default = 'avatar.svg')
+    moderator = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
 
     def __str__(self):
         return self.address

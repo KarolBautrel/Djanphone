@@ -7,7 +7,14 @@
 <h3>Contact: {{store.contact}}</h3>
 <h4>Owner : {{store.owner}}</h4>
 <hr>
+{%if request.user == store.moderator%}
 
+
+<a class = "btn btn-primary" href ='{%url "add-product-store" store.id%}'>Add Products</a>
+<a class = "btn btn-primary" href ='{%url "del-product-store" store.id%}'>Delete Products</a>
+<hr>
+<hr>
+{%endif%}
 {%for item in products %}
 <div class="container">    
     <div class="row">

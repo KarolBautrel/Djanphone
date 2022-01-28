@@ -4,8 +4,9 @@
 {%block content%}
 <div>
     <form method="POST" action=''>
+        {%for item in products%}
         {%csrf_token %} <!-- Token do ochrony(zawsze z POST)-->
-        {{form.as_p}}
+       <p>{{item}}</p> 
         <input type="submit" value="submit">
 
 
