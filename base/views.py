@@ -16,15 +16,16 @@ def home(request):
 def products(request):
     products = Product.objects.all()
     context = {'products':products}
-
     return render(request,'base/products.html', context)
+
+
 
 def productInfo(request,pk):
     product = Product.objects.get(id = pk)
     product_comments = product.comment_set.all()
-    
     context = {'product':product, 'product_comments':product_comments}
     return render(request,'base/product_info.html', context)
+
 
 
 def addProduct(request):
@@ -39,9 +40,12 @@ def addProduct(request):
     context = {'form': form}
     return render(request,'base/product_form.html', context)
 
+
+
 def addProductConfirmation(request):
 
     return render(request,'base/product_add_confirmation.html')
+
 
 
 def buyProduct(request, pk):
@@ -64,9 +68,7 @@ def buyProduct(request, pk):
                 shipment.product = product
                 shipment.delivery = delivery
                 delivery.save()
-                shipment.save()
-               
-               
+                shipment.save()              
                 shipment_form.save()
                 messages.success(request, f'You bought {product.name}')
                 redirect ('home')
@@ -77,13 +79,7 @@ def buyProduct(request, pk):
     
 
 
-
-
-
 # TODO
-
-
-
 @login_required
 def addComment(request,pk):
     form = CommentForm()
@@ -118,38 +114,17 @@ def deleteComment(request, pk):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # TODO
-
 def userProfile(request, pk):
     user = User.objects.get(id = pk)
     user_products = user.product_set.all()
     context = {'user':user,'user_products':user_products}
-
     return render(request,'base/profile.html', context)
+
+
 
 def updateProfile(request):
     user = request.user
-   
     if request.method == 'POST':
         form = UserForm(request.POST, request.FILES, instance = user)
         if form.is_valid():
@@ -157,9 +132,7 @@ def updateProfile(request):
             return redirect('profile', pk=user.id)
     if request.method == 'GET':
          form = UserForm(instance = user)
-    
     context = {'form':form}
-
     return render(request,'base/update_profile.html', context)   
 
 
@@ -171,7 +144,6 @@ def userPanel(request):
 
 def changeEmail(request):
     user = request.user
-
     if request.method == 'POST':
         form = EmailChangeForm(request.POST, instance = user)
         if form.is_valid():
@@ -180,8 +152,6 @@ def changeEmail(request):
             return redirect('home')
         else:
              messages.error(request, 'Invalid email')
-
-
     else:
         request.method == 'GET'
         form = EmailChangeForm(instance = user) 
@@ -192,7 +162,6 @@ def changeEmail(request):
 
 def changePassword(request):
     user = request.user
-
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -202,7 +171,6 @@ def changePassword(request):
             return redirect('home')
         else:
             messages.error(request, 'Old password incorrect or new passwords doesnt match')
-
     else:
         form = PasswordChangeForm(request.user)
     context = {'form':form}
@@ -215,6 +183,8 @@ def shipmentsPanel(request,pk):
     shipments = user.shipment_set.all()
     context = {'user':user,'shipments': shipments}  
     return render(request,'base/shipments.html', context)
+
+
 
 def budgetPanel(request,pk):
     user = User.objects.get(id = pk) 
@@ -240,10 +210,9 @@ def addBudget(request, pk):
 
 
 
-
 def contactPanel(request):
-    
     return render(request,'base/contact_panel.html')
+
 
 
 def ticketCreation(request, pk):
@@ -260,12 +229,13 @@ def ticketCreation(request, pk):
             ticket.save()
             return redirect ('ticket-confirm')
     context = {'form':form, 'shipments':shipments}
-
     return render(request,'base/shipment_ticket.html', context)
+
 
 
 def ticketConfirmation(request):
     return render(request, 'base/ticket_confirm.html')
+
 
 
 def ticketPanel (request, pk):
@@ -278,10 +248,9 @@ def ticketPanel (request, pk):
 
 def ticketInfo(request,pk):
     ticket = Ticket.objects.get(id=pk)
-
     context= {'ticket':ticket}
-
     return render(request, 'base/ticket_info.html', context)
+
 
 
 def stores(request):
@@ -290,6 +259,8 @@ def stores(request):
     context = {'store':store, 'store2':store2}
     return render (request, 'base/stores.html', context)
 
+
+
 def storeInfo(request, pk):
     store = Store.objects.get(id=pk)
     products = store.products.all()
@@ -297,6 +268,7 @@ def storeInfo(request, pk):
 
     context = {'store':store, 'products':products}
     return render (request, 'base/store_info.html', context)
+
 
 
 # TODO
@@ -315,13 +287,12 @@ def addStoreProducts(request,pk):
     return render (request, 'base/add_product_store.html', context)
 
 
+
 # TODO
 def deleteStoreProduct(request,pk):
     store = Store.objects.get(id = pk)
     products = store.products.all()
-
     if request.method == 'POST':
-        
         product = request.POST.get('store')
         print("Tutaj produkt", product)
         store.products.remove(product)
@@ -331,7 +302,6 @@ def deleteStoreProduct(request,pk):
     if request.method == 'GET':
         store_form = StoreForm()
     context = {'store_form': store_form, "products":products}
-
     return render (request, 'base/delete_product_store.html', context)
 
 
