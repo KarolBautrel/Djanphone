@@ -264,7 +264,6 @@ def stores(request):
 def storeInfo(request, pk):
     store = Store.objects.get(id=pk)
     products = store.products.all()
-    print(products[1])
 
     context = {'store':store, 'products':products}
     return render (request, 'base/store_info.html', context)
@@ -274,16 +273,14 @@ def storeInfo(request, pk):
 # TODO
 def addStoreProducts(request,pk):
     store = Store.objects.get(id=pk)
-    products =  Product.objects.all()
+    store_form = StoreForm(instance = store)
     if request.method == 'POST':
-        product = request.POST.get('store')
-        store.products.add(product)
-        store.save()
-        messages.success(request, f'You added product    to your shop')
-        return redirect ('home')
-    if request.method == 'GET':
-        pass
-    context = { "products":products}
+         store_form = StoreForm(request.POST, instance = store)
+         if store_form.is_valid():
+            store_form.save()
+            messages.success(request, f'You added new product')
+            return redirect('home')
+    context = {'store':store, 'store_form':store_form}
     return render (request, 'base/add_product_store.html', context)
 
 

@@ -5,14 +5,9 @@
 
 
 <form method="POST" action=''>
-    {%for items in products%}
+  
     {%csrf_token %}
-   <ul>
-    <li><label for="store">{{items}} </label>
-    <input id="{{items.id}}" type="radio" name="store" value={{items.id}}></li>
-</ul>
-
-    {%endfor%}  
+   {{store_form.as_p}}
     <input type="submit" value="OK">
 </form>
     

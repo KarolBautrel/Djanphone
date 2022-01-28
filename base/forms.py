@@ -80,3 +80,5 @@ class StoreForm(ModelForm):
     class Meta:
         model = Store
         fields = ['products']   
+
+
