@@ -44,7 +44,7 @@ def addProductConfirmation(request):
     return render(request,'base/product_add_confirmation.html')
 
 
-
+@login_required
 def buyProduct(request, pk):
     product = Product.objects.get(id = pk)
     shipment_form = ShipmentForm()
@@ -118,7 +118,7 @@ def userProfile(request, pk):
     return render(request,'base/profile.html', context)
 
 
-
+@login_required
 def updateProfile(request):
     user = request.user
     if request.method == 'POST':
@@ -188,29 +188,12 @@ def budgetPanel(request,pk):
 
 
 
-def addBudget(request, pk):
-    user = User.objects.get(id = pk)
-    if request.method == 'POST':
-        form = BudgetForm(request.POST)
-        if form.is_valid():
-            budget_form = form.save(commit=False)
-            user.budget += budget_form.budget
-            user.save()
-            messages.error(request, f'You added {budget_form.budget}$')
-            return redirect ('home')
-    if request.method == 'GET':
-        form = BudgetForm()
-
-    context = {'form':form}
-    return render(request,'base/add_budget.html', context)
-
-
-
+@login_required
 def contactPanel(request):
     return render(request,'base/contact_panel.html')
 
 
-
+@login_required
 def ticketCreation(request, pk):
     user = User.objects.get(id = pk)
     shipments = user.shipment_set.all()
@@ -233,7 +216,7 @@ def ticketConfirmation(request):
     return render(request, 'base/ticket_confirm.html')
 
 
-
+@login_required
 def ticketPanel (request, pk):
     user = User.objects.get(id=pk)
     tickets = user.ticket_set.all()
@@ -281,3 +264,19 @@ def modifyStoreProducts(request,pk):
 
 
 
+@login_required
+def addBudget(request, pk):
+    user = User.objects.get(id = pk)
+    if request.method == 'POST':
+        form = BudgetForm(request.POST)
+        if form.is_valid():
+            budget_form = form.save(commit=False)
+            user.budget += budget_form.budget
+            user.save()
+            messages.error(request, f'You added {budget_form.budget}$')
+            return redirect ('home')
+    if request.method == 'GET':
+        form = BudgetForm()
+
+    context = {'form':form}
+    return render(request,'base/add_budget.html', context)

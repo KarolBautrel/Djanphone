@@ -8,10 +8,8 @@ class UserForm(ModelForm):
 
 
 
-
 class EmailChangeForm(ModelForm):
     email2 = EmailField(label=('New email confirmation'), widget=EmailInput)
-    
     class Meta:
         model = User
         fields = ['email']
@@ -37,7 +35,6 @@ class ProductForm(ModelForm):
 
 
 
-
 class CommentForm(ModelForm):
     class Meta:
         model = Comment
@@ -51,10 +48,12 @@ class ShipmentForm(ModelForm):
         fields = '__all__'
 
 
+
 class BudgetForm(ModelForm):
     class Meta:
         model = User
         fields = ['budget']
+
 
 
 class TicketForm(ModelForm):
@@ -62,6 +61,7 @@ class TicketForm(ModelForm):
         model = Ticket
         fields = ['body', 'shipment']
         
+
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user")
@@ -76,12 +76,12 @@ class DeliveryForm(ModelForm):
         fields = '__all__'
 
 
+
 class StoreForm(ModelForm):
     class Meta:
         model = Store
         fields = ['products']   
         widgets = {
             'products' : CheckboxSelectMultiple
-
         }
 

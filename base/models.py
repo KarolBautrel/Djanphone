@@ -9,18 +9,16 @@ class User(AbstractUser):
     avatar = models.ImageField(null=True, default = 'avatar.svg')
     budget = models.IntegerField(null=True, default=3000)
     
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+
+
 
 class Brand(models.Model):
     brand = models.CharField(max_length=20, null=True, blank=True)
     
     def __str__(self):
         return self.brand
-
-
-
 
 
 
@@ -39,10 +37,9 @@ class Product(models.Model):
     class Meta:
         ordering = ['-created', '-updated']
 
-
-
     def __str__(self):
         return self.name
+
 
 
 class Store(models.Model):
@@ -57,6 +54,7 @@ class Store(models.Model):
         return self.address
 
 
+
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -68,6 +66,7 @@ class Comment(models.Model):
         return self.body[0:50]
 
 
+
 class Delivery(models.Model):
     home = models.BooleanField(default=False)
     courier = models.BooleanField(default=False)
@@ -77,9 +76,6 @@ class Delivery(models.Model):
 
 
  
-
-
-
 class Shipment(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True, blank=True)
     finished = models.BooleanField(default = False)
@@ -87,9 +83,10 @@ class Shipment(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE,null=True, blank=True)
 
-
     def __str__(self):
         return str(self.product)
+
+
 
 class Ticket(models.Model):
     body = models.TextField()
