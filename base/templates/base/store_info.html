@@ -10,8 +10,8 @@
 {%if request.user == store.moderator%}
 
 
-<a class = "btn btn-primary" href ='{%url "add-product-store" store.id%}'>Add Products</a>
-<a class = "btn btn-primary" href ='{%url "del-product-store" store.id%}'>Delete Products</a>
+<a class = "btn btn-primary" href ='{%url "modify-product-store" store.id%}'>Modify Products</a>
+
 <hr>
 <hr>
 {%endif%}

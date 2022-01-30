@@ -23,19 +23,16 @@ def addStoreProducts(request,pk):
 def deleteStoreProduct(request,pk):
     store = Store.objects.get(id = pk)
     products = store.products.all()
-
     if request.method == 'POST':
-        
         product = request.POST.get('store')
         print("Tutaj produkt", product)
         store.products.remove(product)
         store.save()
-        messages.success(request, f'You deleted {product.name} to your shop')
+        messages.success(request, f'You deleted product from your shop')
         return redirect ('home')
     if request.method == 'GET':
         store_form = StoreForm()
     context = {'store_form': store_form, "products":products}
-
     return render (request, 'base/delete_product_store.html', context)
 
 
@@ -64,7 +61,7 @@ def addStoreProducts(request,pk):
     context = {'store':store, 'store_form':store_form}
     return render (request, 'base/add_product_store.html', context)
 
-
+ 
 
 
 

@@ -1,4 +1,4 @@
-from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField
+from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField, CheckboxSelectMultiple
 from .models import Product, User, Comment, Shipment, Ticket, Delivery, Store
 
 class UserForm(ModelForm):
@@ -33,7 +33,7 @@ class EmailChangeForm(ModelForm):
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        fields = ['name','price','image','description']
+        fields = ['brand','model','name','image','description','price']
 
 
 
@@ -80,5 +80,8 @@ class StoreForm(ModelForm):
     class Meta:
         model = Store
         fields = ['products']   
+        widgets = {
+            'products' : CheckboxSelectMultiple
 
+        }
 

@@ -29,7 +29,7 @@ urlpatterns = [
     path('ticket_info/<str:pk>', views.ticketInfo, name='ticket-info'),
     path('stores/', views.stores, name = 'stores'),
     path('store_info/<int:pk>', views.storeInfo, name='store-info'),
-    path('add_store_product/<str:pk>', views.addStoreProducts, name = 'add-product-store'),
-    path('del_store_product/<str:pk>', views.deleteStoreProduct, name = 'del-product-store')
+    path('modify_store_product/<str:pk>', views.modifyStoreProducts, name = 'modify-product-store'),
+    
 
 ]

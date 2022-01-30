@@ -13,12 +13,24 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
+class Brand(models.Model):
+    brand = models.CharField(max_length=20, null=True, blank=True)
+    
+    def __str__(self):
+        return self.brand
+
+
+
+
+
 
 class Product(models.Model):
+    model = models.CharField(max_length = 20,null=True)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE,null=True, blank=True)
     name = models.CharField(max_length=30)
     price = models.IntegerField(null=True)
-    image = models.ImageField(null=True)
-    description = models.TextField(max_length=200)
+    image = models.ImageField(null=True, blank=True)
+    description = models.TextField(max_length=200,null=True)
     owner = models.ForeignKey(User,on_delete = models.SET_NULL, null=True, blank=True) 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add = True)

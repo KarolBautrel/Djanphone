@@ -31,19 +31,16 @@ def productInfo(request,pk):
 def addProduct(request):
     form = ProductForm()
     if request.method == 'POST':
-        Product.objects.create(name = request.POST.get('name'),
-                                price = request.POST.get('price'),
-                                image = request.POST.get('image'),
-                                description = request.POST.get('description'))
-    
-        return redirect ('confirm-product-creation')
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect ('confirm-product-creation')
     context = {'form': form}
-    return render(request,'base/product_form.html', context)
+    return render(request,'base/add_product_form.html', context)
 
 
 
 def addProductConfirmation(request):
-
     return render(request,'base/product_add_confirmation.html')
 
 
@@ -91,7 +88,6 @@ def addComment(request,pk):
            comment.user = request.user
            comment.product = product
            comment.save()
-        
         return redirect ('product-info', pk=product.id)
     if request.method == 'GET':
           product = Product.objects.get(id = pk)
@@ -271,7 +267,7 @@ def storeInfo(request, pk):
 
 
 # TODO
-def addStoreProducts(request,pk):
+def modifyStoreProducts(request,pk):
     store = Store.objects.get(id=pk)
     store_form = StoreForm(instance = store)
     if request.method == 'POST':
@@ -281,25 +277,7 @@ def addStoreProducts(request,pk):
             messages.success(request, f'You added new product')
             return redirect('home')
     context = {'store':store, 'store_form':store_form}
-    return render (request, 'base/add_product_store.html', context)
-
-
-
-# TODO
-def deleteStoreProduct(request,pk):
-    store = Store.objects.get(id = pk)
-    products = store.products.all()
-    if request.method == 'POST':
-        product = request.POST.get('store')
-        print("Tutaj produkt", product)
-        store.products.remove(product)
-        store.save()
-        messages.success(request, f'You deleted product from your shop')
-        return redirect ('home')
-    if request.method == 'GET':
-        store_form = StoreForm()
-    context = {'store_form': store_form, "products":products}
-    return render (request, 'base/delete_product_store.html', context)
+    return render (request, 'base/modify_product_store.html', context)
 
 
 
