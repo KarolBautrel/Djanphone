@@ -32,7 +32,7 @@ def addProduct(request):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect ('confirm-product-creation')
+            return redirect('confirm-product-creation')
     context = {'form': form}
     return render(request,'base/add_product_form.html', context)
 
@@ -65,7 +65,7 @@ def buyProduct(request, pk):
                 shipment.save()              
                 shipment_form.save()
                 messages.success(request, f'You bought {product.name}')
-                redirect ('home')
+                redirect('home')
         else:
             messages.error(request, 'not enough money')
     context = {'shipment_form':shipment_form, 'delivery_form':delivery_form}
@@ -84,7 +84,7 @@ def addComment(request,pk):
            comment.user = request.user
            comment.product = product
            comment.save()
-        return redirect ('product-info', pk=product.id)
+        return redirect('product-info', pk=product.id)
     if request.method == 'GET':
           product = Product.objects.get(id = pk)
     context = {'product':product, 'form':form}
@@ -194,7 +194,7 @@ def ticketCreation(request, pk):
             ticket.shipment
             print(ticket.shipment) 
             ticket.save()
-            return redirect ('ticket-confirm')
+            return redirect('ticket-confirm')
     context = {'form':form, 'shipments':shipments}
     return render(request,'base/shipment_ticket.html', context)
 
@@ -208,7 +208,7 @@ def ticketPanel (request, pk):
     user = User.objects.get(id=pk)
     tickets = user.ticket_set.all()
     context = {'user':user, 'tickets':tickets}
-    return render (request,'base/tickets.html', context)
+    return render(request,'base/tickets.html', context)
 
 
 def ticketInfo(request,pk):
@@ -221,14 +221,14 @@ def stores(request):
     store = Store.objects.get(id=1)
     store2=Store.objects.get(id=2)
     context = {'store':store, 'store2':store2}
-    return render (request, 'base/stores.html', context)
+    return render(request, 'base/stores.html', context)
 
 
 def storeInfo(request, pk):
     store = Store.objects.get(id=pk)
     products = store.products.all()
     context = {'store':store, 'products':products}
-    return render (request, 'base/store_info.html', context)
+    return render(request, 'base/store_info.html', context)
 
 
 # TODO
@@ -242,7 +242,7 @@ def modifyStoreProducts(request,pk):
             messages.success(request, f'You added new product')
             return redirect('home')
     context = {'store':store, 'store_form':store_form}
-    return render (request, 'base/modify_product_store.html', context)
+    return render(request, 'base/modify_product_store.html', context)
 
 
 @login_required
@@ -255,7 +255,7 @@ def addBudget(request, pk):
             user.budget += budget_form.budget
             user.save()
             messages.error(request, f'You added {budget_form.budget}$')
-            return redirect ('home')
+            return redirect('home')
     if request.method == 'GET':
         form = BudgetForm()
     context = {'form':form}
