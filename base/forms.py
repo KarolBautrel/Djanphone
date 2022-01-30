@@ -7,12 +7,12 @@ class UserForm(ModelForm):
         fields = ['name', 'bio','avatar','address']
 
 
-
 class EmailChangeForm(ModelForm):
     email2 = EmailField(label=('New email confirmation'), widget=EmailInput)
     class Meta:
         model = User
         fields = ['email']
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -26,13 +26,11 @@ class EmailChangeForm(ModelForm):
         else:
             print("Dupa")
 
-   
 
 class ProductForm(ModelForm):
     class Meta:
         model = Product
         fields = ['brand','model','name','image','description','price']
-
 
 
 class CommentForm(ModelForm):
@@ -41,12 +39,10 @@ class CommentForm(ModelForm):
         fields = ['body']
 
 
-
 class ShipmentForm(ModelForm):
     class Meta:
         model = Shipment
         fields = '__all__'
-
 
 
 class BudgetForm(ModelForm):
@@ -55,12 +51,10 @@ class BudgetForm(ModelForm):
         fields = ['budget']
 
 
-
 class TicketForm(ModelForm):
     class Meta:
         model = Ticket
         fields = ['body', 'shipment']
-        
 
 
     def __init__(self, *args, **kwargs):
@@ -68,13 +62,11 @@ class TicketForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['shipment'] = ModelChoiceField(queryset=user.shipment_set.all())
 
-    
 
 class DeliveryForm(ModelForm):
     class Meta:
         model = Delivery
         fields = '__all__'
-
 
 
 class StoreForm(ModelForm):
@@ -84,4 +76,3 @@ class StoreForm(ModelForm):
         widgets = {
             'products' : CheckboxSelectMultiple
         }
-

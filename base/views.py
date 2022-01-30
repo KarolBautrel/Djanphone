@@ -8,9 +8,9 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+
 def home(request):
     return render(request,'base/home.html')
-
 
 
 def products(request):
@@ -19,13 +19,11 @@ def products(request):
     return render(request,'base/products.html', context)
 
 
-
 def productInfo(request,pk):
     product = Product.objects.get(id = pk)
     product_comments = product.comment_set.all()
     context = {'product':product, 'product_comments':product_comments}
     return render(request,'base/product_info.html', context)
-
 
 
 def addProduct(request):
@@ -37,7 +35,6 @@ def addProduct(request):
             return redirect ('confirm-product-creation')
     context = {'form': form}
     return render(request,'base/add_product_form.html', context)
-
 
 
 def addProductConfirmation(request):
@@ -73,7 +70,6 @@ def buyProduct(request, pk):
             messages.error(request, 'not enough money')
     context = {'shipment_form':shipment_form, 'delivery_form':delivery_form}
     return render(request,'base/buy_product.html',context)
-    
 
 
 # TODO
@@ -95,7 +91,6 @@ def addComment(request,pk):
     return render(request,'base/add_comment.html', context)
 
 
-
 @login_required
 def deleteComment(request, pk):
     comment = Comment.objects.get(id=pk)
@@ -107,7 +102,6 @@ def deleteComment(request, pk):
         return redirect('home')
     context ={"comment":comment} 
     return render(request,'base/delete.html', context)
-
 
 
 # TODO
@@ -132,10 +126,8 @@ def updateProfile(request):
     return render(request,'base/update_profile.html', context)   
 
 
-
 def userPanel(request):
     return render(request, 'base/user_panel.html')
-
 
 
 def changeEmail(request):
@@ -155,7 +147,6 @@ def changeEmail(request):
     return render(request, 'base/change_email.html', context)
 
 
-
 def changePassword(request):
     user = request.user
     if request.method == 'POST':
@@ -173,7 +164,6 @@ def changePassword(request):
     return render(request, 'base/change_password.html', context)
 
 
-
 def shipmentsPanel(request,pk):
     user = User.objects.get(id = pk)
     shipments = user.shipment_set.all()
@@ -181,11 +171,9 @@ def shipmentsPanel(request,pk):
     return render(request,'base/shipments.html', context)
 
 
-
 def budgetPanel(request,pk):
     user = User.objects.get(id = pk) 
     return render(request,'base/budget_panel.html')
-
 
 
 @login_required
@@ -211,7 +199,6 @@ def ticketCreation(request, pk):
     return render(request,'base/shipment_ticket.html', context)
 
 
-
 def ticketConfirmation(request):
     return render(request, 'base/ticket_confirm.html')
 
@@ -224,12 +211,10 @@ def ticketPanel (request, pk):
     return render (request,'base/tickets.html', context)
 
 
-
 def ticketInfo(request,pk):
     ticket = Ticket.objects.get(id=pk)
     context= {'ticket':ticket}
     return render(request, 'base/ticket_info.html', context)
-
 
 
 def stores(request):
@@ -239,14 +224,11 @@ def stores(request):
     return render (request, 'base/stores.html', context)
 
 
-
 def storeInfo(request, pk):
     store = Store.objects.get(id=pk)
     products = store.products.all()
-
     context = {'store':store, 'products':products}
     return render (request, 'base/store_info.html', context)
-
 
 
 # TODO
@@ -263,7 +245,6 @@ def modifyStoreProducts(request,pk):
     return render (request, 'base/modify_product_store.html', context)
 
 
-
 @login_required
 def addBudget(request, pk):
     user = User.objects.get(id = pk)
@@ -277,6 +258,5 @@ def addBudget(request, pk):
             return redirect ('home')
     if request.method == 'GET':
         form = BudgetForm()
-
     context = {'form':form}
     return render(request,'base/add_budget.html', context)

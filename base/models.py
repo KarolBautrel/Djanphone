@@ -8,18 +8,16 @@ class User(AbstractUser):
     bio = models.TextField(null=True)
     avatar = models.ImageField(null=True, default = 'avatar.svg')
     budget = models.IntegerField(null=True, default=3000)
-    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
-
 
 
 class Brand(models.Model):
     brand = models.CharField(max_length=20, null=True, blank=True)
     
+
     def __str__(self):
         return self.brand
-
 
 
 class Product(models.Model):
@@ -34,12 +32,13 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     is_approved = models.BooleanField(default=False)
    
+
     class Meta:
         ordering = ['-created', '-updated']
 
+
     def __str__(self):
         return self.name
-
 
 
 class Store(models.Model):
@@ -50,9 +49,9 @@ class Store(models.Model):
     picture = models.ImageField(null=True, default = 'avatar.svg')
     moderator = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
 
+
     def __str__(self):
         return self.address
-
 
 
 class Comment(models.Model):
@@ -62,9 +61,9 @@ class Comment(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
+
     def __str__(self):
         return self.body[0:50]
-
 
 
 class Delivery(models.Model):
@@ -75,7 +74,6 @@ class Delivery(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE,null=True, blank=True)
 
 
- 
 class Shipment(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True, blank=True)
     finished = models.BooleanField(default = False)
@@ -83,9 +81,9 @@ class Shipment(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE,null=True, blank=True)
 
+
     def __str__(self):
         return str(self.product)
-
 
 
 class Ticket(models.Model):
@@ -95,8 +93,6 @@ class Ticket(models.Model):
     is_open = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add = True)
 
+
     def __str__(self):
         return str(self.shipment)
-
-    
-
