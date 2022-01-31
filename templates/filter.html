@@ -1,0 +1,47 @@
+<!--FILTER DEVICE-->
+<h3>Filter</h3>
+<form method="GET" action=".">
+  <div class="form-row">
+      <div class="form-group col-12">
+          <div class="input-group">
+              <input class="form-control py-2 border-right-0 border" type="search" name="name_contains" placeholder="Search by name" />
+              <span class="input-group-append">
+                  <div class="input-group-text bg-transparent">
+                      <i class="fa fa-search"></i>
+                  </div>
+              </span>
+          </div>
+      </div>        
+  </div>
+  
+  <div class="form-row">
+    <div class="form-group col-md-2 col-lg-2">
+      <label for="productPriceMin">Minimum Price</label>
+      <input type="number" min=0 class="form-control" id="productPriceMin" placeholder="0" name="product_price_min">
+    </div>
+    <div class="form-group col-md-2 col-lg-2">
+      <label for="productPriceMax">Maximum Price</label>
+      <input type="number" min=0 class="form-control" id="productPriceMax" placeholder="10000?" name="product_price_max">
+    </div>
+    <div class="form-group col-md-2 col-lg-2">
+      <label for="publishDateMin">From Product date release</label>
+      <input type="date" class="form-control" id="publishDateMin" name="date_min">
+    </div>
+    <div class="form-group col-md-2 col-lg-2">
+      <label for="publishDateMax">To Publish date maximum</label>
+      <input type="date" class="form-control" id="publishDateMax" name="date_max">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="brand">Brand</label>
+      <select id="brand" class="form-control" name="brand">
+        <option selected>All</option>
+        {% for brand in brands %}
+        <option value="{{ brand.brand }}">{{ brand }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<hr>

@@ -2,6 +2,7 @@ from itertools import product
 from django.shortcuts import render, redirect
 from .models import Product, User, Comment, Shipment, Ticket,Store,Brand
 from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, ShipmentForm, BudgetForm, StoreForm
+from .filters import ProductFilter
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
@@ -36,7 +37,7 @@ def products(request):
         products = products.filter(created__lt=date_min) 
     if is_valid_queryparam(date_max):
         products = products.filter(created__gte=date_max) 
-    if is_valid_queryparam(brand) and brand != 'Choose...   ':
+    if is_valid_queryparam(brand) and brand != 'All':
         products = products.filter(brand__brand=brand) 
     context = {'products':products, 'brands':brands}
     return render(request,'base/products.html', context)
@@ -242,10 +243,12 @@ def stores(request):
     return render(request, 'base/stores.html', context)
 
 
+#
 def storeInfo(request, pk):
     store = Store.objects.get(id=pk)
     products = store.products.all()
-    context = {'store':store, 'products':products}
+    filter = ProductFilter(request.GET, queryset=store.products.all())
+    context = {'store':store, 'products':products,'filter':filter}
     return render(request, 'base/store_info.html', context)
 
 

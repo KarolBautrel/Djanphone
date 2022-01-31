@@ -43,7 +43,11 @@ class Product(models.Model):
         return self.name
 
 
+class ProductFilter(django_filters.FilterSet):
 
+    class Meta:
+        model = Product
+        fields = ['price', 'created']
 
 
 class Store(models.Model):

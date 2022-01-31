@@ -1,5 +1,6 @@
 from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField, CheckboxSelectMultiple
 from .models import Product, User, Comment, Shipment, Ticket, Delivery, Store
+import django_filters
 
 class UserForm(ModelForm):
     class Meta:
@@ -70,3 +71,12 @@ class StoreForm(ModelForm):
         widgets = {
             'products' : CheckboxSelectMultiple
         }
+
+
+
+class ProductFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr='iexact')
+
+    class Meta:
+        model = Product
+        fields = ['price', 'created']
