@@ -1,7 +1,7 @@
 from itertools import product
 from django.shortcuts import render, redirect
-from .models import Product, User, Comment, Shipment, Ticket,Store
-from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm,DeliveryForm, CommentForm, ShipmentForm, BudgetForm, StoreForm
+from .models import Product, User, Comment, Shipment, Ticket,Store,Brand
+from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, ShipmentForm, BudgetForm, StoreForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
@@ -13,9 +13,32 @@ def home(request):
     return render(request,'base/home.html')
 
 
+def is_valid_queryparam(param):
+    return param != '' and param is not None
+
+
 def products(request):
     products = Product.objects.all()
-    context = {'products':products}
+    brands = Brand.objects.all()
+    name_contains = request.GET.get('name_contains')
+    view_price_min = request.GET.get('product_price_min')
+    view_price_max = request.GET.get('product_price_max')
+    date_min = request.GET.get('date_min')
+    date_max = request.GET.get('date_max')
+    brand = request.GET.get('brand')
+    if is_valid_queryparam(name_contains):
+        products = products.filter(name__icontains=name_contains)
+    if is_valid_queryparam(view_price_min):
+        products = products.filter(price__gte=view_price_min) #__gte = greater than equ
+    if is_valid_queryparam(view_price_max):
+        products = products.filter(price__lte=view_price_max) #__lte = less than 
+    if is_valid_queryparam(date_min):
+        products = products.filter(created__lt=date_min) 
+    if is_valid_queryparam(date_max):
+        products = products.filter(created__gte=date_max) 
+    if is_valid_queryparam(brand) and brand != 'Choose...   ':
+        products = products.filter(brand__brand=brand) 
+    context = {'products':products, 'brands':brands}
     return render(request,'base/products.html', context)
 
 
@@ -45,7 +68,6 @@ def addProductConfirmation(request):
 def buyProduct(request, pk):
     product = Product.objects.get(id = pk)
     shipment_form = ShipmentForm()
-    delivery_form = DeliveryForm()
     user = request.user
     if request.method == 'POST':
         if request.user.budget >= product.price:
@@ -54,21 +76,17 @@ def buyProduct(request, pk):
             user.save()
             product.owner.save()
             shipment_form = ShipmentForm(request.POST)
-            delivery_form = DeliveryForm(request.POST)
-            if shipment_form.is_valid() and delivery_form.is_valid():
+            if shipment_form.is_valid():
                 shipment = shipment_form.save(commit=False)
-                delivery = delivery_form.save(commit=False)
                 shipment.ship_to = user
                 shipment.product = product
-                shipment.delivery = delivery
-                delivery.save()
                 shipment.save()              
                 shipment_form.save()
                 messages.success(request, f'You bought {product.name}')
                 redirect('home')
         else:
             messages.error(request, 'not enough money')
-    context = {'shipment_form':shipment_form, 'delivery_form':delivery_form}
+    context = {'shipment_form':shipment_form}
     return render(request,'base/buy_product.html',context)
 
 

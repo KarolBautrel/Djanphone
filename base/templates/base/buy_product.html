@@ -27,11 +27,17 @@
                     <div class="form__group">
                         <p>Chose delivery  </p>
                     </div>
-                        {{delivery_form.as_p}}
+                        {{shipment_form.delivery}}
                     <div class="for__group">
                         <input class="btn btn--main" type="submit" value="Confirm" />
                     </div>
-
+                    <div class="form__group">
+                        <p>Or pick up product in our local store </p>
+                    </div>
+                        {{shipment_form.store}}
+                    <div class="for__group">
+                        <input class="btn btn--main" type="submit" value="Confirm" />
+                    </div>
                 </form>
             </div>
         </div>

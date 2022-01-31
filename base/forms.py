@@ -63,12 +63,6 @@ class TicketForm(ModelForm):
         self.fields['shipment'] = ModelChoiceField(queryset=user.shipment_set.all())
 
 
-class DeliveryForm(ModelForm):
-    class Meta:
-        model = Delivery
-        fields = '__all__'
-
-
 class StoreForm(ModelForm):
     class Meta:
         model = Store

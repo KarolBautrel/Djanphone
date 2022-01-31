@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import django_filters
+
 
 class User(AbstractUser):
     name = models.CharField(max_length=200,null=True)
@@ -24,7 +26,7 @@ class Product(models.Model):
     model = models.CharField(max_length = 20,null=True)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE,null=True, blank=True)
     name = models.CharField(max_length=30)
-    price = models.IntegerField(null=True)
+    price = models.IntegerField(null=True, blank=True)
     image = models.ImageField(null=True, blank=True)
     description = models.TextField(max_length=200,null=True)
     owner = models.ForeignKey(User,on_delete = models.SET_NULL, null=True, blank=True) 
@@ -39,6 +41,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
 
 
 class Store(models.Model):
@@ -67,12 +72,10 @@ class Comment(models.Model):
 
 
 class Delivery(models.Model):
-    home = models.BooleanField(default=False)
-    courier = models.BooleanField(default=False)
-    inpost = models.BooleanField(default=False)
-    post = models.BooleanField(default=False)
-    store = models.ForeignKey(Store, on_delete=models.CASCADE,null=True, blank=True)
-
+    delivery = models.CharField(max_length=20,null=True, blank=True)
+    
+    def __str__(self):
+        return self.delivery
 
 class Shipment(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True, blank=True)
@@ -80,7 +83,7 @@ class Shipment(models.Model):
     ship_to = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     created = models.DateTimeField(auto_now_add = True)
     delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE,null=True, blank=True)
-
+    store = models.ForeignKey(Store, on_delete=models.CASCADE,null=True, blank=True)
 
     def __str__(self):
         return str(self.product)
