@@ -46,7 +46,7 @@
         <div class="thread__author">
           <a href="{% url 'profile' comment.user.id %}" class="thread__authorInfo">
             <div class="avatar avatar--small">
-              <img src="{{profile.user.avatar.url}}" />
+              <img src="{{comment.user.avatar.url}} " style="width: 100px;"/>
             </div>
             <span>@{{comment.user.username}}</span>
           </a>
