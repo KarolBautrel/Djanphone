@@ -12,11 +12,10 @@
 {%for item in products%}
 {%if item.is_approved %}
 <div class="container">    
-    <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <div class="panel panel-primary">
           <div class="panel-heading">{{item.name}}</div>
-          <div class="panel-body"><img src="{{item.image}}" class="img-responsive" style="width:100%" alt="Image"></div>
+          <div class="panel-body"><img class="img-responsive" src="{{item.image.url}}" class="img-responsive" style="width: 100px;" alt="Image"></div>
           <a class="btn btn--dark" href="{%url 'product-info' item.id %}">Show info</a>
           <div class="panel-footer">{{item.price}} $</div>
         </div>

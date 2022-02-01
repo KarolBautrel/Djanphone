@@ -27,7 +27,7 @@ class Product(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE,null=True, blank=True)
     name = models.CharField(max_length=30)
     price = models.IntegerField(null=True, blank=True)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField( blank=True, default = 'pobrane.png')
     description = models.TextField(max_length=200,null=True)
     owner = models.ForeignKey(User,on_delete = models.SET_NULL, null=True, blank=True) 
     updated = models.DateTimeField(auto_now=True)

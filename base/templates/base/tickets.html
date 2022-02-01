@@ -6,21 +6,23 @@
 
 
 <style>
-   .row {
-  display: flex;
-}
+   .leftContainer{
 
-.column {
-  flex: 50%;
-}
+      float: left; 
+      margin-left:240px;
+   }
 
- 
- /* Clear floats after the columns */
+   .rightContainer{
 
- </style>
+      float: right; 
+      margin-right:240px;
+   }
 
-<div class='row'>
-   <div class="column">
+
+</style>
+
+<div class="leftContainer">
+   <div class="p-2 flex-fill bd-highlight">
 <h1>Open tickets</h1>
 {%for ticket in tickets%}
 {%if ticket.is_open%}
@@ -33,8 +35,10 @@
    <br>
    {%endif%}
    {%endfor%} 
+   </div>
 </div>
-<div class="column">
+<div class="rightContainer">
+   <div class="p-2 flex-fill bd-highlight">
    <h1>Closed tickets</h1>
    {%for ticket in tickets%}
    {%if not ticket.is_open%}
@@ -44,12 +48,11 @@
    <h3>Created by: {{ticket.ticket_creator}}</h3>
    <h3>Bought at : {{ticket.created }}</h3>
    <hr>
-   </div>
-</div>
-</div>
+
       {%endif%}
       {%endfor%} 
-
+   </div>
+</div>   
 
 {%endblock%}
 
