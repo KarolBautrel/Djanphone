@@ -1,6 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import django_filters
+
+STATUS = (
+    ('Processed', 'Proccesed'),
+    ('Sent', 'Sent'),
+    ('Delivered', 'Delivered')
+
+
+
+)
 
 
 class User(AbstractUser):
@@ -29,7 +37,6 @@ class Product(models.Model):
     price = models.IntegerField(null=True, blank=True)
     image = models.ImageField( blank=True, default = 'pobrane.png')
     description = models.TextField(max_length=200,null=True)
-    owner = models.ForeignKey(User,on_delete = models.SET_NULL, null=True, blank=True) 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add = True)
     is_approved = models.BooleanField(default=False)
@@ -42,12 +49,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-
-class ProductFilter(django_filters.FilterSet):
-
-    class Meta:
-        model = Product
-        fields = ['price', 'created']
 
 
 class Store(models.Model):
@@ -83,7 +84,7 @@ class Delivery(models.Model):
 
 class Shipment(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True, blank=True)
-    finished = models.BooleanField(default = False)
+    status = models.CharField(default = 'Processed', choices = STATUS, max_length = 30,null=True, blank=True)
     ship_to = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     created = models.DateTimeField(auto_now_add = True)
     delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE,null=True, blank=True)

@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'star_ratings',
      "crispy_forms",
     "crispy_bootstrap5",
-    'bootstrap5'
+    'bootstrap5',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

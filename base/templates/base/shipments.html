@@ -21,30 +21,15 @@
    <div class="p-2 flex-fill bd-highlight">
 <h1>Finished Shipments</h1>
 {%for item in shipments%}
-{%if item.finished%}
 
    <h3>Product : {{item.product}}  </h3>
    <h3>Bought by: {{item.ship_to}}</h3>
    <h3>Bought at : {{item.created }}</h3>
+   <h3>Status: {{item.status}}</h3>
    <hr>
    <br>
-   {%endif%}
+
    {%endfor%} 
    </div>
 </div>
-<div class="rightContainer">
-   <div class="p-2 flex-fill bd-highlight">
-   <h1>In progress Shipments</h1>
-   {%for item in shipments%}
-   {%if not item.finished%}
-
-   <h3>Product : {{item.product}}  </h3>
-   <h3>Bought by: {{item.ship_to}}</h3>
-   <h3>Bought at : {{item.created }}</h3>
-   <hr>
-
-      {%endif%}
-      {%endfor%} 
-   </div>
-</div>   
 {%endblock%}

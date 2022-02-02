@@ -2,11 +2,11 @@ from itertools import product
 from django.shortcuts import render, redirect
 from .models import Product, User, Comment, Shipment, Ticket,Store,Brand
 from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, ShipmentForm, BudgetForm, StoreForm
-from .filters import ProductFilter
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
 
@@ -75,12 +75,14 @@ def buyProduct(request, pk):
             product.owner = user
             user.budget -= product.price 
             user.save()
-            product.owner.save()
             shipment_form = ShipmentForm(request.POST)
             if shipment_form.is_valid():
                 shipment = shipment_form.save(commit=False)
+                print(shipment)
                 shipment.ship_to = user
+                print(user)
                 shipment.product = product
+                print(shipment.product)
                 shipment.save()              
                 shipment_form.save()
                 messages.success(request, f'You bought {product.name}')
@@ -247,8 +249,8 @@ def stores(request):
 def storeInfo(request, pk):
     store = Store.objects.get(id=pk)
     products = store.products.all()
-    filter = ProductFilter(request.GET, queryset=store.products.all())
-    context = {'store':store, 'products':products,'filter':filter}
+ 
+    context = {'store':store, 'products':products}
     return render(request, 'base/store_info.html', context)
 
 
