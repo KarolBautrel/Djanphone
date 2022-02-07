@@ -1,3 +1,6 @@
+import datetime
+from django.utils import timezone
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -48,6 +51,11 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+    def was_published_recently(self):
+        now = timezone.now()
+        return now - datetime.timedelta(days=2) <= self.created <= now
 
 
 

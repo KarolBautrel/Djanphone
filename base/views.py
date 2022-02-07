@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -78,11 +79,8 @@ def buyProduct(request, pk):
             shipment_form = ShipmentForm(request.POST)
             if shipment_form.is_valid():
                 shipment = shipment_form.save(commit=False)
-                print(shipment)
                 shipment.ship_to = user
-                print(user)
                 shipment.product = product
-                print(shipment.product)
                 shipment.save()              
                 shipment_form.save()
                 messages.success(request, f'You bought {product.name}')
@@ -128,8 +126,7 @@ def deleteComment(request, pk):
 # TODO
 def userProfile(request, pk):
     user = User.objects.get(id = pk)
-    user_products = user.product_set.all()
-    context = {'user':user,'user_products':user_products}
+    context = {'user':user}
     return render(request,'base/profile.html', context)
 
 
@@ -255,15 +252,23 @@ def storeInfo(request, pk):
 
 
 # TODO
+@login_required
 def modifyStoreProducts(request,pk):
+    
     store = Store.objects.get(id=pk)
-    store_form = StoreForm(instance = store)
-    if request.method == 'POST':
-         store_form = StoreForm(request.POST, instance = store)
-         if store_form.is_valid():
-            store_form.save()
-            messages.success(request, f'You added new product')
-            return redirect('home')
+    if request.user == store.moderator:
+        store_form = StoreForm(instance = store)
+        if request.method == 'POST':
+            store_form = StoreForm(request.POST, instance = store)
+            if store_form.is_valid() and request.user == store.moderator:
+                store_form.save()
+                messages.success(request, f'You added new product')
+                return redirect('home')
+            else:
+                return HttpResponse(status=404)
+    else:
+        return HttpResponse(status=404) 
+
     context = {'store':store, 'store_form':store_form}
     return render(request, 'base/modify_product_store.html', context)
 
