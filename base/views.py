@@ -1,13 +1,13 @@
 from itertools import product
 from django.shortcuts import render, redirect
-from .models import Product, User, Comment, Shipment, Ticket,Store,Brand
+from .models import Product, User, Comment, Shipment, Ticket,Store,Brand,Cart
 from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, ShipmentForm, BudgetForm, StoreForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-
+from .filters import ProductFilter
 # Create your views here.
 
 
@@ -22,25 +22,10 @@ def is_valid_queryparam(param):
 def products(request):
     products = Product.objects.all()
     brands = Brand.objects.all()
-    name_contains = request.GET.get('name_contains')
-    view_price_min = request.GET.get('product_price_min')
-    view_price_max = request.GET.get('product_price_max')
-    date_min = request.GET.get('date_min')
-    date_max = request.GET.get('date_max')
-    brand = request.GET.get('brand')
-    if is_valid_queryparam(name_contains):
-        products = products.filter(name__icontains=name_contains)
-    if is_valid_queryparam(view_price_min):
-        products = products.filter(price__gte=view_price_min) #__gte = greater than equ
-    if is_valid_queryparam(view_price_max):
-        products = products.filter(price__lte=view_price_max) #__lte = less than 
-    if is_valid_queryparam(date_min):
-        products = products.filter(created__lt=date_min) 
-    if is_valid_queryparam(date_max):
-        products = products.filter(created__gte=date_max) 
-    if is_valid_queryparam(brand) and brand != 'All':
-        products = products.filter(brand__brand=brand) 
-    context = {'products':products, 'brands':brands}
+    productFilter = ProductFilter(request.GET, queryset=products)
+    products = productFilter.qs
+
+    context = {'products':products, 'brands':brands, 'productFilter':productFilter}
     return render(request,'base/products.html', context)
 
 
@@ -51,42 +36,66 @@ def productInfo(request,pk):
     return render(request,'base/product_info.html', context)
 
 
-def addProduct(request):
-    form = ProductForm()
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('confirm-product-creation')
-    context = {'form': form}
-    return render(request,'base/add_product_form.html', context)
 
-
+@login_required
 def addProductConfirmation(request):
     return render(request,'base/product_add_confirmation.html')
 
 
+
 @login_required
-def buyProduct(request, pk):
+def addToCart(request, pk):
     product = Product.objects.get(id = pk)
-    shipment_form = ShipmentForm()
     user = request.user
+    print(cart)
     if request.method == 'POST':
-        if request.user.budget >= product.price:
-            product.owner = user
-            user.budget -= product.price 
+        user.cart.products.add(product)
+        user.save()
+        messages.success(request, f'You added {product.name} to cart')
+        redirect('home')
+    context = {'product':product}
+    return render(request, 'base/add_to_cart.html', context)
+
+
+def deleteFromCart(request, pk):
+    user=request.user
+    product = user.cart.products.get(id=pk)
+    print(product.id)
+    if request.method == 'POST':
+        user.cart.products.remove(product)
+        return redirect('home')
+    context = {'product':product}
+    return render(request,'base/delete_product_cart.html', context)
+
+
+@login_required
+def cart(request,pk):
+    user=request.user
+    products = user.cart.products.all()
+    products_price = sum([i.price for i in products])
+    context={'products':products, 'products_price':products_price}
+    return render(request, 'base/cart.html', context)
+
+@login_required
+def buyProduct(request):
+    user = request.user
+    products = user.cart.products.all()
+    products_price = sum([i.price for i in products])
+    shipment_form = ShipmentForm()
+    if request.method == 'POST':
+        if request.user.budget >= products_price:
+            user.budget -= products_price
+            user.cart.products.clear()
             user.save()
             shipment_form = ShipmentForm(request.POST)
             if shipment_form.is_valid():
                 shipment = shipment_form.save(commit=False)
                 shipment.ship_to = user
-                shipment.product = product
                 shipment.save()              
-                shipment_form.save()
-                messages.success(request, f'You bought {product.name}')
+                messages.success(request, f'You bought products')
                 redirect('home')
-        else:
-            messages.error(request, 'not enough money')
+            else:   
+                messages.error(request, 'not enough money')
     context = {'shipment_form':shipment_form}
     return render(request,'base/buy_product.html',context)
 
@@ -120,7 +129,7 @@ def deleteComment(request, pk):
         comment.delete() # usuniecie
         return redirect('home')
     context ={"comment":comment} 
-    return render(request,'base/delete.html', context)
+    return render(request,'base/delete_comment.html', context)
 
 
 # TODO
@@ -146,6 +155,18 @@ def updateProfile(request):
 
 def userPanel(request):
     return render(request, 'base/user_panel.html')
+
+
+@login_required
+def addProduct(request):
+    form = ProductForm()
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('confirm-product-creation')
+    context = {'form': form}
+    return render(request,'base/add_product_form.html', context)
 
 
 def changeEmail(request):
@@ -246,15 +267,15 @@ def stores(request):
 def storeInfo(request, pk):
     store = Store.objects.get(id=pk)
     products = store.products.all()
- 
-    context = {'store':store, 'products':products}
+    productFilter = ProductFilter(request.GET, queryset=products)
+    products = productFilter.qs
+    context = {'store':store, 'products':products, 'productFilter':productFilter}
     return render(request, 'base/store_info.html', context)
 
 
 # TODO
 @login_required
 def modifyStoreProducts(request,pk):
-    
     store = Store.objects.get(id=pk)
     if request.user == store.moderator:
         store_form = StoreForm(instance = store)
@@ -268,7 +289,6 @@ def modifyStoreProducts(request,pk):
                 return HttpResponse(status=404)
     else:
         return HttpResponse(status=404) 
-
     context = {'store':store, 'store_form':store_form}
     return render(request, 'base/modify_product_store.html', context)
 

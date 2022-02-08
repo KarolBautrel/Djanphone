@@ -37,9 +37,9 @@ class AuthorizationTestCase(TestCase):
         self.assertRedirects(response,'/accounts/login/?next=/contact', 302)        
 
 
-    def test_authorized_user_to_is_able_to_buy(self):
+    def test_authorized_user_to_is_able_to_add_to_cart(self):
         '''
-        Authorized user is able to buy product
+        Authorized user is able to add product to cart
         '''
         product = Product.objects.create(name='test1234',  price=200)
         url = reverse('buy-product', args=str((product.id)))

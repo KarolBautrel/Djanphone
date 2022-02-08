@@ -1,5 +1,5 @@
 from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField, CheckboxSelectMultiple
-from .models import Product, User, Comment, Shipment, Ticket, Delivery, Store
+from .models import Product, User, Comment, Shipment, Ticket, Store
 
 
 class UserForm(ModelForm):
@@ -43,7 +43,7 @@ class CommentForm(ModelForm):
 class ShipmentForm(ModelForm):
     class Meta:
         model = Shipment
-        fields = ['ship_to','product','delivery','store']
+        fields = ['ship_to','product','delivery']
 
 
 class BudgetForm(ModelForm):

@@ -3,7 +3,6 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-
 from . import views
 
 urlpatterns = [
@@ -20,7 +19,10 @@ urlpatterns = [
     path('create_product_confirmation', views.addProductConfirmation, name='confirm-product-creation'),
     path('delete_comment/<str:pk>', views.deleteComment, name = 'delete-comment'),
     path('add_comment/<str:pk>', views.addComment, name='add-comment' ),
-    path('buy_product/<str:pk>', views.buyProduct, name = 'buy-product'),
+    path('cart/<str:pk>', views.cart, name='cart'),
+    path('add_to_cart/<str:pk>', views.addToCart, name = 'add-to-cart'),
+    path('delete_from_cart/<str:pk>', views.deleteFromCart, name = 'delete-from-cart'),
+    path('buy_product/', views.buyProduct, name = 'buy-product'),
     path('shipments/<str:pk>', views.shipmentsPanel, name = 'shipments'),
     path('budget/<str:pk>', views.budgetPanel, name = 'budget'),
     path('add_budget/<str:pk>', views.addBudget, name='add-budget'),

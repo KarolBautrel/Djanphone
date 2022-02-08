@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django',
     'rest_framework',
-
+    'star_ratings',
+    'django_filters',
+    'bootstrapform'
 
 
 

@@ -8,12 +8,16 @@
 <h4>Owner : {{store.owner}}</h4>
 <hr>
   
-
+<form method="get">
+  {{ productFilter.form }}
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
 <hr>
 {%if request.user == store.moderator%}
 
 
 <a class = "btn btn-primary" href ='{%url "modify-product-store" store.id%}'>Modify Products</a>
+
 
 <hr>
 <hr>

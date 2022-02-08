@@ -73,12 +73,14 @@
         <li><a href="{%url 'profile' user.id%}"><span class="glyphicon glyphicon-user"></span> {{request.user.username}}</a></li>
         <li><a href="{%url 'user-panel'%}"><span class="glyphicon glyphicon-wrench"></span> User panel</a></li>
         <li><a href="{%url 'create-product'%}"><span class="glyphicon glyphicon-plus"></span> Add new product</a></li>
+        <li><a href="{%url 'cart' user.id%}"><span class="glyphicon glyphicon-shopping-cart"></span> Cart {{request.user.cart.product.count}}</a></li>
         <li><a href="{%url 'account_logout'%}"></span> Logout</a></li>
+        
       </ul>
         {%else%}
         <li><a href="{% url 'account_login' %} "><span class="glyphicon glyphicon-user"></span> Login</a></li>
         <li><a href="{%url 'account_signup'%}"></span> Sign up</a></li>
-        <li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+       
       </ul>
       {%endif%}
     </div>
