@@ -42,12 +42,19 @@ def addProductConfirmation(request):
     return render(request,'base/product_add_confirmation.html')
 
 
+@login_required
+def cart(request,pk):
+    user=request.user
+    products = user.cart.products.all()
+    products_price = sum([i.price for i in products])
+    context={'products':products, 'products_price':products_price}
+    return render(request, 'base/cart.html', context)
+
 
 @login_required
 def addToCart(request, pk):
     product = Product.objects.get(id = pk)
     user = request.user
-    print(cart)
     if request.method == 'POST':
         user.cart.products.add(product)
         user.save()
@@ -56,7 +63,7 @@ def addToCart(request, pk):
     context = {'product':product}
     return render(request, 'base/add_to_cart.html', context)
 
-
+@login_required
 def deleteFromCart(request, pk):
     user=request.user
     product = user.cart.products.get(id=pk)
@@ -68,13 +75,6 @@ def deleteFromCart(request, pk):
     return render(request,'base/delete_product_cart.html', context)
 
 
-@login_required
-def cart(request,pk):
-    user=request.user
-    products = user.cart.products.all()
-    products_price = sum([i.price for i in products])
-    context={'products':products, 'products_price':products_price}
-    return render(request, 'base/cart.html', context)
 
 @login_required
 def buyProduct(request):
