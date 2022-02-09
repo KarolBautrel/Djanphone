@@ -4,20 +4,25 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
-from base.views import UpdateUser, ProductList, ProductDetail, UserDetail
+from base.views import (
+                UpdateUserView, 
+                ProductList,
+                ProductDetail, 
+                UserDetailView,
+                ProductCreateView)
 
 
 urlpatterns = [
     path('', views.home, name='home'),
     path('products/', ProductList.as_view(), name='products'),
     path('accounts/', include('allauth.urls')),
-    path('<str:pk>/profile/', UserDetail.as_view(), name = 'profile'),
-    path('update_profile', UpdateUser.as_view(), name='update-user'),
+    path('<str:pk>/profile/', UserDetailView.as_view(), name = 'profile'),
+    path('update_profile', UpdateUserView.as_view(), name='update-user'),
     path('user_panel', views.userPanel, name = 'user-panel'),
     path('change_email', views.changeEmail, name = 'change-email'),
     path('change-password', views.changePassword, name = 'change-password'),
     path('product_detail/<str:pk>', ProductDetail.as_view(), name = 'product-detail'),
-    path('createProduct', views.addProduct, name = 'create-product'),
+    path('createProduct', ProductCreateView.as_view(), name = 'create-product'),
     path('create_product_confirmation', views.addProductConfirmation, name='confirm-product-creation'),
     path('delete_comment/<str:pk>', views.deleteComment, name = 'delete-comment'),
     path('add_comment/<str:pk>', views.addComment, name='add-comment' ),

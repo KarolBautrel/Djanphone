@@ -11,14 +11,24 @@ STATUS = (
 )
 
 
+BRAND = (
+    ('Different','Different'),
+    ('Samsung', 'Samsung'),
+    ('Iphone', 'Iphone'),
+    ('Xiaomi', 'Xiaomi'),
+    ('Huawei', 'Huawei')
+)
+
+
 DELIVERY =(
     ('Inpost', 'Inpost'),
     ('Courier','Courier'),
     ('Post','Post'),
     ('Local Store ZG', 'Local Store - Carrefour Zielona Gora'),
     ('Local Store JP2GMD', 'Local Store - Vaticano'),
-
 )
+
+
 class User(AbstractUser):
     name = models.CharField(max_length=200,null=True)
     email= models.EmailField(null=True, unique = True)
@@ -31,32 +41,27 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username']
 
     def get_absolute_url(self):
-        return reverse('user-detail', kwargs={'slug': self.slug})
-
-
-class Brand(models.Model):
-    brand = models.CharField(max_length=20, null=True, blank=True)
-    
-
-    def __str__(self):
-        return self.brand
+        return reverse('profile', args = [str(self.id)])
 
 
 class Product(models.Model):
     title = models.CharField(max_length = 100,null=True)
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE,null=True, blank=True)
+    brand = models.CharField(default = 'Different',max_length = 100,null=True, blank=True, choices = BRAND)
     price = models.IntegerField(null=True, blank=True)
     image = models.ImageField( blank=True, default = 'pobrane.png')
     description = models.TextField(max_length=200,null=True)
     created = models.DateTimeField(auto_now_add = True)
     is_approved = models.BooleanField(default=False)
-    
+    slug = models.SlugField(max_length=50,null=True)
 
     class Meta:
         ordering = ['-created']
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('product-detail', args = [str(self.id)])
 
 
 class OrderItem(models.Model):
@@ -100,6 +105,9 @@ class Store(models.Model):
     def __str__(self):
         return self.address
 
+
+    def get_absolute_url(self):
+        return reverse('store_info', args = [str(self.id)])
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

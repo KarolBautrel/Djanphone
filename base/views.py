@@ -1,6 +1,6 @@
 from itertools import product
 from django.shortcuts import render, redirect
-from .models import Product, User, Comment, Order, Ticket,Store,Brand
+from .models import Product, User, Comment, Order, Ticket,Store
 from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, OrderForm, BudgetForm, StoreForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
@@ -8,9 +8,8 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .filters import ProductFilter
-from django.views.generic.edit import UpdateView
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
+from django.views.generic import UpdateView, ListView, DetailView, View, CreateView
+
 from django.urls import reverse
 # Create your views here.
 
@@ -29,10 +28,32 @@ class ProductList(ListView):
     template_name = 'base/products.html'
 
 
-class ProductDetail(DetailView):
-    model = Product
-    context_object_name = 'product'
-    template_name = 'base/product_detail.html'
+class ProductDetail(View):
+    
+    def get(self, request,pk, *args, **kwargs):
+        product = Product.objects.get(id = pk)
+        product_comments = product.comment_set.all()
+        context = {'product':product, 'product_comments':product_comments}
+        return render(request,'base/product_detail.html', context)
+
+
+@login_required
+def addComment(request,pk):
+    form = CommentForm()
+    product = Product.objects.get(id = pk)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+           comment = form.save(commit=False)
+           comment.user = request.user
+           comment.product = product
+           comment.save()
+        return redirect('product-detail', pk=product.id)
+    if request.method == 'GET':
+          product = Product.objects.get(id = pk)
+    context = {'product':product, 'form':form}
+    return render(request,'base/add_comment.html', context)
+
 
 
 @login_required
@@ -82,22 +103,7 @@ def deleteFromCart(request, pk):
 
 
 # TODO
-@login_required
-def addComment(request,pk):
-    form = CommentForm()
-    product = Product.objects.get(id = pk)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-           comment = form.save(commit=False)
-           comment.user = request.user
-           comment.product = product
-           comment.save()
-        return redirect('product-detail', pk=product.id)
-    if request.method == 'GET':
-          product = Product.objects.get(id = pk)
-    context = {'product':product, 'form':form}
-    return render(request,'base/add_comment.html', context)
+
 
 
 @login_required
@@ -113,13 +119,13 @@ def deleteComment(request, pk):
     return render(request,'base/delete_comment.html', context)
 
 
-class UserDetail(DetailView):
+class UserDetailView(DetailView):
     model = User
     context_object_name = 'user'
     template_name = 'base/profile.html'
 
 
-class UpdateUser(UpdateView):
+class UpdateUserView(UpdateView):
     model = User
     fields = '__all__'
     template_name_suffix  = ''
@@ -130,7 +136,13 @@ def userPanel(request):
     return render(request, 'base/user_panel.html')
 
 
-@login_required
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ['title','brand','price','image','description']
+    template_name = 'base/product_create.html'
+
+
+"""@login_required
 def addProduct(request):
     form = ProductForm()
     if request.method == 'POST':
@@ -140,7 +152,7 @@ def addProduct(request):
             return redirect('confirm-product-creation')
     context = {'form': form}
     return render(request,'base/add_product_form.html', context)
-
+"""
 
 def changeEmail(request):
     user = request.user
