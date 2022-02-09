@@ -1,5 +1,5 @@
 from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField, CheckboxSelectMultiple
-from .models import Product, User, Comment, Shipment, Ticket, Store
+from .models import Product, User, Comment, Order, Ticket, Store
 
 
 class UserForm(ModelForm):
@@ -31,7 +31,7 @@ class EmailChangeForm(ModelForm):
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        fields = ['brand','model','name','image','description','price']
+        fields = ['brand','title','image','description','price']
 
 
 class CommentForm(ModelForm):
@@ -40,10 +40,10 @@ class CommentForm(ModelForm):
         fields = ['body']
 
 
-class ShipmentForm(ModelForm):
+class OrderForm(ModelForm):
     class Meta:
-        model = Shipment
-        fields = ['ship_to','product','delivery']
+        model = Order
+        fields = ['user','delivery']
 
 
 class BudgetForm(ModelForm):
@@ -55,7 +55,7 @@ class BudgetForm(ModelForm):
 class TicketForm(ModelForm):
     class Meta:
         model = Ticket
-        fields = ['body', 'shipment']
+        fields = ['body', 'order']
 
 
     def __init__(self, *args, **kwargs):

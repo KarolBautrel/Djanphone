@@ -1,13 +1,17 @@
 from itertools import product
 from django.shortcuts import render, redirect
-from .models import Product, User, Comment, Shipment, Ticket,Store,Brand,Cart
-from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, ShipmentForm, BudgetForm, StoreForm
+from .models import Product, User, Comment, Order, Ticket,Store,Brand
+from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, OrderForm, BudgetForm, StoreForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .filters import ProductFilter
+from django.views.generic.edit import UpdateView
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+from django.urls import reverse
 # Create your views here.
 
 
@@ -19,21 +23,29 @@ def is_valid_queryparam(param):
     return param != '' and param is not None
 
 
-def products(request):
-    products = Product.objects.all()
-    brands = Brand.objects.all()
-    productFilter = ProductFilter(request.GET, queryset=products)
-    products = productFilter.qs
-
-    context = {'products':products, 'brands':brands, 'productFilter':productFilter}
-    return render(request,'base/products.html', context)
+class ProductList(ListView):
+    model = Product
+    context_object_name = 'products'
+    template_name = 'base/products.html'
 
 
-def productInfo(request,pk):
+class ProductDetail(DetailView):
+    model = Product
+    context_object_name = 'product'
+    template_name = 'base/product_detail.html'
+
+
+@login_required
+def addToCart(request, pk):
     product = Product.objects.get(id = pk)
-    product_comments = product.comment_set.all()
-    context = {'product':product, 'product_comments':product_comments}
-    return render(request,'base/product_info.html', context)
+    user = request.user
+    if request.method == 'POST':
+        user.cart.products.add(product)
+        user.save()
+        messages.success(request, f'You added {product.name} to cart')
+        return redirect('home')
+    context = {'product':product}
+    return render(request, 'base/add_to_cart.html', context)
 
 
 
@@ -51,17 +63,7 @@ def cart(request,pk):
     return render(request, 'base/cart.html', context)
 
 
-@login_required
-def addToCart(request, pk):
-    product = Product.objects.get(id = pk)
-    user = request.user
-    if request.method == 'POST':
-        user.cart.products.add(product)
-        user.save()
-        messages.success(request, f'You added {product.name} to cart')
-        redirect('home')
-    context = {'product':product}
-    return render(request, 'base/add_to_cart.html', context)
+
 
 @login_required
 def deleteFromCart(request, pk):
@@ -76,28 +78,7 @@ def deleteFromCart(request, pk):
 
 
 
-@login_required
-def buyProduct(request):
-    user = request.user
-    products = user.cart.products.all()
-    products_price = sum([i.price for i in products])
-    shipment_form = ShipmentForm()
-    if request.method == 'POST':
-        if request.user.budget >= products_price:
-            user.budget -= products_price
-            user.cart.products.clear()
-            user.save()
-            shipment_form = ShipmentForm(request.POST)
-            if shipment_form.is_valid():
-                shipment = shipment_form.save(commit=False)
-                shipment.ship_to = user
-                shipment.save()              
-                messages.success(request, f'You bought products')
-                redirect('home')
-            else:   
-                messages.error(request, 'not enough money')
-    context = {'shipment_form':shipment_form}
-    return render(request,'base/buy_product.html',context)
+
 
 
 # TODO
@@ -112,7 +93,7 @@ def addComment(request,pk):
            comment.user = request.user
            comment.product = product
            comment.save()
-        return redirect('product-info', pk=product.id)
+        return redirect('product-detail', pk=product.id)
     if request.method == 'GET':
           product = Product.objects.get(id = pk)
     context = {'product':product, 'form':form}
@@ -132,25 +113,17 @@ def deleteComment(request, pk):
     return render(request,'base/delete_comment.html', context)
 
 
-# TODO
-def userProfile(request, pk):
-    user = User.objects.get(id = pk)
-    context = {'user':user}
-    return render(request,'base/profile.html', context)
+class UserDetail(DetailView):
+    model = User
+    context_object_name = 'user'
+    template_name = 'base/profile.html'
 
 
-@login_required
-def updateProfile(request):
-    user = request.user
-    if request.method == 'POST':
-        form = UserForm(request.POST, request.FILES, instance = user)
-        if form.is_valid():
-            form.save()
-            return redirect('profile', pk=user.id)
-    if request.method == 'GET':
-         form = UserForm(instance = user)
-    context = {'form':form}
-    return render(request,'base/update_profile.html', context)   
+class UpdateUser(UpdateView):
+    model = User
+    fields = '__all__'
+    template_name_suffix  = ''
+    
 
 
 def userPanel(request):
@@ -203,11 +176,11 @@ def changePassword(request):
     return render(request, 'base/change_password.html', context)
 
 
-def shipmentsPanel(request,pk):
+"""def shipmentsPanel(request,pk):
     user = User.objects.get(id = pk)
     shipments = user.shipment_set.all()
     context = {'user':user,'shipments': shipments}  
-    return render(request,'base/shipments.html', context)
+    return render(request,'base/shipments.html', context)"""
 
 
 def budgetPanel(request,pk):
@@ -220,23 +193,22 @@ def contactPanel(request):
     return render(request,'base/contact_panel.html')
 
 
-@login_required
+"""@login_required
+
 def ticketCreation(request, pk):
     user = User.objects.get(id = pk)
-    shipments = user.shipment_set.all()
+    orders = user.order_set.all()
     form = TicketForm(user=user)
     if request.method == 'POST':
         form = TicketForm(request.POST, user=user)
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.ticket_creator = user
-            ticket.shipment
-            print(ticket.shipment) 
+            ticket.order
             ticket.save()
             return redirect('ticket-confirm')
     context = {'form':form, 'shipments':shipments}
-    return render(request,'base/shipment_ticket.html', context)
-
+    return render(request,'base/shipment_ticket.html', context)"""
 
 def ticketConfirmation(request):
     return render(request, 'base/ticket_confirm.html')

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from base.models import Product, Shipment, Store, Brand
+from base.models import Product, Store, Brand
 
 class BrandSerializer(serializers.Serializer):
     class Meta:
@@ -14,13 +14,6 @@ class ProductSerializer (serializers.ModelSerializer):
         model = Product
         fields = ['model','brand_name','price','description'] 
 
-class ShipmentSerializer (serializers.ModelSerializer):
-
-    ship_to_name = serializers.StringRelatedField(source='ship_to.name')
-    product_name = serializers.StringRelatedField(source='product.name')
-    class Meta:
-        model = Shipment 
-        fields = ['product_name','status','ship_to_name']
 
 
 class StoreSerializer (serializers.ModelSerializer):
