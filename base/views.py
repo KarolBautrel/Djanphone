@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.http import HttpResponse, HttpResponseRedirect
 from .filters import ProductFilter
 from django.views.generic import UpdateView, ListView, DetailView, View, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.urls import reverse
 # Create your views here.
@@ -38,6 +39,8 @@ class ProductDetailView(View):
         return render(request,'base/product_detail.html', context)
 
 
+
+#TODO
 class CommentCreationView(CreateView):
     model = Comment
     fields = ['body']
@@ -54,6 +57,7 @@ class CommentCreationView(CreateView):
         obj.product = self.product
         obj.save()        
         return HttpResponseRedirect(self.get_success_url())
+
 
     def get_success_url(self):
         return reverse('home')
@@ -125,11 +129,9 @@ def removeFromCart(request, slug):
             messages.success(request, 'There is no product to remove')
             return redirect('product-detail', slug=slug)
     else: 
-            
         messages.success(request, 'User doesnt have order')
         return redirect('home')
     return redirect('product-detail', slug=slug)
-
 
 
 @login_required
@@ -139,7 +141,6 @@ def cart(request,pk):
     products_price = sum([i.price for i in products])
     context={'products':products, 'products_price':products_price}
     return render(request, 'base/cart.html', context)
-
 
 
 @login_required
@@ -161,12 +162,11 @@ class UserDetailView(DetailView):
     template_name = 'base/profile.html'
 
 
-class UpdateUserView(UpdateView):
+class UpdateUserView(UpdateView, LoginRequiredMixin):
     model = User
     fields = ['name', 'address', 'bio', 'avatar']
     template_name  = 'base/update_profile.html'
     
-
 
 def userPanel(request):
     return render(request, 'base/user_panel.html')
@@ -229,14 +229,12 @@ def contactPanel(request):
     return render(request,'base/contact_panel.html')
 
     
-
-
-
+# TODO
 class TicketCreationView(CreateView):
     model = Ticket
     fields = ['body','product']
     template_name  = 'base/ticket.html'
-
+    redirect_field_name = 'base/login.html'
     
     def form_valid(self, form):
         obj = form.save(commit=False)
@@ -264,6 +262,7 @@ def ticketCreation(request, pk):
     context = {'form':form, 'shipments':shipments}
     return render(request,'base/shipment_ticket.html', context)"""
 
+
 def ticketConfirmation(request):
     return render(request, 'base/ticket_confirm.html')
 
@@ -289,7 +288,6 @@ def stores(request):
     return render(request, 'base/stores.html', context)
 
 
-#
 def storeInfo(request, pk):
     store = Store.objects.get(id=pk)
     products = store.products.all()
@@ -299,7 +297,6 @@ def storeInfo(request, pk):
     return render(request, 'base/store_info.html', context)
 
 
-# TODO
 @login_required
 def modifyStoreProducts(request,pk):
     store = Store.objects.get(id=pk)

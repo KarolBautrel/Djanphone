@@ -1,4 +1,5 @@
 from django.conf.urls.static import static
+from django.contrib.auth.decorators import login_required
 from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
@@ -19,7 +20,8 @@ urlpatterns = [
     path('products/', ProductListView.as_view(), name='products'),
     path('accounts/', include('allauth.urls')),
     path('<int:pk>/profile/', UserDetailView.as_view(), name = 'profile'),
-    path('update_profile/<int:pk>', UpdateUserView.as_view(), name='update-user'),
+    path('update_profile/<int:pk>', login_required(UpdateUserView.as_view(), 
+                                    login_url='/accounts/login/'), name='update-user'),
     path('user_panel', views.userPanel, name = 'user-panel'),
     path('change_email', views.changeEmail, name = 'change-email'),
     path('change-password', views.changePassword, name = 'change-password'),
@@ -36,7 +38,8 @@ urlpatterns = [
     path('add_budget/<int:pk>', views.addBudget, name='add-budget'),
     path('ratings/', include('star_ratings.urls', namespace='ratings')),
     path('contact', views.contactPanel, name = 'contact'),
-    path('shipment_ticket/', TicketCreationView.as_view(), name = 'shipment-ticket'),
+    path('create_ticket/', login_required(TicketCreationView.as_view(),
+                                        login_url='/accounts/login/'),name = 'shipment-ticket' ,),
     path('ticket_panel/<int:pk>', views.ticketPanel, name='ticket-panel'),
     path('ticket_info/<int:pk>', views.ticketInfo, name='ticket-info'),
     path('stores/', views.stores, name = 'stores'),
