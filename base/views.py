@@ -6,7 +6,8 @@ from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.utils.decorators import method_decorator
+from django.http import HttpResponse, HttpResponseRedirect
 from .filters import ProductFilter
 from django.views.generic import UpdateView, ListView, DetailView, View, CreateView
 from django.utils import timezone
@@ -22,25 +23,47 @@ def is_valid_queryparam(param):
     return param != '' and param is not None
 
 
-class ProductList(ListView):
+class ProductListView(ListView):
     model = Product
     context_object_name = 'products'
     template_name = 'base/products.html'
 
 
-class ProductDetail(View):
+class ProductDetailView(View):
     
-    def get(self, request,pk, *args, **kwargs):
-        product = Product.objects.get(id = pk)
+    def get(self, request,slug, *args, **kwargs):
+        product = Product.objects.get(slug = slug)
         product_comments = product.comment_set.all()
         context = {'product':product, 'product_comments':product_comments}
         return render(request,'base/product_detail.html', context)
 
 
+class CommentCreationView(CreateView):
+    model = Comment
+    fields = ['body']
+    template_name  = 'base/add_comment.html'
+
+    def get_queryset(self):
+        queryset = Product.objects.get(slug=self.slug)
+        return queryset
+
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.user = self.request.user
+        obj.product = self.product
+        obj.save()        
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('home')
+
+
+"""
 @login_required
-def addComment(request,pk):
+def addComment(request,slug):
     form = CommentForm()
-    product = Product.objects.get(id = pk)
+    product = Product.objects.get(slug = slug)
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -48,27 +71,29 @@ def addComment(request,pk):
            comment.user = request.user
            comment.product = product
            comment.save()
-        return redirect('product-detail', pk=product.id)
+        return redirect('product-detail', slug=slug)
     if request.method == 'GET':
-          product = Product.objects.get(id = pk)
+          product = Product.objects.get(slug = slug)
     context = {'product':product, 'form':form}
     return render(request,'base/add_comment.html', context)
-
+"""
 
 
 @login_required
-def addToCart(request, pk):
-    product = get_object_or_404(Product, id=pk)
+def addToCart(request, slug):
+    product = get_object_or_404(Product, slug=slug)
     order_item, created = OrderItem.objects.get_or_create(
         product=product,
         user = request.user, 
         ordered = False
     )
     order_qs = Order.objects.filter(user=request.user, ordered = False)
+    print(order_qs)
     if order_qs.exists():
         order = order_qs[0]
+        print(order)
         #check if the order item is in the order list
-        if order.product.filter(product__id = product.id).exists():
+        if order.product.filter(product__slug = product.slug).exists():
             order_item.quantity += 1
             order_item.save()
         else:
@@ -78,16 +103,17 @@ def addToCart(request, pk):
         order = Order.objects.create(user=request.user,ordered_date=ordered_date)
         order.product.add(order_item)
     messages.success(request, 'You added the product to your cart')
-    return redirect('home')
+    return redirect('product-detail', slug=slug)
+
 
 @login_required
-def removeFromCart(request, pk):
-    product = get_object_or_404(Product, id=pk)
+def removeFromCart(request, slug):
+    product = get_object_or_404(Product, slug=slug)
     order_qs = Order.objects.filter(user=request.user, ordered = False)
     if order_qs.exists():
         order = order_qs[0]
         #check if the order item is in the order list
-        if order.product.filter(product__id = product.id).exists():
+        if order.product.filter(product__slug = product.slug).exists():
             order_item = OrderItem.objects.filter(
                 product=product,
                 user = request.user, 
@@ -96,13 +122,13 @@ def removeFromCart(request, pk):
             order.product.remove(order_item)
             messages.success(request, 'You removed the product from your cart')
         else:
-            messages.success(request, 'You removed the product from your cart')
-            return redirect('home')
+            messages.success(request, 'There is no product to remove')
+            return redirect('product-detail', slug=slug)
     else: 
             
         messages.success(request, 'User doesnt have order')
         return redirect('home')
-    return redirect('home')
+    return redirect('product-detail', slug=slug)
 
 
 
@@ -113,18 +139,6 @@ def cart(request,pk):
     products_price = sum([i.price for i in products])
     context={'products':products, 'products_price':products_price}
     return render(request, 'base/cart.html', context)
-
-
-
-
-
-
-
-
-
-
-
-# TODO
 
 
 
@@ -149,8 +163,8 @@ class UserDetailView(DetailView):
 
 class UpdateUserView(UpdateView):
     model = User
-    fields = '__all__'
-    template_name_suffix  = ''
+    fields = ['name', 'address', 'bio', 'avatar']
+    template_name  = 'base/update_profile.html'
     
 
 
@@ -214,9 +228,27 @@ def budgetPanel(request,pk):
 def contactPanel(request):
     return render(request,'base/contact_panel.html')
 
+    
+
+
+
+class TicketCreationView(CreateView):
+    model = Ticket
+    fields = ['body','product']
+    template_name  = 'base/ticket.html'
+
+    
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.ticket_creator = self.request.user
+        obj.save()        
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('home')
+
 
 """@login_required
-
 def ticketCreation(request, pk):
     user = User.objects.get(id = pk)
     orders = user.order_set.all()

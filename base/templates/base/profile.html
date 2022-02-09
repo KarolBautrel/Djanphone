@@ -5,15 +5,14 @@
 <div class="roomList">
     <div class="profile">
       <div class="profile__avatar">
-        <div class="avatar avatar--large active">
-          <img src="{{user.avatar.url}}" />
+        
+          <img src="{{user.avatar.url}}" class = "rounded mx-auto d-block"/>
         </div>
       </div>
       <div class="profile__info">
-        <h3>{{user.username}}</h3>
         <h3>{{user.name}}</h3>
         {%if request.user == user%}
-        <a href="{%url 'update-user'%}" class="btn btn--main btn--pill">Edit Profile</a>
+        <a href="{{user.get_update_profile_url}}" class="btn btn--main btn--pill">Edit Profile</a>
         {%endif%}
       </div>
       <div class="profile__about">

@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
-
+from django_extensions.db.fields import AutoSlugField
 STATUS = (
     ('Processed', 'Proccesed'),
     ('Sent', 'Sent'),
@@ -41,8 +41,11 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username']
 
     def get_absolute_url(self):
-        return reverse('profile', args = [str(self.id)])
+        return reverse('profile', args = [(self.id)])
 
+
+    def get_update_profile_url(self):
+        return reverse('update-user', args = [(self.id)])
 
 class Product(models.Model):
 
@@ -54,7 +57,7 @@ class Product(models.Model):
     description = models.TextField(max_length=200,null=True, default = 'This is test field')
     created = models.DateTimeField(auto_now_add = True)
     is_approved = models.BooleanField(default=False)
-    slug = models.SlugField(max_length=50,null=True, blank=True)
+    slug = AutoSlugField(populate_from=['title'],max_length=50,null=True, blank=True)
 
     class Meta:
         ordering = ['-created']
@@ -63,14 +66,14 @@ class Product(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('product-detail', args = [str(self.id)])
+        return reverse('product-detail', kwargs={'slug': self.slug})
 
 
     def get_add_to_cart_url(self):
-        return reverse('add-to-cart', args = [str(self.id)])
+        return reverse('add-to-cart', kwargs={'slug': self.slug})
 
     def get_remove_from_cart_url(self):
-        return reverse('remove-from-cart', args = [str(self.id)])
+        return reverse('remove-from-cart', kwargs={'slug': self.slug})
         
 class OrderItem(models.Model):
 
@@ -101,12 +104,6 @@ class Order(models.Model):
         return self.user.name
 
 
-
-
-    
-
-
-
 class Store(models.Model):
     address = models.CharField(max_length=30)
     owner = models.CharField(max_length = 20)
@@ -135,18 +132,15 @@ class Comment(models.Model):
         return self.body[0:50]
 
 
-
-
-
 class Ticket(models.Model):
     body = models.TextField()
-    order = models.ForeignKey(Order, on_delete=models.CASCADE,null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True, blank=True)
     ticket_creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     is_open = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add = True)
 
 
     def __str__(self):
-        return str(self.order)
+        return str(self.ticket_creator)
 
 

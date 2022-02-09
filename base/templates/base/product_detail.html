@@ -5,46 +5,22 @@
 
 
 
+      <div class="container">
 
-<div class="roomList">
-    <div class="profile">
-      <div class="profile__avatar">
-        <div class="avatar avatar--large active">
-          <img src="{{product.image.url}}" />
-        </div>
-      </div>
-      <div class="profile__info">
+        <img src="{{product.image.url}}" />
         <h3>{{product.name}}</h3>
-        
-      </div>
-      <div class="profile__about">
         <h3>About</h3>
-        <p>
+
           {{product.description}}
-        </p>
-        <hr>
-        <p>
+       
         {% ratings product %}
-      </p>
-      </div>
-    </div>
     
-
-
-
-
-
-    <hr>
     <a class="btn btn-primary" href="{{product.get_add_to_cart_url}}">Add to cart</a>
     <a class="btn btn-danger" href="{{product.get_remove_from_cart_url}}">Rem to cart</a>
-    <hr>
-    <a class="btn btn-primary" href="{%url 'add-comment' product.id%}">Add comment</a>
-    <hr>
-    <hr>
+   
+    <a class="btn btn-primary" href="{%url 'add-comment' product.slug%}">Add comment</a>
+   
     {% for comment in product_comments %}
-    <div class="thread">
-      <div class="thread__top">
-        <div class="thread__author">
           <a href="{% url 'profile' comment.user.id %}" class="thread__authorInfo">
             <div class="avatar avatar--small">
               <img src="{{comment.user.avatar.url}} " style="width: 100px;"/>
@@ -52,10 +28,7 @@
             <span>@{{comment.user.username}}</span>
           </a>
           <span class="thread__date">{{comment.created | timesince}} ago</span>
-
         </div>
-
-
         {% if request.user == comment.user %}
         <a href = "{%url 'delete-comment' comment.id%}">
         <div class="thread__delete">
@@ -68,16 +41,11 @@
         </div>
       </a>
       {%endif%}
-      </div>
-      <div class="thread__details">
+ 
         {{comment.body}}
-      </div>
-    </div>
+ 
     {%endfor%}
-    
-  </div>
+  
 </div>
-</div>
-
 
 {%endblock%}

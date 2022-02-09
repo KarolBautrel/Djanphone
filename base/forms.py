@@ -37,7 +37,7 @@ class ProductForm(ModelForm):
 class CommentForm(ModelForm):
     class Meta:
         model = Comment
-        fields = ['body']
+        fields = ['body','user','product']
 
 
 class OrderForm(ModelForm):
@@ -55,7 +55,7 @@ class BudgetForm(ModelForm):
 class TicketForm(ModelForm):
     class Meta:
         model = Ticket
-        fields = ['body', 'order']
+        fields = ['body', 'product']
 
 
     def __init__(self, *args, **kwargs):
