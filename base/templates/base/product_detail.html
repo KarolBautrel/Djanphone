@@ -20,7 +20,7 @@
    
     <a class="btn btn-primary" href="{%url 'add-comment' product.slug%}">Add comment</a>
    
-    {% for comment in product_comments %}
+    {% for comment in comments %}
           <a href="{% url 'profile' comment.user.id %}" class="thread__authorInfo">
             <div class="avatar avatar--small">
               <img src="{{comment.user.avatar.url}} " style="width: 100px;"/>

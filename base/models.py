@@ -62,12 +62,12 @@ class Product(models.Model):
     class Meta:
         ordering = ['-created']
 
+
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
         return reverse('product-detail', kwargs={'slug': self.slug})
-
 
     def get_add_to_cart_url(self):
         return reverse('add-to-cart', kwargs={'slug': self.slug})

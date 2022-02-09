@@ -20,24 +20,24 @@ def home(request):
     return render(request,'base/home.html')
 
 
-def is_valid_queryparam(param):
-    return param != '' and param is not None
-
-
 class ProductListView(ListView):
     model = Product
     context_object_name = 'products'
     template_name = 'base/products.html'
 
 
-class ProductDetailView(View):
-    
-    def get(self, request,slug, *args, **kwargs):
-        product = Product.objects.get(slug = slug)
-        product_comments = product.comment_set.all()
-        context = {'product':product, 'product_comments':product_comments}
-        return render(request,'base/product_detail.html', context)
+class ProductDetailView(DetailView):
+    model = Product
+    context_object_name = 'product'
+    template_name = 'base/product_detail.html'
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        product = self.get_object().comment_set.all()
+        context['comments'] = product
+        return context
 
 
 #TODO
@@ -46,24 +46,19 @@ class CommentCreationView(CreateView):
     fields = ['body']
     template_name  = 'base/add_comment.html'
 
-    def get_queryset(self):
-        queryset = Product.objects.get(slug=self.slug)
-        return queryset
-
-
     def form_valid(self, form):
         obj = form.save(commit=False)
+        product = Product.objects.get(slug=self.kwargs["slug"])
         obj.user = self.request.user
-        obj.product = self.product
+        obj.product = product
         obj.save()        
         return HttpResponseRedirect(self.get_success_url())
-
 
     def get_success_url(self):
         return reverse('home')
 
 
-"""
+
 @login_required
 def addComment(request,slug):
     form = CommentForm()
@@ -80,7 +75,7 @@ def addComment(request,slug):
           product = Product.objects.get(slug = slug)
     context = {'product':product, 'form':form}
     return render(request,'base/add_comment.html', context)
-"""
+
 
 
 @login_required
@@ -244,23 +239,6 @@ class TicketCreationView(CreateView):
 
     def get_success_url(self):
         return reverse('home')
-
-
-"""@login_required
-def ticketCreation(request, pk):
-    user = User.objects.get(id = pk)
-    orders = user.order_set.all()
-    form = TicketForm(user=user)
-    if request.method == 'POST':
-        form = TicketForm(request.POST, user=user)
-        if form.is_valid():
-            ticket = form.save(commit=False)
-            ticket.ticket_creator = user
-            ticket.order
-            ticket.save()
-            return redirect('ticket-confirm')
-    context = {'form':form, 'shipments':shipments}
-    return render(request,'base/shipment_ticket.html', context)"""
 
 
 def ticketConfirmation(request):
