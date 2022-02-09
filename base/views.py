@@ -1,6 +1,6 @@
 from itertools import product
-from django.shortcuts import render, redirect
-from .models import Product, User, Comment, Order, Ticket,Store
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Product, User, Comment, Order, Ticket,Store,OrderItem
 from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, OrderForm, BudgetForm, StoreForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .filters import ProductFilter
 from django.views.generic import UpdateView, ListView, DetailView, View, CreateView
-
+from django.utils import timezone
 from django.urls import reverse
 # Create your views here.
 
@@ -58,21 +58,52 @@ def addComment(request,pk):
 
 @login_required
 def addToCart(request, pk):
-    product = Product.objects.get(id = pk)
-    user = request.user
-    if request.method == 'POST':
-        user.cart.products.add(product)
-        user.save()
-        messages.success(request, f'You added {product.name} to cart')
-        return redirect('home')
-    context = {'product':product}
-    return render(request, 'base/add_to_cart.html', context)
-
-
+    product = get_object_or_404(Product, id=pk)
+    order_item, created = OrderItem.objects.get_or_create(
+        product=product,
+        user = request.user, 
+        ordered = False
+    )
+    order_qs = Order.objects.filter(user=request.user, ordered = False)
+    if order_qs.exists():
+        order = order_qs[0]
+        #check if the order item is in the order list
+        if order.product.filter(product__id = product.id).exists():
+            order_item.quantity += 1
+            order_item.save()
+        else:
+            order.product.add(order_item)
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(user=request.user,ordered_date=ordered_date)
+        order.product.add(order_item)
+    messages.success(request, 'You added the product to your cart')
+    return redirect('home')
 
 @login_required
-def addProductConfirmation(request):
-    return render(request,'base/product_add_confirmation.html')
+def removeFromCart(request, pk):
+    product = get_object_or_404(Product, id=pk)
+    order_qs = Order.objects.filter(user=request.user, ordered = False)
+    if order_qs.exists():
+        order = order_qs[0]
+        #check if the order item is in the order list
+        if order.product.filter(product__id = product.id).exists():
+            order_item = OrderItem.objects.filter(
+                product=product,
+                user = request.user, 
+                ordered = False
+            )[0]
+            order.product.remove(order_item)
+            messages.success(request, 'You removed the product from your cart')
+        else:
+            messages.success(request, 'You removed the product from your cart')
+            return redirect('home')
+    else: 
+            
+        messages.success(request, 'User doesnt have order')
+        return redirect('home')
+    return redirect('home')
+
 
 
 @login_required
@@ -86,16 +117,7 @@ def cart(request,pk):
 
 
 
-@login_required
-def deleteFromCart(request, pk):
-    user=request.user
-    product = user.cart.products.get(id=pk)
-    print(product.id)
-    if request.method == 'POST':
-        user.cart.products.remove(product)
-        return redirect('home')
-    context = {'product':product}
-    return render(request,'base/delete_product_cart.html', context)
+
 
 
 
@@ -141,18 +163,6 @@ class ProductCreateView(CreateView):
     fields = ['title','brand','price','image','description']
     template_name = 'base/product_create.html'
 
-
-"""@login_required
-def addProduct(request):
-    form = ProductForm()
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('confirm-product-creation')
-    context = {'form': form}
-    return render(request,'base/add_product_form.html', context)
-"""
 
 def changeEmail(request):
     user = request.user

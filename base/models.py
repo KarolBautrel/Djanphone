@@ -45,14 +45,16 @@ class User(AbstractUser):
 
 
 class Product(models.Model):
+
     title = models.CharField(max_length = 100,null=True)
     brand = models.CharField(default = 'Different',max_length = 100,null=True, blank=True, choices = BRAND)
-    price = models.IntegerField(null=True, blank=True)
+    price = models.FloatField(null=True, blank=True)
+    discount_price = models.FloatField(null=True, blank = True)
     image = models.ImageField( blank=True, default = 'pobrane.png')
-    description = models.TextField(max_length=200,null=True)
+    description = models.TextField(max_length=200,null=True, default = 'This is test field')
     created = models.DateTimeField(auto_now_add = True)
     is_approved = models.BooleanField(default=False)
-    slug = models.SlugField(max_length=50,null=True)
+    slug = models.SlugField(max_length=50,null=True, blank=True)
 
     class Meta:
         ordering = ['-created']
@@ -64,18 +66,30 @@ class Product(models.Model):
         return reverse('product-detail', args = [str(self.id)])
 
 
-class OrderItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    def get_add_to_cart_url(self):
+        return reverse('add-to-cart', args = [str(self.id)])
 
+    def get_remove_from_cart_url(self):
+        return reverse('remove-from-cart', args = [str(self.id)])
+        
+class OrderItem(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
+    ordered = models.BooleanField(default=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(null=True, blank=True, default = 1)
+    
+    
     def __str__(self):
-        return self.title
+        return f'{self.quantity} of {self.product.title}'
 
 
 
 
 
 class Order(models.Model):
-    products = models.ManyToManyField(OrderItem, blank=True ,null=True,  )
+
+    product = models.ManyToManyField(OrderItem, blank=True ,null=True,  )
     status = models.CharField(default = 'Processed', choices = STATUS, max_length = 30,null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     start_date = models.DateTimeField(auto_now_add = True)

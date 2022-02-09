@@ -18,7 +18,11 @@
           <div class="panel-heading">{{item.get_brand_display}}</div>
           <div class="panel-body"><img class="img-responsive" src="{{item.image.url}}" class="img-responsive" style="width: 100px;" alt="Image"></div>
           <a class="btn btn--dark" href="{{item.get_absolute_url}}">Show info</a>
+          {%if item.discount_price %}
+          <div class="panel-footer">Discount on this product ! {{item.discount_price}} $</div>
+          {%else%}
           <div class="panel-footer">{{item.price}} $</div>
+          {%endif%}
         </div>
       </div>
     {%endif%}

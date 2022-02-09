@@ -35,7 +35,8 @@
 
 
     <hr>
-    <a class="btn btn-primary" href="{%url 'add-to-cart' product.id%}">Add to cart</a>
+    <a class="btn btn-primary" href="{{product.get_add_to_cart_url}}">Add to cart</a>
+    <a class="btn btn-danger" href="{{product.get_remove_from_cart_url}}">Rem to cart</a>
     <hr>
     <a class="btn btn-primary" href="{%url 'add-comment' product.id%}">Add comment</a>
     <hr>
