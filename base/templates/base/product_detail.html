@@ -2,55 +2,159 @@
 {% load ratings %}
 
 {%block content%}
-<style>
-img {
-  width: 10%;
-  height: auto;
-  vertical-align: middle;
-}
-</style>
 
-      <div class="container">
 
-        <img src="{{product.image.url}}" />
-        <h3>{{product.name}}</h3>
-        <h3>About</h3>
+<div class="container my-5 ">
 
-          {{product.description}}
+
+  <!--Section: Content-->
+  <section class="text-center">
+
+    <!-- Section heading -->
+    <h3 class="font-weight-bold mb-5">Product Details</h3>
+
+    <div class="row">
+
+      <div class="col-lg-6">
+
        
-        {% ratings product %}
-    
-    <a class="btn btn-primary" href="{{product.get_add_to_cart_url}}">Add to cart</a>
-    <a class="btn btn-danger" href="{{product.get_remove_from_cart_url}}">Rem to cart</a>
-   
-    <a class="btn btn-primary" href="{%url 'add-comment' product.slug%}">Add comment</a>
-   
-    {% for comment in comments %}
-          <a href="{% url 'profile' comment.user.id %}" class="thread__authorInfo">
-            <div class="avatar avatar--small">
-              <img src="{{comment.user.avatar.url}} " style="width: 100px;"/>
+
+      
+              <img src="{{product.image.url}}"
+                alt="First slide" class="img-fluid">
+  
+
+      </div>
+
+      <div class="col-lg-5 text-center text-md-left">
+
+        <h2 class="h2-responsive text-center text-md-left product-name font-weight-bold dark-grey-text mb-1 ml-xl-0 ml-4">
+          <strong>{{product.title}}</strong>
+        </h2>
+        {%if product.discount_price%}
+        <span class="badge badge-danger product mb-4 ml-xl-0 ml-4">bestseller</span>
+        <span class="badge badge-warning product mb-4 ml-xl-0 ml-4">discount !</span>
+        {%else%}
+        <span class="badge badge-danger product mb-4 ml-xl-0 ml-4">bestseller</span>
+        {%endif%}
+        <h3 class="h3-responsive text-center text-md-left mb-5 ml-xl-0 ml-4">
+          {%if product.discount_price%}
+          <span class="red-text font-weight-bold">
+            <strong>${{product.discount_price}}</strong>
+          </span>
+          <span class="grey-text">
+            <small>
+              <s>${{product.price}}</s>
+            </small>
+          </span>
+          {%else%}
+          <span class="red-text font-weight-bold">
+            <strong>${{product.price}}</strong>
+          </span>
+          {%endif%}
+        </h3>
+
+        <!--Accordion wrapper-->
+        <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+
+          <!-- Accordion card -->
+          <div class="card">
+
+            <!-- Card header -->
+            <div class="card-header" role="tab" id="headingOne1">
+              <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="true"
+                aria-controls="collapseOne1">
+                <h5 class="mb-0">
+                  Description
+                  <i class="fas fa-angle-down rotate-icon"></i>
+                </h5>
+              </a>
             </div>
-            <span>@{{comment.user.username}}</span>
-          </a>
-          <span class="thread__date">{{comment.created | timesince}} ago</span>
+
+            <!-- Card body -->
+            <div id="collapseOne1" class="collapse show" role="tabpanel" aria-labelledby="headingOne1"
+              data-parent="#accordionEx">
+              <div class="card-body">
+                {{product.description}}
+              </div>
+            </div>
+          </div>
+          <!-- Accordion card -->
+
+      
+          
+            </div>
+
+            
+        
+
+        <!-- Add to Cart -->
+       
+            <div class="row mt-3">
+              <div class="col-md-12 text-center text-md-left text-md-right">
+               <a href = '{{product.get_add_to_cart_url}}'  class="btn btn-primary btn-rounded">
+                  <i class="fas fa-cart-plus mr-2" aria-hidden="true"></i> Add to cart</a>
+              </div>
+              <br>
+              <hr>
+              <div class="col-md-12 text-center text-md-left text-md-right">
+                <a href = "{%url 'add-comment' product.slug%}" class="btn btn-info btn-rounded">
+                   <i class="fas fa-comment-dots mr-2" aria-hidden="true"></i> Add review of product</a>
+               </div>
+               </div>
+            </div>
+          </div>
+        </section>
+        <!-- /.Add to Cart -->
+
+      </div>
+
+    </div>
+
+  
+  <!--Section: Content-->
+
+
+</div>
+<style>
+  .comments{
+    margin-left: 50px;
+
+  }
+</style>
+      <!--Section: Comment Content-->
+     <div class = 'comments'>
+        <!-- Section heading -->
+        <h3 class="font-weight-bold text-center mb-5">Product Reviews</h3>
+    {% for comment in comments %}
+    <div class="media mb-3">
+      <img class="card-img-100 rounded-circle z-depth-1-half d-flex mr-3" src="{{comment.user.avatar.url}}" width="80" >
+      <div class="media-body">
+        {%if request.user == comment.user%}
+        <a>
+          <h5 class="user-name font-weight-bold">{{comment.user.name}}
+            <a href="{%url 'delete-comment' comment.id %}"><i class="far fa-trash-alt"></i></a></h5>
+        </a>
+        {%else%}
+        <a>
+        <h5 class="user-name font-weight-bold">{{comment.user.name}}
+        </a>
+        {%endif%}
+        <div class="card-data">
+            <li class="comment-date font-small grey-text">
+              <i class="far fa-clock"></i> {{comment.created}}</li>
+          </ul>
         </div>
-        {% if request.user == comment.user %}
-        <a href = "{%url 'delete-comment' comment.id%}">
-        <div class="thread__delete">
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-            <title>remove</title>
-            <path
-              d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"
-            ></path>
-          </svg>
-        </div>
-      </a>
-      {%endif%}
- 
-        {{comment.body}}
+        <p class="dark-grey-text article">{{comment.body}}</p>
+      </div>
+    </div>
  
     {%endfor%}
-  
+  </div>
 </div>
+</section>
+<!--Section: Block Content-->
 
+
+</div>
 {%endblock%}

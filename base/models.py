@@ -1,4 +1,7 @@
 import datetime
+from io import BytesIO 
+from PIL import Image
+from django.core.files import File
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -11,7 +14,6 @@ STATUS = (
     ('Delivered', 'Delivered')
 )
 
-
 BRAND = (
     ('Different','Different'),
     ('Samsung', 'Samsung'),
@@ -19,7 +21,6 @@ BRAND = (
     ('Xiaomi', 'Xiaomi'),
     ('Huawei', 'Huawei')
 )
-
 
 DELIVERY =(
     ('Inpost', 'Inpost'),
@@ -44,7 +45,6 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse('profile', args = [(self.id)])
 
-
     def get_update_profile_url(self):
         return reverse('update-user', args = [(self.id)])
 
@@ -54,8 +54,8 @@ class Product(models.Model):
     brand = models.CharField(default = 'Different',max_length = 100,null=True, blank=True, choices = BRAND)
     price = models.FloatField(null=True, blank=True)
     discount_price = models.FloatField(null=True, blank = True)
-    image = ResizedImageField( size=[500, 300], quality=75, upload_to='whatever', default = 'pobrane.png')
-    thumbnail = ResizedImageField(size=[100, 300], quality=75, upload_to='whatever', default = 'pobrane.png')
+    image = models.ImageField(  default = 'pobrane.png')
+    thumbnail = models.ImageField( default = 'pobrane.png')
     description = models.TextField(max_length=200,null=True, default = 'This is test field')
     created = models.DateTimeField(auto_now_add = True)
     is_approved = models.BooleanField(default=False)
@@ -77,6 +77,26 @@ class Product(models.Model):
     def get_remove_from_cart_url(self):
         return reverse('remove-from-cart', kwargs={'slug': self.slug})
 
+    def get_thumbnail(self):
+        if self.thumbnail:
+            return 'http://127.0.0.1:8000' + self.thumbnail.url
+        else: 
+            if self.image:
+                self.thumbnail = self.make_thumbnail(self.image)
+                self.save()
+                return 'http://127.0.0.1:8000' + self.image.url
+            else:
+                return ''
+    def make_thumbnail(self, image, size=(200,100)):
+        img = Image.open(image)
+        img.convert("RGB")
+        img.thumbnail(size)
+
+        thumb_io=BytesIO() 
+        img.save(thumb_io, 'JPEG', quality=100) # przetworzenie za pomoca thumb_io
+
+        thumbnail = File(thumb_io, name=image.name)
+        return thumbnail
 
 class OrderItem(models.Model):
 

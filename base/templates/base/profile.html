@@ -1,12 +1,11 @@
 {%extends 'base.html'%}
 
 {%block content%}
-
+<main class="profile-page layout layout--3">
 <div class="roomList">
     <div class="profile">
-      <div class="profile__avatar">
-        
-          <img src="{{user.avatar.url}}" class = "rounded mx-auto d-block"/>
+      <div class="avatar avatar--large active">
+          <img src="{{user.avatar.url}}" class = "card-img-100 rounded-circle z-depth-1-half d-flex mr-3" />
         </div>
       </div>
       <div class="profile__info">
@@ -22,4 +21,5 @@
         </p>
       </div>
     </div>
+  </main>
     {%endblock%}
