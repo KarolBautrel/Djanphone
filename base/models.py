@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 from django_extensions.db.fields import AutoSlugField
+from django_resized import ResizedImageField
 STATUS = (
     ('Processed', 'Proccesed'),
     ('Sent', 'Sent'),
@@ -53,7 +54,8 @@ class Product(models.Model):
     brand = models.CharField(default = 'Different',max_length = 100,null=True, blank=True, choices = BRAND)
     price = models.FloatField(null=True, blank=True)
     discount_price = models.FloatField(null=True, blank = True)
-    image = models.ImageField( blank=True, default = 'pobrane.png')
+    image = ResizedImageField( size=[500, 300], quality=75, upload_to='whatever', default = 'pobrane.png')
+    thumbnail = ResizedImageField(size=[100, 300], quality=75, upload_to='whatever', default = 'pobrane.png')
     description = models.TextField(max_length=200,null=True, default = 'This is test field')
     created = models.DateTimeField(auto_now_add = True)
     is_approved = models.BooleanField(default=False)
@@ -74,7 +76,8 @@ class Product(models.Model):
 
     def get_remove_from_cart_url(self):
         return reverse('remove-from-cart', kwargs={'slug': self.slug})
-        
+
+
 class OrderItem(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
@@ -94,7 +97,10 @@ class OrderItem(models.Model):
         
     # ZERO DIVISION TODO
     def get_amount_saved(self):
-        percent_save = ((self.get_total_product_discount_price() * 100 )/ self.get_total_product_price())
+        try:
+            percent_save = ((self.get_total_product_discount_price() * 100 )/ self.get_total_product_price())
+        except ZeroDivisionError:
+            percent_save = 0
         return int(percent_save)
 
     def get_final_price(self):

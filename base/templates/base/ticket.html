@@ -2,18 +2,55 @@
 
 
 {%block content%}
-<div>
-    <form method="POST" action=''>
-        {%csrf_token %} <!-- Token do ochrony(zawsze z POST)-->
-        {{form.as_p}}
-       
-        <input type="submit" value="submit">
+<div class="container my-5 py-5 z-depth-1">
 
-
-    </form>
-
-</div>
-   
-</div>
+    <!--Section: Content-->
+    <section class="px-md-5 mx-md-5 text-center text-lg-left dark-grey-text">
+  
+  
+      <!--Grid row-->
+      <div class="row d-flex justify-content-center">
+  
+        <!--Grid column-->
+        <div class="col-md-6">
+  
+          <!-- Default form contact -->
+          <form class="text-center" action="#!" method = 'POST'>
+            {%csrf_token %}
+           <h3 class="font-weight-bold mb-4">Contact Us</h3>
+  
+            <!-- Subject -->
+            <label>{{form.product}}</label>
+      
+  
+            <!-- Message -->
+            <div class="form-group">
+               {{form.body}}
+            </div>
+  
+            <!-- Copy -->
+            <div class="custom-control custom-checkbox mb-4">
+              <input type="checkbox" class="custom-control-input" id="defaultContactFormCopy">
+              <label class="custom-control-label" for="defaultContactFormCopy">Send me a copy of this message</label>
+            </div>
+  
+            <!-- Send button -->
+            <button class="btn btn-info btn-block" type="submit">Send</button>
+  
+          </form>
+          <!-- Default form contact -->
+  
+        </div>
+        <!--Grid column-->
+  
+      </div>
+      <!--Grid row-->
+  
+  
+    </section>
+    <!--Section: Content-->
+  
+  
+  </div>
 
 {% endblock content%}

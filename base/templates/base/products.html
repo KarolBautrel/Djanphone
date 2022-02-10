@@ -1,31 +1,46 @@
 {%extends 'base.html'%}
-{%load static%}
-{% load crispy_forms_tags %}
-
 {%block content%}
-<form method="get">
-  {{ productFilter.form }}
-  <button type="submit" class="btn btn-primary">Search</button>
-</form>
+<div class="container my-5 py-5">
 
+  <section class="text-center">
 
-<!--ITEM PRODUCTS LIST-->
-{%for item in products%}
-{%if item.is_approved %}
-<div class="container">    
-      <div class="col-sm-3">
-        <div class="panel panel-primary">
-          <div class="panel-heading">{{item.get_brand_display}}</div>
-          <div class="panel-body"><img class="img-responsive" src="{{item.image.url}}" class="img-responsive" style="width: 100px;" alt="Image"></div>
-          <a class="btn btn--dark" href="{{item.get_absolute_url}}">Show info</a>
-          {%if item.discount_price %}
-          <div class="panel-footer">Discount on this product ! {{item.discount_price}} $</div>
-          {%else%}
-          <div class="panel-footer">{{item.price}} $</div>
-          {%endif%}
+    <div class="row">
+
+      
+        {%for item in products%}
+        {%if item.is_approved %}
+        <div class="col-4">
+      
+          <a href="" class="waves-effect waves-light"><img
+            src="{{item.thumbnail.url}}" class="img-fluid"
+            alt=""></a>
+     
+        <div class="card">
+          <div class="card-body">
+
+            <p class="mb-1"><a href="" class="font-weight-bold black-text">{{item.title}}</a></p>
+            {%if item.discount_price %}
+            <p class="mb-1"><small class="mr-1"><s>${{item.price}}</s></small><strong>$ {{item.discount_price}}</strong></p>
+
+            {%else%}
+          <p class="mb-1"></small><strong>${{item.price}}</strong></p>
+            {%endif%}              
+          
+            <a href ="{{item.get_absolute_url}}" type="button" class="btn btn-outline-black btn-rounded btn-sm px-3 waves-effect" >Details</a>
+          </div>
+          </div>
         </div>
+        {%endif%}
+        {%endfor%}
+
+
       </div>
-    {%endif%}
-   {%endfor%}   
-  </html>  
-{%endblock content%}
+
+ </div>
+
+  </section>
+
+</div>    
+
+
+{%endblock%}
