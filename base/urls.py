@@ -35,7 +35,7 @@ urlpatterns = [
     path('order_summary/', OrderSummaryView.as_view(), name='order-summary'),
     path('add_to_cart/<slug>', views.addToCart, name = 'add-to-cart'),
     path('remove_from_cart/<slug>', views.removeFromCart, name = 'remove-from-cart'),
-     path('remove_item_from_cart/<slug>', views.removeFromCart, 
+     path('remove_item_from_cart/<slug>', views.removeSingleItemFromCart, 
                                                 name = 'remove-single-item-from-cart'),
     #path('buy_product/', views.buyProduct, name = 'buy-product').
     #path('shipments/<str:pk>', views.shipmentsPanel, name = 'shipments'),

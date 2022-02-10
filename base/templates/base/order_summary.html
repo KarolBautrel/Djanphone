@@ -26,7 +26,17 @@
                 <td>{{order_item.product.title}}</td>
                 <td>${{order_item.product.price}}</td>
                 <!--ADD QUANTITY ICONS INC/DEC-->
-                <td>{{order_item.quantity}}<i class="fa-solid fa-minus"></i></i></td>
+                {%if order_item.quantity%}
+                <td><a href = "{%url 'remove-single-item-from-cart' order_item.product.slug%}"><i class="fas fa-minus"></i> </a>
+                  {{order_item.quantity}}
+                  <a href = "{%url 'add-to-cart' order_item.product.slug%}"><i class="fas fa-plus"></i></a>
+               </td>
+               {%else%}
+               <td>
+                  {{order_item.quantity}}
+                  <a href = "{%url 'add-to-cart' order_item.product.slug%}"><i class="fas fa-plus"></i></a>
+               </td>
+               {%endif%}
                 {%if order_item.product.discount_price%}
                 <td>{{order_item.get_total_product_discount_price}}$
                   <span class="badge badge-danger ">  Saving {{order_item.get_amount_saved}}%   </span> 

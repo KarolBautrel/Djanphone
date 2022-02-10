@@ -1,39 +1,66 @@
 {%load cart_template_tags%}
 
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-      <a class="navbar-brand" href="{%url 'home'%}">Logo</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="{%url 'home'%}">Home</a></li>
-      
-        <li><a href="{%url 'products'%}">Products</a></li>
-      
-        <li><a href="{%url 'stores'%}">Stores</a></li>
-        <li><a href="{%url 'contact'%}">Contact</a></li>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid"> 
+      <a class="navbar-brand" href="{%url 'home'%}">Home</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-mdb-toggle="collapse"
+        data-mdb-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+  
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{%url 'products'%}">Products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{%url 'stores'%}">Stores</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{%url 'contact'%}">Contact</a>
+        </li>
       </ul>
-     
-      <ul class="nav navbar-nav navbar-right">
+    </div>
+      <div class="d-flex input-group w-auto">
         {% if request.user.is_authenticated%}
-        <li><a href="{%url 'budget' user.id%}"><span class="glyphicon glyphicon-euro"></span> {{request.user.budget}}</a></li>
-        <li><a href="{{request.user.get_absolute_url}}"><span class="glyphicon glyphicon-user"></span> {{request.user.username}}</a></li>
-        <li><a href="{%url 'user-panel'%}"><span class="glyphicon glyphicon-wrench"></span> User panel</a></li>
-        <li><a href="{%url 'create-product'%}"><span class="glyphicon glyphicon-plus"></span> Add new product</a></li>
-        <li><a href="{%url 'order-summary'%}"><span class="glyphicon glyphicon-shopping-cart"></span> Cart ({{request.user|cart_product_count}})</a></li>
-        <li><a href="{%url 'account_logout'%}"></span> Logout</a></li>
-        
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{%url 'budget' user.id%}">{{request.user.budget}}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{request.user.get_absolute_url}}">{{request.user.name}}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{%url 'user-panel'%}">User panel</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{%url 'create-product'%}">Create Product</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{%url 'order-summary'%}">Cart</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{%url 'user-panel'%}">User panel</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{%url 'account_logout'%}">Logut</a>
+          </li>
+       
       </ul>
         {%else%}
-        <li><a href="{% url 'account_login' %} "><span class="glyphicon glyphicon-user"></span> Login</a></li>
-        <li><a href="{%url 'account_signup'%}"></span> Sign up</a></li>
-       
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'account_login' %}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{%url 'account_signup'%}">Signup</a>
+        </li>
       </ul>
       {%endif%}
     </div>

@@ -96,7 +96,7 @@ def addToCart(request, slug):
         order = Order.objects.create(user=request.user,ordered_date=ordered_date)
         order.product.add(order_item)
     messages.success(request, 'You added the product to your cart')
-    return redirect('product-detail', slug=slug)
+    return redirect('order-summary')
 
 
 @login_required
