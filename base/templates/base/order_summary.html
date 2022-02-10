@@ -1,0 +1,70 @@
+{%extends 'base.html'%}
+
+{%block content%}
+
+<div class="row" style = 'margin-top:20px; margin-left:20px;'>
+    <div class="col-12">
+        <h2>Order summary </h2>
+     
+        <br>
+       <table class="table table-hover table-dark">
+          <thead>
+             <tr>
+                <!-- Your Columns HERE -->
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total price</th>
+             </tr>
+          </thead>
+     
+             <!-- Your rows inside the table HERE: -->
+             {%for order_item in order.product.all%}
+             <tr>
+               <th scope="row">{{forloop.counter}}</th>
+                <td>{{order_item.product.title}}</td>
+                <td>${{order_item.product.price}}</td>
+                <!--ADD QUANTITY ICONS INC/DEC-->
+                <td>{{order_item.quantity}}<i class="fa-solid fa-minus"></i></i></td>
+                {%if order_item.product.discount_price%}
+                <td>{{order_item.get_total_product_discount_price}}$
+                  <span class="badge badge-danger ">  Saving {{order_item.get_amount_saved}}%   </span> 
+                </td>
+                {%else%}
+                <td>{{order_item.get_total_product_price}}$</td>
+                {%endif%}
+                <td><a href='{%url "remove-from-cart" order_item.product.slug%}' class = 'btn btn-danger'>Delete product</a></td>
+                
+                <td>
+                   
+                </td>
+                {% endfor %}
+                {%if not order.product.all%}
+                <tr>
+                  <td colspan="5"><strong>Your cart is empty</strong></td>
+               </tr>
+               <tr>
+                  <td colspan="5"><strong><a class="btn btn-primary float-right" href="{%url 'products'%}"  >Continue Shopping!</strong></td>
+               </tr>
+               {%endif%}
+             </tr>
+             <tr>
+               {%if order.product.all%}
+                <td colspan="4"><strong>Order Total</strong></td>
+               <td><strong>${{order.get_total}}</strong></td>
+
+             </tr>
+            
+             <tr>
+               <td colspan="5"><strong><a class="btn btn-primary float-right" href="{%url 'products'%}"  >Continue Shopping!</strong></td>
+                  <td colspan="5"><strong><a class="btn btn-success float-right" href="#" >Purchase!</strong></td>
+                     {%endif%}
+            </tr>
+             
+         
+          </tbody>
+       </table>
+    </div>
+
+{%endblock%}

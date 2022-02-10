@@ -12,7 +12,8 @@ from base.views import (
                 UserDetailView,
                 ProductCreateView,
                 TicketCreationView,
-                CommentCreationView)
+                CommentCreationView,
+                OrderSummaryView)
 
 
 urlpatterns = [
@@ -31,9 +32,11 @@ urlpatterns = [
     path('delete_comment/<int:pk>', views.deleteComment, name = 'delete-comment'),
     path('add_comment/<slug>', login_required(CommentCreationView.as_view(),
                                login_url = '/accounts/login/'), name='add-comment' ),
-    path('cart/<int:pk>', views.cart, name='cart'),
+    path('order_summary/', OrderSummaryView.as_view(), name='order-summary'),
     path('add_to_cart/<slug>', views.addToCart, name = 'add-to-cart'),
     path('remove_from_cart/<slug>', views.removeFromCart, name = 'remove-from-cart'),
+     path('remove_item_from_cart/<slug>', views.removeFromCart, 
+                                                name = 'remove-single-item-from-cart'),
     #path('buy_product/', views.buyProduct, name = 'buy-product').
     #path('shipments/<str:pk>', views.shipmentsPanel, name = 'shipments'),
     path('budget/<int:pk>', views.budgetPanel, name = 'budget'),

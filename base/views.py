@@ -1,4 +1,3 @@
-from itertools import product
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, User, Comment, Order, Ticket,Store,OrderItem
 from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, OrderForm, BudgetForm, StoreForm
@@ -13,6 +12,7 @@ from django.views.generic import UpdateView, ListView, DetailView, View, CreateV
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
 
@@ -114,6 +114,7 @@ def removeFromCart(request, slug):
             )[0]
             order.product.remove(order_item)
             messages.success(request, 'You removed the product from your cart')
+            return redirect('order-summary')
         else:
             messages.success(request, 'There is no product to remove')
             return redirect('product-detail', slug=slug)
@@ -122,6 +123,43 @@ def removeFromCart(request, slug):
         return redirect('home')
     return redirect('product-detail', slug=slug)
 
+# TO DO ADD QUANTITY ADDING ICONS
+@login_required
+def removeSingleItemFromCart(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    order_qs = Order.objects.filter(user=request.user, ordered = False)
+    if order_qs.exists():
+        order = order_qs[0]
+        #check if the order item is in the order list
+        if order.product.filter(product__slug = product.slug).exists():
+            order_item = OrderItem.objects.filter(
+                product=product,
+                user = request.user, 
+                ordered = False
+            )[0]
+            order_item.quantity -= 1
+            order_item.save()
+            messages.success(request, 'This item quantity was decreased by 1 ')
+            return redirect('order-summary')
+        else:
+            messages.success(request, 'There is no product to remove')
+            return redirect('product-detail', slug=slug)
+    else: 
+        messages.success(request, 'User doesnt have order')
+        return redirect('home')
+    return redirect('product-detail', slug=slug)
+
+class OrderSummaryView(View):
+
+    def get(self, *argq, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            context = {'order':order}
+            return render(self.request, 'base/order_summary.html', context)
+        except ObjectDoesNotExist:
+            messages.error(self.request, 'You do not have active orders')
+            return redirect ('/')
+        
 
 @login_required
 def cart(request,pk):
