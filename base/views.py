@@ -23,6 +23,7 @@ def home(request):
 class ProductListView(ListView):
     model = Product
     context_object_name = 'products'
+    paginate_by = 5
     template_name = 'base/products.html'
 
 
@@ -55,27 +56,20 @@ class CommentCreationView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('home')
-
+        return reverse('product-detail', kwargs={'slug': self.kwargs['slug']})
 
 
 @login_required
-def addComment(request,slug):
-    form = CommentForm()
-    product = Product.objects.get(slug = slug)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-           comment = form.save(commit=False)
-           comment.user = request.user
-           comment.product = product
-           comment.save()
-        return redirect('product-detail', slug=slug)
-    if request.method == 'GET':
-          product = Product.objects.get(slug = slug)
-    context = {'product':product, 'form':form}
-    return render(request,'base/add_comment.html', context)
-
+def deleteComment(request, pk):
+    comment = get_object_or_404(Comment, id=pk)
+    if request.user != comment.user:
+        messages.error(request, 'You are not allowed to delete')
+        return redirect('home')
+    if request.method == 'POST': 
+        comment.delete() # usuniecie
+        return redirect('product-detail', slug=comment.product.slug)
+    context ={"comment":comment} 
+    return render(request,'base/delete_comment.html', context)
 
 
 @login_required
@@ -138,17 +132,7 @@ def cart(request,pk):
     return render(request, 'base/cart.html', context)
 
 
-@login_required
-def deleteComment(request, pk):
-    comment = Comment.objects.get(id=pk)
-    if request.user != comment.user:
-        messages.error(request, 'You are not allowed to delete')
-        return redirect('home')
-    if request.method == 'POST': 
-        comment.delete() # usuniecie
-        return redirect('home')
-    context ={"comment":comment} 
-    return render(request,'base/delete_comment.html', context)
+
 
 
 class UserDetailView(DetailView):

@@ -47,45 +47,7 @@
 
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-      <a class="navbar-brand" href="{%url 'home'%}">Logo</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="{%url 'home'%}">Home</a></li>
-      
-        <li><a href="{%url 'products'%}">Products</a></li>
-      
-        <li><a href="{%url 'stores'%}">Stores</a></li>
-        <li><a href="{%url 'contact'%}">Contact</a></li>
-      </ul>
-     
-      <ul class="nav navbar-nav navbar-right">
-        {% if request.user.is_authenticated%}
-        <li><a href="{%url 'budget' user.id%}"><span class="glyphicon glyphicon-euro"></span> {{request.user.budget}}</a></li>
-        <li><a href="{{request.user.get_absolute_url}}"><span class="glyphicon glyphicon-user"></span> {{request.user.username}}</a></li>
-        <li><a href="{%url 'user-panel'%}"><span class="glyphicon glyphicon-wrench"></span> User panel</a></li>
-        <li><a href="{%url 'create-product'%}"><span class="glyphicon glyphicon-plus"></span> Add new product</a></li>
-        <li><a href="{%url 'cart' user.id%}"><span class="glyphicon glyphicon-shopping-cart"></span> Cart {{request.user.cart.product.count}}</a></li>
-        <li><a href="{%url 'account_logout'%}"></span> Logout</a></li>
-        
-      </ul>
-        {%else%}
-        <li><a href="{% url 'account_login' %} "><span class="glyphicon glyphicon-user"></span> Login</a></li>
-        <li><a href="{%url 'account_signup'%}"></span> Sign up</a></li>
-       
-      </ul>
-      {%endif%}
-    </div>
-  </div>
-</nav>
+{%include 'navbar.html'%}
 
 <!-- KONIEC NAVBARA   -->
 {% if messages %}
