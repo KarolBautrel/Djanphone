@@ -114,29 +114,35 @@
                   <h4 class="mb-4 mt-1 h5 text-center font-weight-bold">Summary</h4>
   
                   <hr>
-  
+                  {%for item in order.product.all%}
                   <dl class="row">
                     <dd class="col-sm-8">
-                      MDBootstrap UI KIT (jQuery version) - License 6-10 poeple + unlimited projects
+                      {{item.product.title}}
                     </dd>
+                    {%if item.product.discount_price%}
                     <dd class="col-sm-4">
-                      $ 2000
+                      $ {{item.get_total_product_discount_price}}
                     </dd>
+                    {%else%}
+                    <dd class="col-sm-4">
+                      $ {{item.get_total_product_price}}
+                    </dd>
+                    {%endif%}
                   </dl>
   
                   <hr>
-                  <hr>
-  
+                 
+                  {%endfor%}
                   <dl class="row">
                     <dt class="col-sm-8">
                       Total
                     </dt>
                     <dt class="col-sm-4">
-                      $ 2000
+                      $ {{order.get_total}}
                     </dt>
                   </dl>
                 </div>
-  
+                
               </div>
 
   

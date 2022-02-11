@@ -7,7 +7,7 @@
         <h2>Order summary </h2>
      
         <br>
-       <table class="table table-hover table-dark">
+       <table class="table table-hover table-light">
           <thead>
              <tr>
                 <!-- Your Columns HERE -->
@@ -44,7 +44,7 @@
                 {%else%}
                 <td>{{order_item.get_total_product_price}}$</td>
                 {%endif%}
-                <td><a href='{%url "remove-from-cart" order_item.product.slug%}' class = 'btn btn-danger'>Delete product</a></td>
+                <td><a href='{%url "remove-from-cart" order_item.product.slug%}' class = 'btn btn-danger btn-rounded '>Delete product</a></td>
                 
                 <td>
                    
@@ -68,7 +68,7 @@
             
              <tr>
                <td colspan="5"><strong><a class="btn btn-primary float-right" href="{%url 'products'%}"  >Continue Shopping!</strong></td>
-                  <td colspan="5"><strong><a class="btn btn-success float-right" href="#" >Purchase!</strong></td>
+                  <td colspan="5"><strong><a class="btn btn-success btn-rounded" href="{%url 'checkout'%}" >Geto the checkout!</strong></td>
                      {%endif%}
             </tr>
              

@@ -58,7 +58,6 @@ class ProductDetailView(DetailView):
         return context
 
 
-#TODO
 class CommentCreationView(CreateView):
     model = Comment
     fields = ['body']
@@ -140,8 +139,6 @@ def removeFromCart(request, slug):
         return redirect('order-summary')
     
 
-
-# TO DO ADD QUANTITY ADDING ICONS
 @login_required
 def removeSingleItemFromCart(request, slug):
     product = get_object_or_404(Product, slug=slug)
@@ -183,7 +180,8 @@ class CheckoutView(View):
 
     def get(self, *args, **kwargs):
         form = CheckoutForm()
-        context = {'form': form}
+        order = Order.objects.get(user=self.request.user, ordered=False)
+        context = {'form': form, 'order':order}
         return render(self.request,'base/checkout.html', context)
 
     def post(self, *args, **kwargs):
@@ -215,7 +213,6 @@ class CheckoutView(View):
             messages.error(self.request, 'You do not have active orders')
             return redirect ('/')
             return redirect('checkout')
-
 
 
 class UserDetailView(DetailView):

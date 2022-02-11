@@ -18,34 +18,49 @@
 
 <a class = "btn btn-primary" href ='{%url "modify-product-store" store.id%}'>Modify Products</a>
 
-
-<hr>
-<hr>
-
-
-<hr>
 {%endif%}
-{%for item in products %}
-<div class="container">    
+<hr>
+<div class="container my-5 py-5">
+
+  <section class="text-center">
+
     <div class="row">
-      <div class="col-sm-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">{{item.title}}</div>
-          <div class="panel-body"><img src="{{item.image.url}}" class="img-responsive" style="width:100%" alt="Image"></div>
-          <a class="btn btn--dark" href="{%url 'product-detail' item.slug %}">Show info</a>
-          <div class="panel-footer">{{item.price}} $</div>
+
+      
+        {%for item in products%}
+        {%if item.is_approved %}
+        <div class="col-4">
+      
+          <a href="" class="waves-effect waves-light"><img
+            src="{{item.image.url}}" class="img-fluid"
+            alt=""></a>
+     
+        <div class="card">
+          <div class="card-body">
+
+            <p class="mb-1"><a href="" class="font-weight-bold black-text">{{item.title}}</a></p>
+            {%if item.discount_price %}
+            <p class="mb-1"><small class="mr-1"><s></h1>${{item.price}}</s></small><strong>$ {{item.discount_price}}<span class="badge badge-secondary">Discount!</span></strong></p>
+
+            {%else%}
+          <p class="mb-1"></small><strong>${{item.price}}</strong></p>
+            {%endif%}              
+          
+            <a href ="{{item.get_absolute_url}}" type="button" class="btn btn-outline-black btn-rounded btn-sm px-3 waves-effect" >Details</a>
+          </div>
+          </div>
         </div>
+        {%endif%}
+        {%endfor%}
+
+
       </div>
 
-      {%endfor%}
- 
+ </div>
 
+  </section>
 
-
-
-
-
-
+</div>    
 
 
 {%endblock%}

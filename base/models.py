@@ -50,6 +50,7 @@ class User(AbstractUser):
     def get_update_profile_url(self):
         return reverse('update-user', args = [(self.id)])
 
+
 class Product(models.Model):
 
     title = models.CharField(max_length = 100,null=True)
@@ -89,6 +90,7 @@ class Product(models.Model):
                 return 'http://127.0.0.1:8000' + self.image.url
             else:
                 return ''
+
     def make_thumbnail(self, image, size=(200,100)):
         img = Image.open(image)
         img.convert("RGB")
@@ -100,13 +102,13 @@ class Product(models.Model):
         thumbnail = File(thumb_io, name=image.name)
         return thumbnail
 
+
 class OrderItem(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     ordered = models.BooleanField(default=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(null=True, blank=True, default = 1)
-    
     
     def __str__(self):
         return f'{self.quantity} of {self.product.title}'
@@ -117,7 +119,6 @@ class OrderItem(models.Model):
     def get_total_product_discount_price(self):
         return self.quantity * self.product.discount_price
         
-    # ZERO DIVISION TODO
     def get_amount_saved(self):
         try:
             percent_save = ((self.get_total_product_discount_price() * 100 )/ self.get_total_product_price())
@@ -129,6 +130,7 @@ class OrderItem(models.Model):
         if self.product.discount_price:
             return self.get_total_product_discount_price()
         return self.get_total_product_price()
+
 
 class Order(models.Model):
 
@@ -152,7 +154,7 @@ class Order(models.Model):
 
 
 class Store(models.Model):
-    map_addres = models.CharField(max_length = 300,null=True, blank=True)
+
     city = models.CharField(max_length=30)
     street = models.CharField(max_length=30)
     owner = models.CharField(max_length = 20)
@@ -161,21 +163,19 @@ class Store(models.Model):
     picture = models.ImageField(null=True, default = 'avatar.svg')
     moderator = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
 
-
     def __str__(self):
         return self.city
-
 
     def get_absolute_url(self):
         return reverse('store_info', args = [str(self.id)])
 
 class Comment(models.Model):
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     body = models.TextField()
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
-
 
     def __str__(self):
         return self.body[0:50]
@@ -188,7 +188,6 @@ class Ticket(models.Model):
     is_open = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add = True)
 
-
     def __str__(self):
         return str(self.ticket_creator)
 
@@ -200,7 +199,6 @@ class BillingAddress(models.Model):
     country = CountryField(multiple = False)
     zip = models.CharField(max_length=100)
     
-
     def __str__(self):
         return self.user.name
 
