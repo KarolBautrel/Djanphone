@@ -1,6 +1,13 @@
 from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField, CheckboxSelectMultiple
 from .models import Product, User, Comment, Order, Ticket, Store
-
+from django import forms
+from django_countries.fields import CountryField
+from django_countries.widgets import CountrySelectWidget
+PAYMENT_CHOICES=(
+    ('Paypal', 'Paypal'), 
+    ('Stripe','Stripe'), 
+    ('PayU','PayU')
+)
 
 class UserForm(ModelForm):
     class Meta:
@@ -26,6 +33,24 @@ class EmailChangeForm(ModelForm):
             raise ValidationError ("Not valid email")
         else:
             print("Dupa")
+
+
+class CheckoutForm(forms.Form):
+    street_address = forms.CharField( widget = forms.TextInput(attrs={
+                'placeholder':'Warsaw 1234',
+                'class':'form-control'}))
+    apartment_address = forms.CharField(widget = forms.TextInput(attrs={
+                'placeholder':'Street or Home',
+                'class':'form-control'}), required = False)
+    country = CountryField(blank_label='(select country)').formfield(widget=CountrySelectWidget(attrs={
+        'class':'form-control'
+    }))
+    zip = forms.CharField(widget= forms.TextInput(attrs={
+        'class':'form-control'
+    }))
+    same_billing_address = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
+    save_info = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
+    payment_option = forms.ChoiceField(widget=forms.RadioSelect(), choices=PAYMENT_CHOICES)
 
 
 class ProductForm(ModelForm):

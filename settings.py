@@ -43,16 +43,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'star_ratings',
     'django_filters',
-    'bootstrapform'
-
-
-
+    'bootstrapform',
+    'django_countries' ,
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-
-
-
     'allauth.socialaccount.providers.google',
   
 ]

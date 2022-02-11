@@ -1,6 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, User, Comment, Order, Ticket,Store,OrderItem
-from .forms import UserForm, EmailChangeForm, ProductForm,TicketForm, CommentForm, OrderForm, BudgetForm, StoreForm
+from .forms import (UserForm,
+                    EmailChangeForm,
+                    ProductForm,
+                    TicketForm,
+                    CommentForm,
+                    OrderForm,
+                    BudgetForm,
+                    StoreForm, 
+                    CheckoutForm,
+                    )
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
@@ -120,8 +129,9 @@ def removeFromCart(request, slug):
             return redirect('product-detail', slug=slug)
     else: 
         messages.success(request, 'User doesnt have order')
-        return redirect('home')
-    return redirect('product-detail', slug=slug)
+        return redirect('order-summary')
+    
+
 
 # TO DO ADD QUANTITY ADDING ICONS
 @login_required
@@ -146,12 +156,12 @@ def removeSingleItemFromCart(request, slug):
             return redirect('product-detail', slug=slug)
     else: 
         messages.success(request, 'User doesnt have order')
-        return redirect('home')
-    return redirect('product-detail', slug=slug)
+        return redirect('order-summary')
+    
 
 class OrderSummaryView(View):
 
-    def get(self, *argq, **kwargs):
+    def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
             context = {'order':order}
@@ -161,15 +171,17 @@ class OrderSummaryView(View):
             return redirect ('/')
         
 
-@login_required
-def cart(request,pk):
-    user=request.user
-    products = user.cart.products.all()
-    products_price = sum([i.price for i in products])
-    context={'products':products, 'products_price':products_price}
-    return render(request, 'base/cart.html', context)
+class CheckoutView(View):
 
+    def get(self, *args, **kwargs):
+        form = CheckoutForm()
+        context = {'form': form}
+        return render(self.request,'base/checkout.html', context)
 
+    def post(self, *args, **kwargs):
+        form = CheckoutForm(self.request.POST or None)
+        if form.is_valid():
+            return redirect('checkout')
 
 
 

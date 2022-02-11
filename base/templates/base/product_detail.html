@@ -136,9 +136,9 @@
             <a href="{%url 'delete-comment' comment.id %}"><i class="far fa-trash-alt"></i></a></h5>
         </a>
         {%else%}
-        <a>
-        <h5 class="user-name font-weight-bold">{{comment.user.name}}
-        </a>
+       
+        <h5 class="user-name font-weight-bold">{{comment.user.name}}</h5>
+        
         {%endif%}
         <div class="card-data">
             <li class="comment-date font-small grey-text">

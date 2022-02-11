@@ -13,13 +13,22 @@ from base.views import (
                 ProductCreateView,
                 TicketCreationView,
                 CommentCreationView,
-                OrderSummaryView)
+                OrderSummaryView,
+                CheckoutView)
 
 
 urlpatterns = [
     path('', views.home, name='home'),
     path('products/', ProductListView.as_view(), name='products'),
     path('products/<slug>', ProductDetailView.as_view(), name = 'product-detail'),
+    path('add_to_cart/<slug>', views.addToCart, name = 'add-to-cart'),
+    path('remove_from_cart/<slug>', views.removeFromCart, name = 'remove-from-cart'),
+    path('remove_item_from_cart/<slug>', views.removeSingleItemFromCart, 
+                                          name = 'remove-single-item-from-cart'),
+    path('order_summary/', login_required(OrderSummaryView.as_view(),
+                            login_url='/accounts/login/'),name='order-summary'),
+    path('checkout', login_required(CheckoutView.as_view(),
+                        login_url='/accounts/login/'),name='checkout'),
     path('accounts/', include('allauth.urls')),
     path('<int:pk>/profile/', UserDetailView.as_view(), name = 'profile'),
     path('update_profile/<int:pk>', login_required(UpdateUserView.as_view(), 
@@ -32,13 +41,6 @@ urlpatterns = [
     path('delete_comment/<int:pk>', views.deleteComment, name = 'delete-comment'),
     path('add_comment/<slug>', login_required(CommentCreationView.as_view(),
                                login_url = '/accounts/login/'), name='add-comment' ),
-    path('order_summary/', OrderSummaryView.as_view(), name='order-summary'),
-    path('add_to_cart/<slug>', views.addToCart, name = 'add-to-cart'),
-    path('remove_from_cart/<slug>', views.removeFromCart, name = 'remove-from-cart'),
-     path('remove_item_from_cart/<slug>', views.removeSingleItemFromCart, 
-                                                name = 'remove-single-item-from-cart'),
-    #path('buy_product/', views.buyProduct, name = 'buy-product').
-    #path('shipments/<str:pk>', views.shipmentsPanel, name = 'shipments'),
     path('budget/<int:pk>', views.budgetPanel, name = 'budget'),
     path('add_budget/<int:pk>', views.addBudget, name='add-budget'),
     path('ratings/', include('star_ratings.urls', namespace='ratings')),

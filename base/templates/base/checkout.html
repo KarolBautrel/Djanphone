@@ -1,0 +1,158 @@
+{%extends 'base.html'%}
+{% load crispy_forms_tags %}        
+
+{%block content %}
+
+<div class="container mt-5">
+
+
+    <!--Section: Content-->
+    <section class="dark-grey-text">
+  
+        <div class="card">
+        <div class="card-body">
+  
+          <!--Grid row-->
+          <div class="row">
+  
+            <!--Grid column-->
+            <div class="col-lg-8">
+
+              
+              <!-- Pills panels -->
+              <div class="tab-content pt-4">
+  
+                <!--Panel 1-->
+                <div class="tab-pane fade in show active" id="tabCheckoutBilling123" role="tabpanel">
+  
+                  <!--Card content-->
+                  <form>
+  
+                    <!--Grid row-->
+                    <div class="row">
+  
+                    </div>
+                    <!--Grid row-->
+  
+                    <!--Username-->
+                   
+
+                    <!--address-->
+                    <label for="address" class="">Street Address</label>
+                    {{form.street_address}}
+  
+                    <!--address-2-->
+                    <label for="address-2" class="">Apartment Address</label>
+                    {{form.apartment_address}}
+  
+                    <!--Grid row-->
+                    <div class="row">
+  
+                      <!--Grid column-->
+                      <div class="col-lg-4 col-md-12 mb-4">
+  
+                        <label for="country">Country</label>
+                       {{form.country}}
+                        <div class="invalid-feedback">
+                          Please select a valid country.
+                        </div>
+  
+                      </div>
+                      <!--Grid column-->
+  
+                      <!--Grid column-->
+                      <div class="col-lg-4 col-md-6 mb-4">
+  
+                        <label for="zip">Zip</label>
+                        {{form.zip}}
+                        <div class="invalid-feedback">
+                          Zip code required.
+                        </div>
+  
+                    
+                      </div>
+    
+                    </div>
+  
+                    <hr>
+  
+                    <div class="mb-1">
+                        <label for="payment_option">Payment Options</label>
+                      {{form.payment_option}}
+                     
+                    </div>
+                    <hr>
+                    <div class="mb-1">
+                        <label for="payment_option">Shipping addres is the same as Billings</label>
+                      {{form.same_billing_address}}
+                     
+                    </div>
+
+                    <div class="mb-1">
+                        <label for="payment_option">Save that information for next time </label>
+                      {{form.save_info}}
+                     
+                    </div>
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to chekout</button>
+  
+                  </form>
+  
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-lg-4 mb-4">
+  
+
+              <div class="card z-depth-0 border border-light rounded-0">
+
+                <div class="card-body">
+                  <h4 class="mb-4 mt-1 h5 text-center font-weight-bold">Summary</h4>
+  
+                  <hr>
+  
+                  <dl class="row">
+                    <dd class="col-sm-8">
+                      MDBootstrap UI KIT (jQuery version) - License 6-10 poeple + unlimited projects
+                    </dd>
+                    <dd class="col-sm-4">
+                      $ 2000
+                    </dd>
+                  </dl>
+  
+                  <hr>
+                  <hr>
+  
+                  <dl class="row">
+                    <dt class="col-sm-8">
+                      Total
+                    </dt>
+                    <dt class="col-sm-4">
+                      $ 2000
+                    </dt>
+                  </dl>
+                </div>
+  
+              </div>
+
+  
+  
+  
+            </div>
+
+  
+          </div>
+
+  
+        </div>
+      </div>
+  
+    </section>
+
+  
+  
+  </div>
+
+
+{%endblock%}
