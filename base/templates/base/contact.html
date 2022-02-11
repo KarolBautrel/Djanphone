@@ -1,6 +1,7 @@
 {%extends 'base.html'%}
 
 
+
 {%block content%}
 <div class="container my-5">
 
@@ -19,24 +20,28 @@
       <div class="card-body rounded-top border-top p-5">
         
         <!-- Section heading -->
-        <h3 class="font-weight-bold my-4">Create Ticket</h3>
+        <h3 class="font-weight-bold my-4">Contact Us</h3>
         <!-- Section description -->
-        <p class="font-weight-light mx-auto mb-4 pb-2">We are really sorry if you are dissatisfied <br> Please write a ticket that we can solve your problem</p>
+        <p class="font-weight-light mx-auto mb-4 pb-2">Lorem ipsum dolor, sit amet consectetur<br> adipisicing elit. Id quam sapiente molestiae.</p>
 
-        <form class="mb-4 mx-md-5" method="post" action="">
-          {%csrf_token%}
+        <form class="mb-4 mx-md-5" action="" method="post">
+
+            {%csrf_token %}
+
           <div class="row">
             <div class="col-md-6 mb-4">
 
               <!-- Name -->
-              
+              <div>
+              <label>Name</label></div>
+              {{form.name}}
 
             </div>
             <div class="col-md-6 mb-4">
 
-              <!-- Email -->
-            
-
+                <div>
+                    <label>Email</label></div>
+                    {{form.email}}
             </div>
           </div>
 
@@ -44,16 +49,19 @@
             <div class="col-md-12 mb-4">
 
               <!-- Subject -->
-              {{form.subject}}
-
+              <div>
+                <label>Phone Number</label></div>
+                {{form.phone}}
             </div>
           </div>
 
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 mb-4">
 
               <div class="form-group mb-4">
-                {{form.body}}
+                <div>
+                    <label>How Can we help ?</label></div>
+                    {{form.body}}
               </div>
 
               <div class="text-center">
@@ -72,4 +80,4 @@
   <!--Section: Content-->
 
 </div>
-{% endblock content%}
+{%endblock%}

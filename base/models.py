@@ -9,6 +9,7 @@ from django.urls import reverse
 from django_extensions.db.fields import AutoSlugField
 from django_resized import ResizedImageField
 from django_countries.fields import CountryField
+from django.core.mail import send_mail
 
 STATUS = (
     ('Processed', 'Proccesed'),
@@ -134,7 +135,7 @@ class OrderItem(models.Model):
 
 class Order(models.Model):
 
-    product = models.ManyToManyField(OrderItem, blank=True ,null=True,  )
+    product = models.ManyToManyField(OrderItem, blank=True   )
     status = models.CharField(default = 'Processed', choices = STATUS, max_length = 30,null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     start_date = models.DateTimeField(auto_now_add = True)
@@ -181,9 +182,29 @@ class Comment(models.Model):
         return self.body[0:50]
 
 
+class Contact(models.Model):
+
+    name = models.CharField(max_length=20)
+    email = models.EmailField(max_length=30)
+    phone = models.IntegerField(max_length=20)
+    body = models.TextField(max_length=30)
+
+    def __str__(self):
+        return self.email
+
+    def email_send(self):
+         self.send_email(
+            'Thank you for contact',
+        'Our team is reviewing your message, stay tuned for answer.',
+        'testbautrel111@gmail.com',
+        [f'{self.email}'],
+        )
+
+
 class Ticket(models.Model):
-    body = models.TextField()
-    product = models.ForeignKey(Product, on_delete=models.CASCADE,null=True, blank=True)
+
+    body = models.TextField(blank=False)
+    subject = models.CharField(max_length=25, null=True)
     ticket_creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     is_open = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add = True)

@@ -1,5 +1,5 @@
 from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField, CheckboxSelectMultiple
-from .models import Product, User, Comment, Order, Ticket, Store
+from .models import Product, User, Comment, Order, Store, Ticket,Contact
 from django import forms
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
@@ -78,16 +78,21 @@ class BudgetForm(ModelForm):
 
 
 class TicketForm(ModelForm):
+    
+    body = forms.CharField(widget =  forms.Textarea(attrs={
+        'placeholder': 'How can we help ? '}), required=True)
+    subject = forms.CharField(widget = forms.TextInput(attrs={
+        'placeholder': 'Subject'}), required=True)
     class Meta:
         model = Ticket
-        fields = ['body', 'product']
+        fields = ['body','subject']
 
 
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user")
-        super().__init__(*args, **kwargs)
-        self.fields['shipment'] = ModelChoiceField(queryset=user.shipment_set.all())
+class ContactForm(ModelForm):
 
+    class Meta:
+        model = Contact
+        fields = '__all__'
 
 class StoreForm(ModelForm):
     class Meta:

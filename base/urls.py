@@ -14,7 +14,8 @@ from base.views import (
                 TicketCreationView,
                 CommentCreationView,
                 OrderSummaryView,
-                CheckoutView)
+                CheckoutView,
+                ContactView)
 
 
 urlpatterns = [
@@ -44,9 +45,9 @@ urlpatterns = [
     path('budget/<int:pk>', views.budgetPanel, name = 'budget'),
     path('add_budget/<int:pk>', views.addBudget, name='add-budget'),
     path('ratings/', include('star_ratings.urls', namespace='ratings')),
-    path('contact', views.contactPanel, name = 'contact'),
+    path('contact', ContactView.as_view(), name = 'contact'),
     path('create_ticket/', login_required(TicketCreationView.as_view(),
-                            login_url='/accounts/login/'),name = 'shipment-ticket'),
+                            login_url='/accounts/login/'),name = 'ticket'),
     path('ticket_panel/<int:pk>', views.ticketPanel, name='ticket-panel'),
     path('ticket_info/<int:pk>', views.ticketInfo, name='ticket-info'),
     path('stores/', views.stores, name = 'stores'),
