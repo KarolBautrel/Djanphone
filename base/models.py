@@ -152,7 +152,9 @@ class Order(models.Model):
 
 
 class Store(models.Model):
-    address = models.CharField(max_length=30)
+    map_addres = models.CharField(max_length = 300,null=True, blank=True)
+    city = models.CharField(max_length=30)
+    street = models.CharField(max_length=30)
     owner = models.CharField(max_length = 20)
     contact = models.IntegerField(null=True)
     products = models.ManyToManyField(Product, blank=True)
@@ -161,7 +163,7 @@ class Store(models.Model):
 
 
     def __str__(self):
-        return self.address
+        return self.city
 
 
     def get_absolute_url(self):
