@@ -8,6 +8,8 @@ from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 from django_extensions.db.fields import AutoSlugField
 from django_resized import ResizedImageField
+from django_countries.fields import CountryField
+
 STATUS = (
     ('Processed', 'Proccesed'),
     ('Sent', 'Sent'),
@@ -137,6 +139,7 @@ class Order(models.Model):
     ordered_date = models.DateTimeField()
     delivery = models.CharField(max_length = 200,choices = DELIVERY, null=True, blank=True)
     ordered = models.BooleanField(default=False)
+    billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.user.name
@@ -186,5 +189,17 @@ class Ticket(models.Model):
 
     def __str__(self):
         return str(self.ticket_creator)
+
+
+class BillingAddress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    street_address = models.CharField(max_length=100)
+    apartment_address = models.CharField(max_length=100)
+    country = CountryField(multiple = False)
+    zip = models.CharField(max_length=100)
+    
+
+    def __str__(self):
+        return self.user.name
 
 

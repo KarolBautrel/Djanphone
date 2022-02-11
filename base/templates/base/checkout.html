@@ -26,8 +26,8 @@
                 <div class="tab-pane fade in show active" id="tabCheckoutBilling123" role="tabpanel">
   
                   <!--Card content-->
-                  <form>
-  
+                  <form method = "POST" > 
+                    {%csrf_token%}
                     <!--Grid row-->
                     <div class="row">
   
@@ -75,16 +75,19 @@
                     </div>
   
                     <hr>
-  
-                    <div class="mb-1">
-                        <label for="payment_option">Payment Options</label>
-                      {{form.payment_option}}
-                     
+                    <h3>Payment option</h3>
+                    <div class="d-block my-3">
+                      {% for value, name in form.fields.payment_option.choices %}
+                      <div class="custom-control custom-radio">
+                        <input id="{{ name }}" name="payment_option" value="{{ value }}" type="radio" class="custom-control-input" required>
+                        <label class="custom-control-label" for="{{ name }}">{{ name }}</label>
+                      </div>
+                      {% endfor %}
                     </div>
                     <hr>
                     <div class="mb-1">
                         <label for="payment_option">Shipping addres is the same as Billings</label>
-                      {{form.same_billing_address}}
+                      {{form.same_shipping_address}}
                      
                     </div>
 

@@ -1,5 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, User, Comment, Order, Ticket,Store,OrderItem
+from .models import (Product,
+                    User,
+                    Comment,
+                    Order,
+                    Ticket,
+                    Store,
+                    OrderItem,
+                    BillingAddress,
+                    )
 from .forms import (UserForm,
                     EmailChangeForm,
                     ProductForm,
@@ -179,8 +187,33 @@ class CheckoutView(View):
         return render(self.request,'base/checkout.html', context)
 
     def post(self, *args, **kwargs):
-        form = CheckoutForm(self.request.POST or None)
-        if form.is_valid():
+        form = CheckoutForm(self.request.POST)
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            if form.is_valid():
+                street_address = form.cleaned_data['street_address']
+                apartment_address = form.cleaned_data['apartment_address']
+                country = form.cleaned_data['country']
+                zip = form.cleaned_data['zip']
+                # TO DO, DODAC LOGIKE
+                #same_shipping_address =form.cleaned_data['same_billing_address']
+                #save_info = form.cleaned_data['save_info']
+                payment_option = form.cleaned_data['payment_option']
+                billing_address = BillingAddress(
+                    user = self.request.user,
+                    street_address = street_address,
+                    apartment_address = apartment_address,
+                    country = country,
+                    zip = zip,
+                            )
+                billing_address.save()
+                order.billing_address = billing_address
+                order.save()
+                # TODO : REDIRECT PAYMENT OPTION
+                return redirect('checkout')
+        except ObjectDoesNotExist:
+            messages.error(self.request, 'You do not have active orders')
+            return redirect ('/')
             return redirect('checkout')
 
 
@@ -241,13 +274,6 @@ def changePassword(request):
     return render(request, 'base/change_password.html', context)
 
 
-"""def shipmentsPanel(request,pk):
-    user = User.objects.get(id = pk)
-    shipments = user.shipment_set.all()
-    context = {'user':user,'shipments': shipments}  
-    return render(request,'base/shipments.html', context)"""
-
-
 def budgetPanel(request,pk):
     user = User.objects.get(id = pk) 
     return render(request,'base/budget_panel.html')
@@ -258,7 +284,6 @@ def contactPanel(request):
     return render(request,'base/contact_panel.html')
 
     
-# TODO
 class TicketCreationView(CreateView):
     model = Ticket
     fields = ['body','product']
