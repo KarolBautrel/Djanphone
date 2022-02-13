@@ -37,6 +37,8 @@ DELIVERY =(
 class User(AbstractUser):
     name = models.CharField(max_length=200,null=True)
     email= models.EmailField(null=True, unique = True)
+    country = models.CharField(max_length = 100,null=True)
+    city = models.CharField(max_length = 100,null=True)
     address = models.CharField(max_length=200,null=True)
     bio = models.TextField(null=True)
     avatar = models.ImageField(null=True, default = 'avatar.svg')
@@ -192,8 +194,8 @@ class Contact(models.Model):
     def __str__(self):
         return self.email
 
-    def email_send(self):
-         self.send_email(
+    def mail_send(self):
+        send_mail(
             'Thank you for contact',
         'Our team is reviewing your message, stay tuned for answer.',
         'testbautrel111@gmail.com',

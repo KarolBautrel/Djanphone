@@ -17,4 +17,18 @@
   <hr>
   <h2><a href="{%url 'account_signup'%}">Sing up</a></h2>
     {%endif%}
+
+
+    <div class="row">
+      <h3>Temperature for {{request.user.city}}</h3>
+    
+        <div class=" card-body">
+          <h4> {{country_code}}</h4>
+          <h4> Coordinates of {{request.user.city}} {{coordinate}}</h4>
+          <h4> Temperature : {{temp}} C</h4>
+          <h4>  {{main}}</h4>
+        </div>
+      
+
+
   {%endblock%}

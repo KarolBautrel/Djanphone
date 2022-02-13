@@ -40,12 +40,45 @@ from django.utils import timezone
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django import forms
+import urllib.request
+import json
 # Create your views here.
 
 
-def home(request):
-    return render(request,'base/home.html')
+class HomeView(View):       
+    
+    def get(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            city = self.request.user.city
+            source = urllib.request.urlopen(f'http://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid=25cbc478902e4cec447fa217ca54132d').read()
+            list_of_data = json.loads(source)
 
+            data = {
+                'country_code' : str(list_of_data['sys']['country']),
+                'coordinate' : str(list_of_data['coord']['lon']) +','+
+                                str(list_of_data['coord']['lat']) ,                           
+                'temp' : str(list_of_data['main']['temp']),
+                'main' : str(list_of_data['weather'][0]['main']),
+                'description' : str(list_of_data['weather'][0]['description']),
+                'icon' : list_of_data['weather'][0]['icon']
+            }
+            print(data)
+        else : 
+            city = 'London'
+            source = urllib.request.urlopen(f'http://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid=25cbc478902e4cec447fa217ca54132d').read()
+            list_of_data = json.loads(source)
+
+            data = {
+                'country_code' : str(list_of_data['sys']['country']),
+                'coordinate' : str(list_of_data['coord']['lon']) +','+
+                                str(list_of_data['coord']['lat']) ,                           
+                'temp' : str(list_of_data['main']['temp']),
+                'main' : str(list_of_data['weather'][0]['main']),
+                'description' : str(list_of_data['weather'][0]['description']),
+                'icon' : list_of_data['weather'][0]['icon']
+            }
+            
+        return render(self.request, 'base/home.html', data )
 
 class ProductListView(ListView):
     model = Product
@@ -313,7 +346,6 @@ class ContactView(CreateView):
     fields = '__all__'
     template_name  = 'base/contact.html'
 
-
     def form_valid(self, form):
         obj = form.save(commit=False)
         send_mail(
@@ -396,3 +428,5 @@ def addBudget(request, pk):
         form = BudgetForm()
     context = {'form':form}
     return render(request,'base/add_budget.html', context)
+
+

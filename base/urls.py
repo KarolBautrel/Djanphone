@@ -6,6 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from . import views
 from base.views import (
+                HomeView,
                 UpdateUserView, 
                 ProductListView,
                 ProductDetailView, 
@@ -19,7 +20,7 @@ from base.views import (
 
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', HomeView.as_view(), name='home'),
     path('products/', ProductListView.as_view(), name='products'),
     path('products/<slug>', ProductDetailView.as_view(), name = 'product-detail'),
     path('add_to_cart/<slug>', views.addToCart, name = 'add-to-cart'),
