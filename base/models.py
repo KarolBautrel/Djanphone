@@ -135,6 +135,10 @@ class OrderItem(models.Model):
         return self.get_total_product_price()
 
 
+    def get_cart_item_count(self):
+        return self.quantity
+
+        
 class Order(models.Model):
 
     product = models.ManyToManyField(OrderItem, blank=True   )

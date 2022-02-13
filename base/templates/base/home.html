@@ -9,7 +9,7 @@
 
 <div class="jumbotron">
     <div class="container text-center">
-      <h1>Welcome on My First Django App</h1>
+      <h1>Djanphone</h1>
     </div>
     {%if not user.is_authenticated%}
   </div>
@@ -19,16 +19,43 @@
     {%endif%}
 
 
-    <div class="row">
-      <h3>Temperature for {{request.user.city}}</h3>
-    
-        <div class=" card-body">
-          <h4> {{country_code}}</h4>
-          <h4> Coordinates of {{request.user.city}} {{coordinate}}</h4>
-          <h4> Temperature : {{temp}} C</h4>
-          <h4>  {{main}}</h4>
-        </div>
-      
-
+  
+        <section class="vh-50" >
+          <div class="container py-3 h-50">
+        
+            <div class="row d-flex justify-content-center align-items-center h-50">
+              <div class="col-md-6 col-lg-4 col-xl-3">
+        
+                <div class="card" style="color: #505661; border-radius: 35px;">
+                  <div class="card-body p-3">
+        
+                    <div class="d-flex">
+                      <h6 class="flex-grow-1">{{request.user.city}}</h6>
+                      <h6>15:07</h6>
+                    </div>
+        
+                    <div class="d-flex flex-column text-center mt-5 mb-4">
+                      <h6 class="display-4 mb-0 font-weight-bold" style="color: #1C2331;"> {{temp}}°C </h6>
+                      <span class="small" style="color: #868B94">{{main}}</span>
+                    </div>
+        
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1" style="font-size: 1rem;">
+                        <div><i class="fas fa-wind fa-fw" style="color: #868B94;"></i> <span class="ms-1"> {{wind}} km/h </span></div>
+                        <div><i class="fas fa-tint fa-fw" style="color: #868B94;"></i> <span class="ms-1"> {{humidity}}% </span></div>
+                      </div>
+                      <div>
+                        <img src="https://openweathermap.org/img/w/{{icon}}.png" width="60px">
+                      </div>
+                    </div>
+        
+                  </div>
+                </div>
+        
+              </div>
+            </div>
+        
+          </div>
+        </section>
 
   {%endblock%}

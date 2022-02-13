@@ -40,17 +40,18 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{%url 'user-panel'%}">User panel</a>
           </li>
+          {%if user.is_superuser%}
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{%url 'create-product'%}">Create Product</a>
           </li>
+          {%endif%}
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{%url 'order-summary'%}">Cart</a>
+            <a class="nav-link " aria-current="page" href="{%url 'order-summary'%}"> <span class="badge badge-pill bg-danger">{{request.user | cart_product_count}}</span>
+              <span><i class="fas fa-shopping-cart"></i></span></a>
           </li>
+
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{%url 'user-panel'%}">User panel</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{%url 'account_logout'%}">Logut</a>
+            <a class="nav-link active" aria-current="page" href="{%url 'account_logout'%}">Logout</a>
           </li>
        
         </ul>
