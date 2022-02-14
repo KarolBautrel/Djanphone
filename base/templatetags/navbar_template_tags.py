@@ -9,8 +9,10 @@ def cart_product_count(user):
         qs = Order.objects.filter(user=user, ordered = False)
         if qs.exists():
             return qs[0].product.count()
+        else:
+            return ''
     else:
-        return 0
+        return ''
 
 
 @register.filter

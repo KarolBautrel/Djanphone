@@ -108,9 +108,9 @@ class MessageForm(ModelForm):
         model = Message
         fields = ['subject','receiver','body']
 
-    def clean(self, *args, **kwargs):
+"""    def clean(self, *args, **kwargs):
         cleaned_data = super().clean()
         sender = self.request.user
         receiver = self.cleaned_data['receiver']
         if sender == receiver:
-            raise ValidationError ("You cant send message to yourself")
+            raise ValidationError ("You cant send message to yourself")"""
