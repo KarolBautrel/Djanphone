@@ -21,7 +21,6 @@ class EmailChangeForm(ModelForm):
         model = User
         fields = ['email']
 
-
     def clean(self):
         cleaned_data = super().clean()
         new_email = cleaned_data.get('email')

@@ -17,7 +17,8 @@ from base.views import (
                 OrderSummaryView,
                 CheckoutView,
                 ContactView,
-                SendMessageCreationView)
+                SendMessageCreationView,
+                InboxView)
 
 
 urlpatterns = [
@@ -55,7 +56,8 @@ urlpatterns = [
     path('stores/', views.stores, name = 'stores'),
     path('store_info/<int:pk>', views.storeInfo, name='store-info'),
     path('modify_store_product/<int:pk>', views.modifyStoreProducts, name = 'modify-product-store'),
-    path('message', SendMessageCreationView .as_view(), name='message')
+    path('message', SendMessageCreationView .as_view(), name='message'),
+    path('inbox', InboxView.as_view(), name='inbox' )
     
 
 ]

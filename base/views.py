@@ -461,3 +461,15 @@ class SendMessageCreationView(CreateView):
 
         def get_success_url(self):
             return reverse('home')
+
+
+class InboxView(ListView):
+    model = Message
+    context_object_name = 'messages'
+    paginate_by = 5
+    template_name = 'base/inbox.html'
+
+    def get_queryset(self,*args, **kwargs):
+        qs = super().get_queryset() 
+        messages = qs.filter(receiver=self.request.user)
+        return messages
