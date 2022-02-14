@@ -2,15 +2,15 @@
 
 
 {%block content%}
+<div class="container my-5 py-5">
 
-<h2>Addres : {{store.address}}</h2>
-<h3>Contact: {{store.contact}}</h3>
-<h4>Owner : {{store.owner}}</h4>
-<hr>
+<section class="text-center">
   
 <form method="get">
   {{ productFilter.form }}
-  <button type="submit" class="btn btn-primary">Search</button>
+  <div>
+  <button type="submit" class="btn btn-warning btn-rounded">Search</button>
+</div>
 </form>
 <hr>
 {%if request.user == store.moderator%}
@@ -20,9 +20,7 @@
 
 {%endif%}
 <hr>
-<div class="container my-5 py-5">
 
-  <section class="text-center">
 
     <div class="row">
 

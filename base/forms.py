@@ -1,5 +1,5 @@
 from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField, CheckboxSelectMultiple
-from .models import Product, User, Comment, Order, Store, Ticket,Contact
+from .models import Product, User, Comment, Order, Store, Ticket,Contact,Message
 from django import forms
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
@@ -102,3 +102,16 @@ class StoreForm(ModelForm):
             'products' : CheckboxSelectMultiple
         }
 
+
+#ADD VALIDATIONS
+class MessageForm(ModelForm):
+    class Meta:
+        model = Message
+        fields = ['subject','receiver','body']
+
+    def clean(self, *args, **kwargs):
+        cleaned_data = super().clean()
+        sender = self.request.user
+        receiver = self.cleaned_data['receiver']
+        if sender == receiver:
+            raise ValidationError ("You cant send message to yourself")

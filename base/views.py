@@ -8,7 +8,8 @@ from .models import (Product,
                     Store,
                     OrderItem,
                     BillingAddress,
-                    Contact
+                    Contact,
+                    Message
                     )
 from .forms import (UserForm,
                     EmailChangeForm,
@@ -18,7 +19,8 @@ from .forms import (UserForm,
                     BudgetForm,
                     StoreForm, 
                     CheckoutForm,
-                    TicketForm
+                    TicketForm,
+                    MessageForm
                     )
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
@@ -66,7 +68,7 @@ class HomeView(View):
             }
         else : 
             city = 'London'
-            source = urllib.request.urlopen(f'http://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid=25cbc478902e4cec447fa217ca54132d').read()
+            source = urllib.request.urlopen(f'http://api.openweathermap.org/data/2.5/weather?q=London&units=metric&appid=25cbc478902e4cec447fa217ca54132d').read()
             list_of_data = json.loads(source)
 
             data = {
@@ -74,6 +76,8 @@ class HomeView(View):
                 'coordinate' : str(list_of_data['coord']['lon']) +','+
                                 str(list_of_data['coord']['lat']) ,                           
                 'temp' : str(list_of_data['main']['temp']),
+                'humidity': str(list_of_data['main']['humidity']),
+                'wind' : str(list_of_data['wind']['speed']),
                 'main' : str(list_of_data['weather'][0]['main']),
                 'description' : str(list_of_data['weather'][0]['description']),
                 'icon' : list_of_data['weather'][0]['icon']
@@ -442,3 +446,18 @@ def addBudget(request, pk):
     return render(request,'base/add_budget.html', context)
 
 
+class SendMessageCreationView(CreateView):
+        model = Message
+        form_class = MessageForm
+        template_name = 'base/message.html'
+        redirect_field_name = 'base/login.html'
+    
+        def form_valid(self, form):
+            obj = form.save(commit=False)
+            obj.creator = self.request.user
+            obj.save()
+            messages.success(self.request, f'Message sent to {obj.receiver.name}')
+            return HttpResponseRedirect(self.get_success_url())
+
+        def get_success_url(self):
+            return reverse('home')

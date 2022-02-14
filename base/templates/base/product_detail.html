@@ -131,14 +131,14 @@
       <img class="card-img-100 rounded-circle z-depth-1-half d-flex mr-3" src="{{comment.user.avatar.url}}" width="80" >
       <div class="media-body">
         {%if request.user == comment.user%}
-        <a>
+        <a href="{%url 'profile' comment.user.id%}">
           <h5 class="user-name font-weight-bold">{{comment.user.name}}
             <a href="{%url 'delete-comment' comment.id %}"><i class="far fa-trash-alt"></i></a></h5>
         </a>
         {%else%}
-       
+        <a href="{%url 'profile' comment.user.id%}">
         <h5 class="user-name font-weight-bold">{{comment.user.name}}</h5>
-        
+        </a>
         {%endif%}
         <div class="card-data">
             <li class="comment-date font-small grey-text">
