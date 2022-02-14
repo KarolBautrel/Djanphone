@@ -59,7 +59,8 @@ urlpatterns = [
     path('modify_store_product/<int:pk>', views.modifyStoreProducts, name = 'modify-product-store'),
     path('message', SendMessageCreationView .as_view(), name='message'),
     path('inbox', InboxView.as_view(), name='inbox' ),
-    path('message_detail/<int:pk>', MessageDetailView.as_view(), name='message-detail')
+    path('message_detail/<slug>', MessageDetailView.as_view(), name='message-detail'),
+    path('read_message/<slug>', views.read_message, name= 'read-message' )
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -230,16 +230,16 @@ class BillingAddress(models.Model):
         return self.user.name
 
 
+# TODO
 class Message(models.Model):
     subject = models.CharField(max_length=30, blank=True, null=False)
     creator = models.ForeignKey(User, related_name="sender",on_delete=models.CASCADE)
-    receiver = models.ForeignKey(User, related_name = 'receiver',on_delete=models.CASCADE)
+    receiver = models.ManyToManyField(User,)
     body = models.TextField(max_length=500, null=False)
     created = models.DateTimeField(auto_now_add=True)
     is_readed = models.BooleanField(default=False)
+    slug = AutoSlugField(populate_from=['subject'],max_length=50,null=True, blank=True)
 
     def __str__(self):
         return f'sender:{self.creator.name}, receiver : {self.receiver.name}'
 
-class Inbox(models.Model):
-    message = models.ForeignKey(Message, on_delete=models.CASCADE)

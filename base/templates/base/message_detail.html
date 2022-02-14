@@ -2,5 +2,17 @@
 
 {%block content%}
 
-message.body
+{{message.body}}
+{{message.is_readed}}
+<form class="form" action="#" method = "POST">
+    {%csrf_token%}
+    <div class="form__group">
+        <p></p>
+    </div>
+        
+    <div class="for__group">
+       <a href = '{%url "read-message" message.slug%}'  class="btn btn--main" type="submit" value="Confirm">Mark as readed</a>
+    </div>
+
+</form>
 {%endblock%}

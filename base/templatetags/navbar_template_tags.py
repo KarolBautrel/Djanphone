@@ -18,7 +18,7 @@ def cart_product_count(user):
 @register.filter
 def message_inbox_unreaded(user):
     if user.is_authenticated:
-        qs = Message.objects.filter(receiver = user, is_readed = False)
+        qs = Message.objects.filter(is_readed = False)
         if qs.exists():
             return '!'
         else:

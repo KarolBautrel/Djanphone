@@ -34,10 +34,10 @@ from django.views.generic import (UpdateView,
                                 ListView,
                                 DetailView,
                                 View, 
-                                CreateView
+                                CreateView,
                                 )
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.utils import timezone
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
@@ -446,19 +446,24 @@ def addBudget(request, pk):
     return render(request,'base/add_budget.html', context)
 
 
-class SendMessageCreationView(CreateView):
+class SendMessageCreationView(PermissionRequiredMixin,CreateView):
+        permission_required = 'is_staff'
         model = Message
-        form_class = MessageForm
+        fields =['subject','receiver','body']
         template_name = 'base/message.html'
         redirect_field_name = 'base/login.html'
     
         def form_valid(self, form):
-            obj = form.save(commit=False)
-            obj.creator = self.request.user
-            obj.save()
-            messages.success(self.request, f'Message sent to {obj.receiver.name}')
-            return HttpResponseRedirect(self.get_success_url())
-
+            users = User.objects.all()
+        
+            if self.request.user.is_superuser:
+                obj = form.save(commit=False)
+                obj.creator = self.request.user
+                obj.save()
+                messages.success(self.request, f'Message has been sent')
+                return HttpResponseRedirect(self.get_success_url())
+            else:
+                HttpResponse(status=404)
         def get_success_url(self):
             return reverse('home')
 
@@ -469,14 +474,22 @@ class InboxView(ListView):
     paginate_by = 5
     template_name = 'base/inbox.html'
 
-    def get_queryset(self,*args, **kwargs):
-        qs = super().get_queryset() 
-        message = qs.filter(receiver=self.request.user)
-        return message
-
 
 class MessageDetailView(DetailView):
     model = Message
     context_object_name = 'message'
     template_name = 'base/message_detail.html'
     
+# TODO: support
+def read_message(request, slug):
+    message = Message.objects.get(slug=slug)
+    print(message)
+    message.receiver.add(request.user)
+    print(message.receiver.name)
+    message.is_readed = True
+    message.save()
+    return redirect('inbox')
+    
+
+
+        

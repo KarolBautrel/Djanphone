@@ -106,7 +106,7 @@ class StoreForm(ModelForm):
 class MessageForm(ModelForm):
     class Meta:
         model = Message
-        fields = ['subject','receiver','body']
+        fields = ['is_readed']
 
 """    def clean(self, *args, **kwargs):
         cleaned_data = super().clean()
