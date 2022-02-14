@@ -1,11 +1,21 @@
 {%extends 'base.html'%}
+{% load crispy_forms_tags %}
+
+
 {%block content%}
 <div class="container my-5 py-5">
 
   <section class="text-center">
-
+    <form method="get" action="">
+    <div>
+    {{filter.form}}  
+    </div>
+    <hr>
+    <div>
+    <button type="submit" class = "btn btn-warning btn-rounded">Search</button>
+    </div>
     <div class="row">
-
+      
       
         {%for item in products%}
         {%if item.is_approved %}
@@ -32,7 +42,7 @@
         </div>
         {%endif%}
         {%endfor%}
-
+      </form>
 
       </div>
 
