@@ -236,6 +236,7 @@ class Message(models.Model):
     receiver = models.ForeignKey(User, related_name = 'receiver',on_delete=models.CASCADE)
     body = models.TextField(max_length=500, null=False)
     created = models.DateTimeField(auto_now_add=True)
+    is_readed = models.BooleanField(default=False)
 
     def __str__(self):
         return f'sender:{self.creator.name}, receiver : {self.receiver.name}'

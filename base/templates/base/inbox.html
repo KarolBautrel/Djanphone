@@ -2,10 +2,55 @@
 
 {%block content%}
 
-{%for message in messages%}
+<div class="row" style = 'margin-top:20px; margin-left:20px;'>
+    <div class="col-12">
+        <h2>Order summary </h2>
+     
+        <br>
+       <table class="table table-hover table-light">
+          <thead>
+             <tr>
+                <!-- Your Columns HERE -->
+                <th scope="col">#</th>
+                <th scope="col">Sender</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Body</th>
+             </tr>
+          </thead>
+     
+             <!-- Your rows inside the table HERE: -->
+             {%for i in message%}
+             <tr>
+               <th scope="row">{{forloop.counter}}</th>
+                <td>{{i.creator.name}}</td>
+                <td>{{i.subject}}</td>
+                <!--ADD QUANTITY ICONS INC/DEC-->
+               
+               <td>
+                <a href='{%url "message-detail" i.id%}' class = 'btn btn-warning btn-rounded '>Check the message</a>
+                
+               </td>
 
-{{message.subject}}
+                {% endfor %}
+                {%if not message%}
+                <tr>
+                  <td colspan="5"><strong>Your inbox is empty</strong></td>
+               </tr>
+               <tr>
+                <td colspan="5"><strong><a class="btn btn-primary float-right" href="{%url 'home'%}"  >Get back to home</strong></td>
+               </tr>
+               {%endif%}
+             </tr>
+        
+             <tr>
+               <td colspan="5"><strong><a class="btn btn-primary float-right" href="{%url 'home'%}"  >Get back to home</strong></td>
 
-{%endfor%}
+                    
+            </tr>
+             
+         
+          </tbody>
+       </table>
+    </div>
 
 {%endblock%}

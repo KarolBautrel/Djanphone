@@ -465,11 +465,18 @@ class SendMessageCreationView(CreateView):
 
 class InboxView(ListView):
     model = Message
-    context_object_name = 'messages'
+    context_object_name = 'message'
     paginate_by = 5
     template_name = 'base/inbox.html'
 
     def get_queryset(self,*args, **kwargs):
         qs = super().get_queryset() 
-        messages = qs.filter(receiver=self.request.user)
-        return messages
+        message = qs.filter(receiver=self.request.user)
+        return message
+
+
+class MessageDetailView(DetailView):
+    model = Message
+    context_object_name = 'message'
+    template_name = 'base/message_detail.html'
+    
