@@ -452,27 +452,26 @@ class SendMessageCreationView(PermissionRequiredMixin,CreateView):
         permission_required = 'is_staff'
         model = Message
         context_object_name = 'message'
-        fields =['subject','body','receiver']
+        fields =['subject','body']
         template_name = 'base/message.html'
         redirect_field_name = 'base/login.html'
     
     # TODO CONFIGURE MASS SENDING
         def form_valid(self, form):
-            if self.request.user.is_superuser:
-                users = User.objects.all()
-                obj = form.save(commit=False)
-                obj.creator = self.request.user
-                obj.save()
-                body = form.cleaned_data['body']
-                receiver = form.cleaned_data['receiver']
-                mes_receiver = MessageReceiver.objects.create(
-                    receiver = receiver[0],
-                    message = obj
-                )
-                messages.success(self.request, f'Message has been sent')
-                return HttpResponseRedirect(self.get_success_url())
-            else:
-                HttpResponse(status=404)
+    
+            obj = form.save(commit=False)
+            obj.creator = self.request.user
+            obj.save()
+            receiver = User.objects.all()
+            for man in receiver:
+                MessageReceiver.objects.create(
+                    message = obj,
+                    is_readed = False,
+                    receiver = man
+                    )
+            messages.success(self.request, f'Message has been sent')
+            return HttpResponseRedirect(self.get_success_url())
+
         def get_success_url(self):
             return reverse('home')
 
@@ -494,10 +493,10 @@ class MessageDetailView(DetailView):
     context_object_name = 'message'
     template_name = 'base/message_detail.html'
     
+
 # TODO: support
 def read_message(request, pk):
     message = MessageReceiver.objects.get(id=pk)
-    print(message)
     message.is_readed = True
     message.save()
     return redirect('inbox')

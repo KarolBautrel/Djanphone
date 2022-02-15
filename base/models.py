@@ -66,7 +66,7 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     is_approved = models.BooleanField(default=False)
     slug = AutoSlugField(populate_from=['title'],max_length=50,null=True, blank=True)
-
+    status = models.CharField(default = 'Different',max_length = 100,null=True, blank=True, choices = BRAND)
     class Meta:
         ordering = ['-created']
 
@@ -245,9 +245,19 @@ class Message(models.Model):
 
 
 class MessageReceiver(models.Model):
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
     is_readed = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.receiver.name
+        return self.receiver
+
+
+class ShipmentAddress(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    country = CountryField(blank_label='(select country)')
+    state = models.CharField( max_length=255, null=False, blank=True)
+    city = models.CharField( max_length=255, null=False, blank=True)
+    street = models.CharField( max_length=255, null=False, blank=True)
+    zip_code = models.CharField( max_length=255, null=False, blank=True)
