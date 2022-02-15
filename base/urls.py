@@ -60,7 +60,8 @@ urlpatterns = [
     path('message', SendMessageCreationView .as_view(), name='message'),
     path('inbox', InboxView.as_view(), name='inbox' ),
     path('message_detail/<int:pk>', MessageDetailView.as_view(), name='message-detail'),
-    path('read_message/<int:pk>', views.read_message, name= 'read-message' )
+    path('read_message/<int:pk>', views.read_message, name= 'message-read' ),
+    path('delete_message/<int:pk>', views.delete_message, name= 'message-delete' )
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

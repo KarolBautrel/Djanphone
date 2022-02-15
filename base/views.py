@@ -189,7 +189,8 @@ def removeFromCart(request, slug):
                 user = request.user, 
                 ordered = False
             )[0]
-            order.product.remove(order_item)
+            order_item.delete()
+            order_item.quanitity = 0
             messages.success(request, 'You removed the product from your cart')
             return redirect('order-summary')
         else:
@@ -478,9 +479,10 @@ class SendMessageCreationView(PermissionRequiredMixin,CreateView):
             return reverse('home')
 
 
-class InboxView(ListView):
+class InboxView( ListView):
+    
     model = MessageReceiver
-    context_object_name = 'message'
+    context_object_name = 'messages'
     paginate_by = 5
     template_name = 'base/inbox.html'
 
@@ -490,19 +492,24 @@ class InboxView(ListView):
         return queryset
 
 
-class MessageDetailView(DetailView):
+class MessageDetailView( DetailView):
+    
     model = MessageReceiver
     context_object_name = 'message'
     template_name = 'base/message_detail.html'
     
 
 # TODO: support
+@login_required
 def read_message(request, pk):
     message = MessageReceiver.objects.get(id=pk)
     message.is_readed = True
     message.save()
     return redirect('inbox')
-    
 
-
-        
+@login_required
+def delete_message(request, pk):
+    message = MessageReceiver.objects.get(id=pk)
+    message.delete()
+    messages.success(request, f'Message has been deleted')
+    return redirect('inbox')

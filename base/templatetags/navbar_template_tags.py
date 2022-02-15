@@ -1,18 +1,20 @@
 from django import template
-from base.models import Order, MessageReceiver
+from base.models import OrderItem, MessageReceiver
 
 register = template.Library()
 
 @register.filter
 def cart_product_count(user):
     if user.is_authenticated:
-        qs = Order.objects.filter(user=user, ordered = False)
+        qs = OrderItem.objects.filter(user=user, ordered = False)
         if qs.exists():
-            return qs[0].product.count()
+            quantity = sum(i.quantity for i in qs)
+            if quantity == 0 :
+                return ''
+            else:
+                return quantity
         else:
             return ''
-    else:
-        return ''
 
 
 @register.filter
