@@ -6,18 +6,11 @@
 {%endblock%}
 
 {%block content%}
-
-<div class="jumbotron">
-    <div class="container text-center">
-      <h1>Djanphone</h1>
-    </div>
-    {%if not user.is_authenticated%}
-  </div>
-  <h2><a href="{%url 'account_login'%}">Login</a></h2>
-  <hr>
-  <h2><a href="{%url 'account_signup'%}">Sing up</a></h2>
-    {%endif%}
-
+<div class="p-5 text-center bg-light">
+  <h1 class="mb-3">Djanphone</h1>
+  <h4 class="mb-3">From passionates to passionates</h4>
+  <a class="btn btn-primary" href="" role="button">Login </a>
+</div>
 
   
         <section class="vh-50" >

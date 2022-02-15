@@ -190,7 +190,7 @@ def removeFromCart(request, slug):
                 ordered = False
             )[0]
             order_item.delete()
-            order_item.quanitity = 0
+            
             messages.success(request, 'You removed the product from your cart')
             return redirect('order-summary')
         else:
@@ -216,6 +216,8 @@ def removeSingleItemFromCart(request, slug):
             )[0]
             order_item.quantity -= 1
             order_item.save()
+            if order_item.quantity == 0:
+                order_item.delete()
             messages.success(request, 'This item quantity was decreased by 1 ')
             return redirect('order-summary')
         else:
@@ -291,6 +293,10 @@ class UpdateUserView(UpdateView, LoginRequiredMixin):
 
 def userPanel(request):
     return render(request, 'base/user_panel.html')
+
+
+def adminPanel(request):
+    return render(request, 'base/admin_panel.html')
 
 
 class ProductCreateView(CreateView):
