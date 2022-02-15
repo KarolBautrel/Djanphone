@@ -23,11 +23,11 @@
              <tr>
                <th scope="row">{{forloop.counter}}</th>
                 <td>Staff</td>
-                <td>{{i.subject}}</td>
+                <td>{{i.message.subject}}</td>
                 <!--ADD QUANTITY ICONS INC/DEC-->
                
                <td>
-                <a href='{%url "message-detail" i.slug%}' class = 'btn btn-warning btn-rounded '>Check the message</a>
+                <a href='{%url "message-detail" i.id%}' class = 'btn btn-warning btn-rounded '>Check the message</a>
                 
                </td>
 

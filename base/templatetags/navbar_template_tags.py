@@ -1,5 +1,5 @@
 from django import template
-from base.models import Order, Message
+from base.models import Order, MessageReceiver
 
 register = template.Library()
 
@@ -18,7 +18,7 @@ def cart_product_count(user):
 @register.filter
 def message_inbox_unreaded(user):
     if user.is_authenticated:
-        qs = Message.objects.filter(is_readed = False)
+        qs = MessageReceiver.objects.filter(receiver = user,is_readed = False)
         if qs.exists():
             return '!'
         else:
