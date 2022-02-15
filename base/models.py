@@ -43,7 +43,8 @@ class User(AbstractUser):
     bio = models.TextField(null=True)
     avatar = models.ImageField(null=True, default = 'avatar.svg')
     budget = models.IntegerField(null=True, default=3000)
-    
+    is_superuser = models.BooleanField(null=True, default=False)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
@@ -250,7 +251,7 @@ class MessageReceiver(models.Model):
     is_readed = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.receiver
+        return self.receiver.name
 
 
 class ShipmentAddress(models.Model):

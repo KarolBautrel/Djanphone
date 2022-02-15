@@ -463,12 +463,14 @@ class SendMessageCreationView(PermissionRequiredMixin,CreateView):
             obj.creator = self.request.user
             obj.save()
             receiver = User.objects.all()
+            
             for man in receiver:
-                MessageReceiver.objects.create(
-                    message = obj,
-                    is_readed = False,
-                    receiver = man
-                    )
+                if man.is_superuser == False:
+                    MessageReceiver.objects.create(
+                        message = obj,
+                        is_readed = False,
+                        receiver = man
+                        )
             messages.success(self.request, f'Message has been sent')
             return HttpResponseRedirect(self.get_success_url())
 
