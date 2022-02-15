@@ -4,14 +4,12 @@
 {%block content%}
    
 <main >
-    <div class="container">
-        <div class="col-8">
+  <div class="row d-flex justify-content-center">
+    <div class="col-md-4">
 
                     <h3>Change mail</h3>
-            <div class="layout__body">
                 <form method="post">
                     {% csrf_token %}
-                    <div class="form-group row">
                     {% for field in form %}
                     {{ form.non_field_errors }}
                       <div class="fieldWrapper">

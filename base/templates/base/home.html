@@ -9,7 +9,9 @@
 <div class="p-5 text-center bg-light">
   <h1 class="mb-3">Djanphone</h1>
   <h4 class="mb-3">From passionates to passionates</h4>
-  <a class="btn btn-primary" href="" role="button">Login </a>
+  {%if not user.is_authenticated%}
+  <a class="btn btn-primary" href="{%url 'account_login'%}" role="button">Login </a>
+  {%endif%}
 </div>
 
   

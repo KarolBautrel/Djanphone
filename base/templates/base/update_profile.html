@@ -6,17 +6,16 @@
 
 
 </style>
-    <main >
-        <div class="container">
-            <div class="col-8">
+    
+        <div class="row d-flex justify-content-center">
+          <div class="col-md-4">
                         <h3>Edit your profile</h3>
                 <div class="layout__body">
                     <form class="form" action="#" method = 'POST' enctype="multipart/form-data">
                         {% csrf_token %}
-                        <div class="row">
-                          <div class="col-6">
+                        
                             {{ form|crispy }}
-                          </div>
+                          
                           <div class="col-6">
 
                           </div>
@@ -29,5 +28,5 @@
             </div>
         </div>
       </div>
-    </main>
+
     {%endblock content%}
