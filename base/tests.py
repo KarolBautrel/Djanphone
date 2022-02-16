@@ -95,6 +95,9 @@ class AuthorizationTestCase(TestCase):
 
     def test_uanuthorized_user_has_acces_to_products_page(self):
 
+        '''
+        Unauthorized user is able to get to products list page
+        '''
         self.client = Client()
         url = reverse('products')
         response = self.client.get(url)
@@ -102,8 +105,11 @@ class AuthorizationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['products']),0)
 
-    def test_product_list_view(self):
 
+    def test_product_list_view(self):
+        '''
+        Checking if number of product in list view is correct
+        '''
         Product.objects.create(title='test1234',  price=200, slug='test1234')
         self.client = Client()
         url = reverse('products')
