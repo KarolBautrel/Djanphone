@@ -48,7 +48,6 @@ class User(AbstractUser):
                                   processors=[ResizeToFill(100, 50)],
                                   format='JPEG',
                                   options={'quality': 60})
-    budget = models.IntegerField(null=True, default=3000)
     is_superuser = models.BooleanField(null=True, default=False)
 
     USERNAME_FIELD = 'email'

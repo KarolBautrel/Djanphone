@@ -70,12 +70,6 @@ class OrderForm(ModelForm):
         fields = ['user','delivery']
 
 
-class BudgetForm(ModelForm):
-    class Meta:
-        model = User
-        fields = ['budget']
-
-
 class TicketForm(ModelForm):
     
     body = forms.CharField(widget =  forms.Textarea(attrs={
