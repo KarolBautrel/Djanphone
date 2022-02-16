@@ -1,6 +1,7 @@
 from django.dispatch import receiver
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.mail import send_mail
+from django.core.paginator import Paginator
 from .models import (Product,
                     User,
                     Comment,
@@ -88,9 +89,10 @@ class HomeView(View):
         return render(self.request, 'base/home.html', data )
 
 class ProductListView(ListView):
+    
     model = Product
     context_object_name = 'products'
-    paginate_by = 5
+    paginate_by = 4
     template_name = 'base/products.html'
 
     def get_queryset(self):

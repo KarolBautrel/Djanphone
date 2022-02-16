@@ -10,6 +10,8 @@ from django_extensions.db.fields import AutoSlugField
 from django_resized import ResizedImageField
 from django_countries.fields import CountryField
 from django.core.mail import send_mail
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 
 STATUS = (
     ('Processed', 'Proccesed'),
@@ -42,6 +44,10 @@ class User(AbstractUser):
     address = models.CharField(max_length=200,null=True)
     bio = models.TextField(null=True)
     avatar = models.ImageField(null=True, default = 'avatar.svg')
+    avatar_thumbnail = ImageSpecField(source='avatar',
+                                  processors=[ResizeToFill(100, 50)],
+                                  format='JPEG',
+                                  options={'quality': 60})
     budget = models.IntegerField(null=True, default=3000)
     is_superuser = models.BooleanField(null=True, default=False)
 
@@ -62,6 +68,10 @@ class Product(models.Model):
     price = models.FloatField(null=True, blank=True)
     discount_price = models.FloatField(null=True, blank = True)
     image = models.ImageField(  default = 'pobrane.png')
+    image_thumbnail = ImageSpecField(source='image',
+                                  processors=[ResizeToFill(100, 100)],
+                                  format='JPEG',
+                                  options={'quality': 60})
     thumbnail = models.ImageField( default = 'pobrane.png')
     description = models.TextField(max_length=200,null=True, default = 'This is test field')
     created = models.DateTimeField(auto_now_add = True)
@@ -84,27 +94,7 @@ class Product(models.Model):
     def get_remove_from_cart_url(self):
         return reverse('remove-from-cart', kwargs={'slug': self.slug})
 
-    def get_thumbnail(self):
-        if self.thumbnail:
-            return 'http://127.0.0.1:8000' + self.thumbnail.url
-        else: 
-            if self.image:
-                self.thumbnail = self.make_thumbnail(self.image)
-                self.save()
-                return 'http://127.0.0.1:8000' + self.image.url
-            else:
-                return ''
-
-    def make_thumbnail(self, image, size=(200,100)):
-        img = Image.open(image)
-        img.convert("RGB")
-        img.thumbnail(size)
-
-        thumb_io=BytesIO() 
-        img.save(thumb_io, 'JPEG', quality=100) # przetworzenie za pomoca thumb_io
-
-        thumbnail = File(thumb_io, name=image.name)
-        return thumbnail
+    
 
 
 class OrderItem(models.Model):

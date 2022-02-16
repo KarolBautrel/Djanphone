@@ -3,7 +3,13 @@
 
 
 {%block content%}
-<div class="container my-5 py-5">
+<style>
+  .col-4 {
+
+    margin: 5%;
+  }
+</style>
+<div class="container my-6 py-6">
 
   <section class="text-center">
     <form method="get" action="">
@@ -14,17 +20,15 @@
     <div>
     <button type="submit" class = "btn btn-warning btn-rounded">Search</button>
     </div>
-    <div class="row">
-      
-      
+    
+     </form>  
+      <div class="row">
         {%for item in products%}
         {%if item.is_approved %}
         <div class="col-4">
-      
           <a href="" class="waves-effect waves-light"><img
-            src="{{item.image.url}}" class="img-fluid"
+            src="{{item.image_thumbnail.url}}" class="img-fluid"
             alt=""></a>
-     
         <div class="card">
           <div class="card-body">
 
@@ -38,13 +42,14 @@
           
             <a href ="{{item.get_absolute_url}}" type="button" class="btn btn-outline-black btn-rounded btn-sm px-3 waves-effect" >Details</a>
           </div>
-          </div>
         </div>
+        </div>
+        
         {%endif%}
         {%endfor%}
-      </form>
+     
 
-      </div>
+     
 
  </div>
 
