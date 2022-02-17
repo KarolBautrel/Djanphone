@@ -20,7 +20,10 @@ from django.views.generic import (
 from django.utils import timezone
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
-
+import stripe
+from django.conf import settings
+from django.http import JsonResponse
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class ProductListView(ListView):
     model = Product
@@ -213,3 +216,35 @@ class CheckoutView(View):
             messages.error(self.request, 'You do not have active orders')
             return redirect ('/')
             return redirect('checkout')
+
+
+class PaymentView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'base/payment.html')
+
+    def post(self, request, *args, **kwargs):
+        YOUR_DOMAIN = 'http://127.0.0.1:8000/'
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types = ['card'],
+            
+            line_items=[
+                {
+                    'price_data':{
+                        'currency':'usd',
+                        'unit_amount': 2000,
+                        'product_data':{
+                            'name':'Stubborn attachements'
+                        },
+                    },
+                   
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=YOUR_DOMAIN + '/home.html',
+            cancel_url=YOUR_DOMAIN + '/inboz.html',
+        )
+        return JsonResponse({
+
+            'id': checkout_session.id
+        })

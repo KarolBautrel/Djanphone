@@ -20,7 +20,8 @@ from base.online_shop import (
              ProductDetailView, 
              CommentCreationView,
              OrderSummaryView,
-             CheckoutView
+             CheckoutView,
+             PaymentView
 )       
 from base.user import (
         UpdateUserView, 
@@ -50,7 +51,9 @@ urlpatterns = [
     path('delete_comment/<int:pk>', online_shop.deleteComment, name = 'delete-comment'),
     path('order_summary/', login_required(OrderSummaryView.as_view(),
                             login_url='/accounts/login/'),name='order-summary'),
-    path('account_settings', user.settingsPanel, name = 'account-settings'),
+    path('checkout/', login_required(CheckoutView.as_view(), login_url='/accounts/login/'),name='checkout'),
+    path('payment/<payment_option>', login_required(PaymentView.as_view(),login_url='/accounts/login/'), name='payment'),
+    path('account_settings/', user.settingsPanel, name = 'account-settings'),
     path('account_settings/<int:pk>/profile/', UserDetailView.as_view(), name = 'profile'),
     path('account_settings/update_profile/<int:pk>', login_required(UpdateUserView.as_view(), 
                                     login_url='/accounts/login/'), name='update-user'),
@@ -60,8 +63,7 @@ urlpatterns = [
     path('message_detail/<int:pk>', MessageDetailView.as_view(), name='message-detail'),
     path('read_message/<int:pk>', user.read_message, name= 'message-read' ),
     path('delete_message/<int:pk>', user.delete_message, name= 'message-delete' ),
-    path('checkout', login_required(CheckoutView.as_view(),
-                        login_url='/accounts/login/'),name='checkout'),
+    
     path('accounts/', include('allauth.urls')),
     path('ratings/', include('star_ratings.urls', namespace='ratings')),
     path('contact', ContactView.as_view(), name = 'contact'),
