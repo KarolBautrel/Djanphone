@@ -14,7 +14,7 @@ from django.urls import reverse
 
 
 def adminPanel(request):
-    return render(request, 'base/admin_panel.html')
+    return render(request, 'base/superuser_panel.html')
 
 
 class ProductCreateView(CreateView):

@@ -32,8 +32,8 @@ class UpdateUserView(UpdateView, LoginRequiredMixin):
     template_name  = 'base/update_profile.html'
     
 
-def userPanel(request):
-    return render(request, 'base/user_panel.html')
+def settingsPanel(request):
+    return render(request, 'base/account_setting.html')
 
 
 def changePassword(request):
