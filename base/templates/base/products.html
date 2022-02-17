@@ -5,11 +5,12 @@
 {%block content%}
 <style>
   .col-4 {
-
+  
     margin: 5%;
   }
+
 </style>
-<div class="container my-6 py-6">
+<div class="container my-5 py-5">
 
   <section class="text-center">
     <form method="get" action="">
@@ -45,10 +46,30 @@
         </div>
         </div>
         
+        
         {%endif%}
         {%endfor%}
-     
-
+                  {% if is_paginated %}
+                  <div class="text-justify-content">
+                  <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+             
+                    {% endif %}
+                    {% for i in paginator.page_range %}
+                      {% if page_obj.number == i %}
+                        <li class="page-item"><a class="page-link" >{{ i }}</a> </li>
+                      {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                      {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                      <li class="page-item" ><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                  
+                    {% endif %}
+                  </ul>
+                {% endif %} 
+              </div>
      
 
  </div>
@@ -59,3 +80,15 @@
 
 
 {%endblock%}
+
+
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+  </ul>
+</nav>
