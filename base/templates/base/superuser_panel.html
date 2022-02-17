@@ -1,12 +1,16 @@
 {%extends 'base.html'%}
 
 {%block content%}
+<style>
+ .container {
+  margin-top: 50px;
+ }
+</style>
 
-
-
-<li class="nav-item">
-  <a class="nav-link active" type ="btn-btn-primary" aria-current="page" href="{%url 'create-product'%}">Create Product</a>
-</li>
-
-
+<div class="container">
+<div class="d-grid gap-3 col-2 mx-auto">
+  <a class="btn btn-primary" href="{%url 'message'%}" role = 'button' >Send Mass message</a>
+  <a class="btn btn-primary" href="{%url 'create-product'%}" class="btn btn-primary">Create Product</a>
+</div>
+</div>
 {%endblock%}

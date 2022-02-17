@@ -2,13 +2,19 @@
 
 
 {%block content %}
+<style>
+    .container {
+     margin-top: 50px;
+    }
+   </style>
+<div class="container">
+    <div class="d-grid gap-3 col-2 mx-auto">
+        <a class="btn btn-primary" href="{{request.user.get_update_profile_url}}" role = 'button' >Edit Profile</a>
+        <a class="btn btn-primary" href="{%url 'change-password'%}" class="btn btn-primary">Change Password</a>
 
-    <ul>
-    <li class="list-group-item"><a href="{{request.user.get_update_profile_url}}" class="btn btn-primary">Edit Profile</a></li>
-      <li class="list-group-item"><a href="{%url 'change-password'%}" class="btn btn-primary">Change Password</a></li>
-      <li class="list-group-item"><a href="{%url 'change-email'%}" class="btn btn-primary">Change Email</a></li>
-      <li class="list-group-item"><a href="{%url 'account_reset_password'%}" class="btn btn-primary">Reset Password</a></li>
-      <li class="list-group-item"><a href="{%url 'socialaccount_connections'%}" class="btn btn-primary">Connect Account to social</a></li>
-    </ul>
-
+        <a class="btn btn-primary" href="{%url 'change-email'%}" class="btn btn-primary">Change Email</a></li>
+        <a class="btn btn-primary" href="{%url 'account_reset_password'%}" class="btn btn-primary">Reset Password</a></li>
+        <a class="btn btn-primary" href="{%url 'socialaccount_connections'%}" class="btn btn-primary">Connect Account to social</a></li>
+    </div>
+</div>
 {%endblock%}
