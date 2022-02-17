@@ -36,6 +36,7 @@ from base.superuser_panel import (
                         ProductCreateView,
                         SendMessageCreationView
                         )
+                        
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('products/', ProductListView.as_view(), name='products'),

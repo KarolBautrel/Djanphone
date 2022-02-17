@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .filters import ProductFilter
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def stores(request):
     store = Store.objects.get(id=1)
@@ -19,7 +19,17 @@ def storeInfo(request, pk):
     products = store.products.all()
     productFilter = ProductFilter(request.GET, queryset=products)
     products = productFilter.qs
-    context = {'store':store, 'products':products, 'productFilter':productFilter}
+
+    paginator = Paginator(products, 4)
+    page = request.GET.get('page')
+    try:
+        response = paginator.page(page)
+    except PageNotAnInteger:
+        response = paginator.page(1)
+    except EmptyPage:
+        response = paginator.page(paginator.num_pages)
+    
+    context = {'store':store, 'response':response, 'productFilter':productFilter}
     return render(request, 'base/store_info.html', context)
 
 

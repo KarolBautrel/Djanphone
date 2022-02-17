@@ -2,37 +2,33 @@
 
 
 {%block content%}
+<style>
+  .col-4 {
+  
+    margin: 5%;
+  }
+
+</style>
 <div class="container my-5 py-5">
 
-<section class="text-center">
-  
-<form method="get">
-  {{ productFilter.form }}
-  <div>
-  <button type="submit" class="btn btn-warning btn-rounded">Search</button>
-</div>
-</form>
-<hr>
-{%if request.user == store.moderator%}
-
-
-<a class = "btn btn-primary" href ='{%url "modify-product-store" store.id%}'>Modify Products</a>
-
-{%endif%}
-<hr>
-
-
-    <div class="row">
-
-      
-        {%for item in products%}
+  <section class="text-center">
+    <form method="get" action="">
+    <div>
+    {{productFilter.form}}  
+    </div>
+    <hr>
+    <div>
+    <button type="submit" class = "btn btn-warning btn-rounded">Search</button>
+    </div>
+    
+     </form>  
+      <div class="row">
+        {%for item in response%}
         {%if item.is_approved %}
         <div class="col-4">
-      
           <a href="" class="waves-effect waves-light"><img
-            src="{{item.image.url}}" class="img-fluid"
+            src="{{item.image_thumbnail.url}}" class="img-fluid"
             alt=""></a>
-     
         <div class="card">
           <div class="card-body">
 
@@ -46,13 +42,31 @@
           
             <a href ="{{item.get_absolute_url}}" type="button" class="btn btn-outline-black btn-rounded btn-sm px-3 waves-effect" >Details</a>
           </div>
-          </div>
         </div>
+        </div>
+        
+        
         {%endif%}
         {%endfor%}
-
-
-      </div>
+        {% if response.has_other_pages %}
+        <ul class="pagination justify-content-center pagination-circle">
+          {% if response.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ response.previous_page_number }}">Previous</a></li>
+          {% endif %}
+          {% for i in response.paginator.page_range %}
+            {% if response.number == i %}
+              <li class="page-item active"><a class="page-link" >{{ i }}</a> </li></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if response.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ response.next_page_number }}">Next</a></li>
+        
+          {% endif %}
+        </ul>
+      {% endif %}
+     
 
  </div>
 
@@ -61,4 +75,6 @@
 </div>    
 
 
+
 {%endblock%}
+
