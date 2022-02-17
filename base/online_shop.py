@@ -225,26 +225,20 @@ class PaymentView(View):
     def post(self, request, *args, **kwargs):
         YOUR_DOMAIN = 'http://127.0.0.1:8000/'
         checkout_session = stripe.checkout.Session.create(
-            payment_method_types = ['card'],
-            
             line_items=[
                 {
-                    'price_data':{
-                        'currency':'usd',
-                        'unit_amount': 2000,
-                        'product_data':{
-                            'name':'Stubborn attachements'
-                        },
-                    },
-                   
+                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    'price': 'price_1KUHiVFziaqMNqDNe8NUbrd4',
                     'quantity': 1,
                 },
             ],
             mode='payment',
             success_url=YOUR_DOMAIN + '/home.html',
-            cancel_url=YOUR_DOMAIN + '/inboz.html',
+            cancel_url=YOUR_DOMAIN + '/inbox.html',
         )
-        return JsonResponse({
 
-            'id': checkout_session.id
-        })
+        context = {
+            'checkout_session':checkout_session.id,
+            'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+        }
+        return redirect(checkout_session.url, code=303)
