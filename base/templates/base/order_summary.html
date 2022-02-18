@@ -60,6 +60,12 @@
                {%endif%}
              </tr>
              <tr>
+                {%if order.coupon%}
+                <td colspan="4"><strong>Coupon</strong></td>
+               <td><strong>${{order.coupon.amount}}</strong></td>
+               </tr>
+               <tr>
+                {%endif%}
                {%if order.product.all%}
                 <td colspan="4"><strong>Order Total</strong></td>
                <td><strong>${{order.get_total}}</strong></td>

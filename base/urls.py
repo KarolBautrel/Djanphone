@@ -22,7 +22,8 @@ from base.online_shop import (
              OrderSummaryView,
              CheckoutView,
              PaymentPaypalView,
-             PaymentSuccessView
+             PaymentSuccessView,
+             AddCouponView
 )       
 from base.user import (
         UpdateUserView, 
@@ -52,7 +53,7 @@ urlpatterns = [
     path('delete_comment/<int:pk>', online_shop.deleteComment, name = 'delete-comment'),
     path('order_summary/', login_required(OrderSummaryView.as_view(),
                             login_url='/accounts/login/'),name='order-summary'),
-    path('add_coupon/', online_shop.add_coupon, name = 'add-coupon'),
+    path('add_coupon/', login_required(AddCouponView.as_view(),login_url='/accounts/login/'), name = 'add-coupon'),
     path('checkout/', login_required(CheckoutView.as_view(), login_url='/accounts/login/'),name='checkout'),
     path('checkout/paypal/', login_required(PaymentPaypalView.as_view(),login_url='/accounts/login/'), name='paypal'),
     path('complete',login_required(PaymentSuccessView.as_view(),login_url='/accounts/login/'), name='payment-succes'),

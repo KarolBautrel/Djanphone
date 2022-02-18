@@ -1,5 +1,5 @@
 from django import template
-from base.models import OrderItem, MessageReceiver
+from base.models import OrderItem, MessageReceiver, Order
 
 register = template.Library()
 
@@ -7,6 +7,9 @@ register = template.Library()
 def cart_product_count(user):
     if user.is_authenticated:
         qs = OrderItem.objects.filter(user=user, ordered = False)
+        qs_order = Order.objects.filter(user=user, ordered = False)
+        print(qs_order.ordered)
+        
         if qs.exists():
             quantity = sum(i.quantity for i in qs)
             if quantity == 0 :

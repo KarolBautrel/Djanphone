@@ -133,6 +133,8 @@ def removeFromCart(request, slug):
                 ordered = False
             )[0]
             order_item.delete()
+            order_qs.delete()
+            
             
             messages.success(request, 'You removed the product from your cart')
             return redirect('order-summary')
@@ -161,6 +163,7 @@ def removeSingleItemFromCart(request, slug):
             order_item.save()
             if order_item.quantity == 0:
                 order_item.delete()
+                order_qs.delete()
             return redirect('order-summary')
         else:
             messages.success(request, 'There is no product to remove')
@@ -239,17 +242,21 @@ class PaymentPaypalView(View):
                 }
             return render(request, 'base/paypal.html', context)
         else:
-            messages.error(self.request, 'You do not have active orders')
-            return redirect ('/')
+            messages.error(self.request, 'You did not add a billing address ')
+            return redirect ('checkout')
 
 class PaymentSuccessView(View):
     
     def post(self, request, *args, **kwargs):
-        order = OrderItem.objects.filter(user=self.request.user, ordered = False)
+        order = Order.objects.get(user=self.request.user, ordered = False)
+        
+        order_items = OrderItem.objects.filter(user=self.request.user, ordered = False)
         body = json.loads(request.body)
-        for product in order:
+        for product in order_items:
             product.ordered = True
             product.save()
+        order.ordered = True   
+        order.save()
         JsonResponse('Payment completed', safe=False)
 
 
@@ -257,14 +264,14 @@ def get_coupon(request, code):
     try:
         coupon = Coupon.objects.get(code=code)
         return coupon
-    except ObjectDoesNotExist:
+    except ValueError:
         messages.error(request, "This coupon does not exists")
         return redirect('home')
 
 
-def add_coupon(request):
-    if request.method == 'POST':
-        form = CouponForm(request.POST or None)
+class AddCouponView(View):
+   def post(self, request, *args, **kwargs):
+        form = CouponForm(request.POST)
         if form.is_valid():
             try:
                 code = form.cleaned_data.get('code')
@@ -274,9 +281,9 @@ def add_coupon(request):
                 messages.success(request, 'Coupon added')
                 return redirect('checkout')
             except ObjectDoesNotExist:
-                messages.error(request, 'You do not have active orders')
-                return redirect('home')
+                messages.error(request, 'Coupon does not exists')
+                return redirect('checkout')
 # TODO RAISE ERROR
-    return None
+        return None
 
    
