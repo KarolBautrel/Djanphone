@@ -6,7 +6,7 @@
 
     .container {
       margin-top: 20px;
-      margin-left : 250px;
+      margin-left : 300px;
     }
     .card-body{
 
@@ -28,43 +28,7 @@
 
             
         <div class="container">
-            <div class="col-lg-6 mb-6">
-  
-
-              <div class="card z-depth-0 border border-light rounded-0">
-
-                <div class="card-body">
-                  <h4 class="mb-4 mt-1 h5 text-center font-weight-bold">Summary</h4>
-  
-                  <hr>
-                  {%for item in order.product.all%}
-                  <dl class="row">
-                    <dd class="col-sm-8">
-                      {{item.product.title}}
-                    </dd>
-                    {%if item.product.discount_price%}
-                    <dd class="col-sm-4">
-                      $ {{item.get_total_product_discount_price}}
-                    </dd>
-                    {%else%}
-                    <dd class="col-sm-4">
-                      $ {{item.get_total_product_price}}
-                    </dd>
-                    {%endif%}
-                  </dl>
-  
-                  <hr>
-                 
-                  {%endfor%}
-                  <dl class="row">
-                    <dt class="col-sm-8">
-                      Total
-                    </dt>
-                    <dt class="col-sm-4">
-                      $ {{order.get_total}}
-                    </dt>
-                  </dl>
-              
+           {%include 'base/order-snippet.html'%}
 
   
   
@@ -164,7 +128,7 @@
                 
     </div>
          </div>
-        </div>
+        
   </div>
 </body>
 

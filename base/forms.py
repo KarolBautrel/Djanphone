@@ -1,4 +1,4 @@
-from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField, CheckboxSelectMultiple
+from django.forms import  ModelForm, EmailField, EmailInput, ValidationError, ModelChoiceField,TextInput, CheckboxSelectMultiple
 from .models import Product, User, Comment, Order, Store, Ticket,Contact,Message
 from django import forms
 from django_countries.fields import CountryField
@@ -103,3 +103,10 @@ class MessageForm(ModelForm):
         receiver = self.cleaned_data['receiver']
         if sender == receiver:
             raise ValidationError ("You cant send message to yourself")"""
+
+
+class CouponForm(forms.Form):
+    code = forms.CharField(widget = TextInput(attrs = {
+        'class': 'form-control',
+        'placeholder':'Promo Code'
+    }))

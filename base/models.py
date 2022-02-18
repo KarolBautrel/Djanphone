@@ -104,7 +104,7 @@ class OrderItem(models.Model):
     quantity = models.IntegerField(null=True, blank=True, default = 1)
     
     def __str__(self):
-        return f'{self.quantity} of {self.product.title}'
+       return f'{self.quantity} of {self.product.title}'
 
     def get_total_product_price(self):
         return self.quantity * self.product.price
@@ -140,14 +140,15 @@ class Order(models.Model):
     ordered = models.BooleanField(default=False)
     billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
     coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
-    
+
     def __str__(self):
-        return self.user.name
+        return self.user.username
 
     def get_total(self):
         total = 0
         for order_item in self.product.all():
             total += order_item.get_final_price()
+        total -= self.coupon.amount
         return total
 
 
@@ -218,7 +219,7 @@ class BillingAddress(models.Model):
     zip = models.CharField(max_length=100)
     
     def __str__(self):
-        return self.user.name
+        return self.user.username
 
 
 # TODO
@@ -255,4 +256,8 @@ class ShipmentAddress(models.Model):
 
 
 class Coupon(models.Model):
-    user=models.CharField(max_length=15, null=False, blank=True)
+    code=models.CharField(max_length=15, null=False, blank=True)
+    amount = models.FloatField( null=False, blank=True)
+
+    def __str__(self):
+        return self.code
