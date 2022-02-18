@@ -197,7 +197,7 @@ class CheckoutShippingView(View):
                  'couponform':CouponForm(),
                  'DISPLAY_COUPON_FORM': True
                 }
-            return render(self.request,'base/checkout.html', context)
+            return render(self.request,'base/checkout_shipping.html', context)
         except ObjectDoesNotExist:
             messages.error(self.request, 'You do not have active orders')
             return redirect('home')
@@ -223,9 +223,9 @@ class CheckoutShippingView(View):
                     zip = zip,
                     address_type = 'Shipping'
                             )
-                print(shipping_address_qs[0])
                 if shipping_address_qs.exists():
                     order.shipping_address = shipping_address_qs[0]
+                    print(order.shipping_address)
                     order.save()
                     if same_billing_address:
                         billing_address_qs = Address.objects.filter(
@@ -236,41 +236,103 @@ class CheckoutShippingView(View):
                         zip = zip,
                         address_type = 'Billing'
                                 )
-                        print(billing_address_qs[0])
                         if billing_address_qs.exists():
                             order.billing_address = billing_address_qs[0]
                             order.save()
                             return redirect('paypal' )
-                else:
-                    shipping_address = Address(
+                    
+                    return redirect('billing')
+                shipping_address = Address(
+                user = self.request.user,
+                street_address = street_address,
+                apartment_address = apartment_address,
+                country = country,
+                zip = zip,
+                address_type = 'Shipping'
+                            )
+                print(shipping_address)
+                shipping_address.save()
+                order.shipping_address = shipping_address
+                order.save()
+                if same_billing_address:
+                    billing_address = Address(
                     user = self.request.user,
                     street_address = street_address,
                     apartment_address = apartment_address,
                     country = country,
                     zip = zip,
-                    address_type = 'Shipping'
-                            )
-                    shipping_address.save()
-                    order.shipping_address = shipping_address
-                    order.save()
-                    if same_billing_address:
-                        billing_address = Address(
-                        user = self.request.user,
-                        street_address = street_address,
-                        apartment_address = apartment_address,
-                        country = country,
-                        zip = zip,
-                        address_type = 'Billing'
+                    address_type = 'Billing'
                                 )
-                        billing_address.save()
-                        order.billing_address = billing_address
-                        order.save()
-                        return redirect('paypal' )
+                    billing_address.save()
+                    order.billing_address = billing_address
+                    order.save()
+                    return redirect('paypal' )
+                return redirect('billing')
         except ObjectDoesNotExist:
             messages.error(self.request, 'You do not have active orders')
             return redirect ('/')
             return redirect('checkout')
 
+
+class CheckoutBillingView(View):
+    
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered = False)
+            form = CheckoutForm()
+            context = {
+                'form': form,
+                 'order':order,
+                 'couponform':CouponForm(),
+                 'DISPLAY_COUPON_FORM': False
+                }
+            return render(self.request,'base/checkout_billing.html', context)
+        except ObjectDoesNotExist:
+            messages.error(self.request, 'You do not have active orders')
+            return redirect('home')
+        
+
+    def post(self, *args, **kwargs):
+        form = CheckoutForm(self.request.POST)
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            if form.is_valid():
+                street_address = form.cleaned_data['billing_city']
+                apartment_address = form.cleaned_data['billing_address']
+                country = form.cleaned_data['billing_country']
+                zip = form.cleaned_data['billing_zip']
+                # TO DO, DODAC LOGIKE
+                #save_info = form.cleaned_data['save_info']
+                
+                
+                billing_address_qs = Address.objects.filter(
+                                user = self.request.user,
+                                street_address = street_address,
+                                apartment_address = apartment_address,
+                                country = country,
+                                zip = zip,
+                                address_type = 'Billing'
+                                                )
+                if billing_address_qs.exists():
+                    order.billing_address = billing_address_qs[0]
+                    order.save()
+                    return redirect('paypal' )
+                billing_address = Address(
+                    user = self.request.user,
+                    street_address = street_address,
+                    apartment_address = apartment_address,
+                    country = country,
+                    zip = zip,
+                    address_type = 'Billing'
+                                )
+                billing_address.save()
+                order.billing_address = billing_address
+                order.save()
+                return redirect('paypal' )
+        except ObjectDoesNotExist:
+            messages.error(self.request, 'You do not have active orders')
+            return redirect ('/')
+            
 
 class PaymentPaypalView(View):
     def get(self, request, *args, **kwargs):
@@ -283,7 +345,7 @@ class PaymentPaypalView(View):
             return render(request, 'base/paypal.html', context)
         else:
             messages.error(self.request, 'You did not add a billing address ')
-            return redirect ('checkout')
+            return redirect ('home')
 
 class PaymentSuccessView(View):
     
@@ -319,10 +381,10 @@ class AddCouponView(View):
                 order.coupon = get_coupon(request, code)
                 order.save()
                 messages.success(request, 'Coupon added')
-                return redirect('checkout')
+                return redirect('shipping')
             except ObjectDoesNotExist:
                 messages.error(request, 'Coupon does not exists')
-                return redirect('checkout')
+                return redirect('shipping')
 # TODO RAISE ERROR
         return None
 

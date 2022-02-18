@@ -21,6 +21,7 @@ from base.online_shop import (
              CommentCreationView,
              OrderSummaryView,
              CheckoutShippingView,
+             CheckoutBillingView,
              PaymentPaypalView,
              PaymentSuccessView,
              AddCouponView
@@ -54,7 +55,8 @@ urlpatterns = [
     path('order_summary/', login_required(OrderSummaryView.as_view(),
                             login_url='/accounts/login/'),name='order-summary'),
     path('add_coupon/', login_required(AddCouponView.as_view(),login_url='/accounts/login/'), name = 'add-coupon'),
-    path('checkout/', login_required(CheckoutShippingView.as_view(), login_url='/accounts/login/'),name='checkout'),
+    path('checkout/shipping', login_required(CheckoutShippingView.as_view(), login_url='/accounts/login/'),name='shipping'),
+    path('checkout/billing', login_required(CheckoutBillingView.as_view(), login_url='/accounts/login/'),name='billing'),
     path('checkout/paypal/', login_required(PaymentPaypalView.as_view(),login_url='/accounts/login/'), name='paypal'),
     path('complete',login_required(PaymentSuccessView.as_view(),login_url='/accounts/login/'), name='payment-succes'),
     path('account_settings/', user.settingsPanel, name = 'account-settings'),
