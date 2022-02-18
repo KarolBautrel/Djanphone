@@ -17,7 +17,7 @@
             <div class="col-lg-6">
 
 
-              <div class="tab-content pt-4">
+              <div class="tab-content pt-6">
   
 
                 <div class="tab-pane fade in show active" id="tabCheckoutBilling123" role="tabpanel">
@@ -26,16 +26,16 @@
                     {%csrf_token%}
              
                   <h3>Shipping address</h3>
-                  <div class='hideable_shipping_form'>
-                    <div class="row">
+                 
   
-                    </div>
-                    <label for="shipping_address" class="">Street Address</label>
-                   <input type="text" class="form-control" placeholder="Warsaw 1234" id = 'shipping_address' name = 'shipping_address'>
+                </div>
+
+                    <label for="shipping_city" class="">City</label>
+                   <input type="text" class="form-control" placeholder="Warsaw 1234" id = 'shipping_city' name = 'shipping_city'>
                     
                   
-                   <label for="shipping_address2" class="">Street Address</label>
-                    <input type="text" class="form-control" placeholder="Street or Home" id = 'shipping_address2' name = 'shipping_address2'>
+                   <label for="shipping_address" class="">Street and local</label>
+                    <input type="text" class="form-control" placeholder="Bałuty 32/12" id = 'shipping_address' name = 'shipping_address'>
                     
   
 
@@ -47,16 +47,16 @@
                        {{form.shipping_country}}
                         <div class="invalid-feedback">
                           Please select a valid country.
-                        </div>
-  
                       </div>
+  
+                     </div>
                       <!--Grid column-->
   
                       <!--Grid column-->
                       <div class="col-lg-4 col-md-6 mb-4">
   
-                        <label for="zip">Zip</label>
-                        <input type="text" class="form-control" placeholder="00-001" id = 'zip' name = 'zip'>
+                        <label for="shipping_zip">Zip</label>
+                        <input type="text" class="form-control" placeholder="00-001" id = 'shipping_zip' name = 'shipping_zip'>
                         <div class="invalid-feedback">
                           Zip code required.
                         </div> 
@@ -71,82 +71,27 @@
                       <label class="custom-control-label" for="set_default_shipping">Save as default shipping address</label>
                     </div>
                   </div>
-                </div>
+             
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" name="use_default_shipping" id="use_default_shipping">
                   <label class="custom-control-label" for="use_default_shipping">Use default shipping address: asdads</label>
                 </div>
-
-                    <h3>Billing Address</h3>
-                    <div class='hideable_shipping_form'>
-                      <div class="row">
-    
-                      </div>
-                      <label for="shipping_address" class="">Street Address</label>
-                     <input type="text" class="form-control" placeholder="Warsaw 1234" id = 'shipping_address' name = 'shipping_address'>
-                      
-                    
-                     <label for="shipping_address2" class="">Street Address</label>
-                      <input type="text" class="form-control" placeholder="Street or Home" id = 'shipping_address2' name = 'shipping_address2'>
-                      
-    
-  
-                      <div class="row">
-    
-                        <div class="col-lg-4 col-md-12 mb-4">
-    
-                          <label for="country">Country</label>
-                         {{form.shipping_country}}
-                          <div class="invalid-feedback">
-                            Please select a valid country.
-                          </div>
-    
-                        </div>
-                        <!--Grid column-->
-    
-                        <!--Grid column-->
-                        <div class="col-lg-4 col-md-6 mb-4">
-    
-                          <label for="zip">Zip</label>
-                          <input type="text" class="form-control" placeholder="00-001" id = 'zip' name = 'zip'>
-                          <div class="invalid-feedback">
-                            Zip code required.
-                          </div> 
-                        </div>   
-                      </div>
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="same_billing_address" id="same_billing_address">
-                        <label class="custom-control-label" for="same_billing_address">Billing address is the same as my shipping address</label>
-                      </div>
-                      <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" name="set_default_shipping" id="set_default_shipping">
-                        <label class="custom-control-label" for="set_default_shipping">Save as default shipping address</label>
-                      </div>
-                    </div>
-                  </div>
-                    <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to chekout</button>
-  
-                  </form>
-  
-               
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
               </div>
-            </div>
+            </form>
+              <div class="col-lg-6">
+             
+
+
+              
+             
 
 
             {%include 'base/order-snippet.html'%}
+                
+                
+                </div>
 
-  
-  
-  
-            </div>
-
-  
-          </div>
-
-  
-        </div>
-      </div>
-  
     </section>
 
   

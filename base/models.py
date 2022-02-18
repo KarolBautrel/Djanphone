@@ -216,11 +216,11 @@ class Address(models.Model):
     country = CountryField(multiple = False)
     zip = models.CharField(max_length=100)
     address_type = models.CharField(max_length=10,blank=True, choices = ADDRESS_TYPES, default = 'Billing')
-    default = models.BooleanField(default=True)
+    default = models.BooleanField(default=False)
 
 
     def __str__(self):
-        return self.user.username
+        return f'{self.user.username} with {self.street_address} as {self.address_type}'
 
 
 # TODO

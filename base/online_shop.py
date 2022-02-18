@@ -208,14 +208,26 @@ class CheckoutView(View):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
             if form.is_valid():
-                street_address = form.cleaned_data['street_address']
-                apartment_address = form.cleaned_data['apartment_address']
-                country = form.cleaned_data['country']
-                zip = form.cleaned_data['zip']
+                street_address = form.cleaned_data['shipping_city']
+                apartment_address = form.cleaned_data['shipping_address']
+                country = form.cleaned_data['shipping_country']
+                zip = form.cleaned_data['shipping_zip']
                 # TO DO, DODAC LOGIKE
-                #same_shipping_address =form.cleaned_data['same_billing_address']
+                same_billing_address =form.cleaned_data['same_billing_address']
                 #save_info = form.cleaned_data['save_info']
-                billing_address = Address(
+                shipping_address = Address(
+                    user = self.request.user,
+                    street_address = street_address,
+                    apartment_address = apartment_address,
+                    country = country,
+                    zip = zip,
+                    address_type = 'Shipping'
+                            )
+                shipping_address.save()
+                order.shipping_address = shipping_address
+                order.save()
+                if same_billing_address:
+                    billing_address = Address(
                     user = self.request.user,
                     street_address = street_address,
                     apartment_address = apartment_address,
@@ -223,10 +235,10 @@ class CheckoutView(View):
                     zip = zip,
                     address_type = 'Billing'
                             )
-                billing_address.save()
-                order.billing_address = billing_address
-                order.save()
-                return redirect('paypal' )
+                    billing_address.save()
+                    order.billing_address = billing_address
+                    order.save()
+                    return redirect('paypal' )
         except ObjectDoesNotExist:
             messages.error(self.request, 'You do not have active orders')
             return redirect ('/')
