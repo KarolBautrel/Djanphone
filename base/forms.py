@@ -4,12 +4,6 @@ from django import forms
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 
-class UserForm(ModelForm):
-    class Meta:
-        model = User
-        fields = ['name', 'bio','avatar','address']
-
-
 class EmailChangeForm(ModelForm):
     email2 = EmailField(label=('New email confirmation'), widget=EmailInput)
     class Meta:
@@ -30,16 +24,12 @@ class EmailChangeForm(ModelForm):
 
 
 class CheckoutForm(forms.Form):
-    street_address = forms.CharField( widget = forms.TextInput(attrs={
-                'placeholder':'Warsaw 1234',
-                'class':'form-control'}))
-    apartment_address = forms.CharField(widget = forms.TextInput(attrs={
-                'placeholder':'Street or Home',
-                'class':'form-control'}), required = False)
-    country = CountryField(blank_label='(select country)').formfield(widget=CountrySelectWidget(attrs={
+    shipping_address = forms.CharField( required = False)
+    shipping_address2 = forms.CharField(required = False)
+    shipping_country = CountryField(blank_label='(select country)').formfield(widget=CountrySelectWidget(attrs={
         'class':'form-control'
     }))
-    zip = forms.CharField(widget= forms.TextInput(attrs={
+    shipping_zip = forms.CharField(widget= forms.TextInput(attrs={
         'class':'form-control'
     }))
     same_shipping_address = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
@@ -57,12 +47,6 @@ class CommentForm(ModelForm):
     class Meta:
         model = Comment
         fields = ['body','user','product']
-
-
-class OrderForm(ModelForm):
-    class Meta:
-        model = Order
-        fields = ['user','delivery']
 
 
 class TicketForm(ModelForm):

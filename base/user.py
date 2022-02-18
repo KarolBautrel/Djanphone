@@ -28,7 +28,7 @@ class UserDetailView(DetailView):
 
 class UpdateUserView(UpdateView, LoginRequiredMixin):
     model = User
-    fields = ['name', 'address', 'bio', 'avatar']
+    fields = ['name', 'avatar', 'country', 'city']
     template_name  = 'base/update_profile.html'
     
 

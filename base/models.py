@@ -27,22 +27,17 @@ BRAND = (
     ('Huawei', 'Huawei')
 )
 
-DELIVERY =(
-    ('Inpost', 'Inpost'),
-    ('Courier','Courier'),
-    ('Post','Post'),
-    ('Local Store ZG', 'Local Store - Carrefour Zielona Gora'),
-    ('Local Store JP2GMD', 'Local Store - Vaticano'),
+ADDRESS_TYPES = (
+    ('Shipping','Shipping'),
+    ('Billing', 'Billing')
 )
 
 
 class User(AbstractUser):
-    name = models.CharField(max_length=200,null=True)
+    name = models.CharField(max_length=200,blank=True,null=True)
     email= models.EmailField(null=True, unique = True)
-    country = models.CharField(max_length = 100,null=True)
-    city = models.CharField(max_length = 100,null=True)
-    address = models.CharField(max_length=200,null=True)
-    bio = models.TextField(null=True)
+    country = models.CharField(max_length = 100,blank=True,null=True)
+    city = models.CharField(max_length = 100,blank=True, null=True)
     avatar = models.ImageField(null=True, default = 'avatar.svg')
     avatar_thumbnail = ImageSpecField(source='avatar',
                                   processors=[ResizeToFill(100, 50)],
@@ -136,9 +131,10 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     start_date = models.DateTimeField(auto_now_add = True)
     ordered_date = models.DateTimeField()
-    delivery = models.CharField(max_length = 200,choices = DELIVERY, null=True, blank=True)
+   
     ordered = models.BooleanField(default=False)
-    billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
+    billing_address = models.ForeignKey('Address',related_name = 'billing_address', on_delete=models.SET_NULL, blank=True, null=True)
+    shipping_address = models.ForeignKey('Address',related_name = 'shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
     coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
@@ -213,13 +209,16 @@ class Ticket(models.Model):
         return str(self.ticket_creator)
 
 
-class BillingAddress(models.Model):
+class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
     country = CountryField(multiple = False)
     zip = models.CharField(max_length=100)
-    
+    address_type = models.CharField(max_length=10,blank=True, choices = ADDRESS_TYPES, default = 'Billing')
+    default = models.BooleanField(default=True)
+
+
     def __str__(self):
         return self.user.username
 

@@ -3,7 +3,7 @@ from .models import (Product,
                     Comment,
                     Order,
                     OrderItem,
-                    BillingAddress,
+                    Address,
                     Coupon
                     )
 from .forms import CheckoutForm, CouponForm                            
@@ -215,12 +215,13 @@ class CheckoutView(View):
                 # TO DO, DODAC LOGIKE
                 #same_shipping_address =form.cleaned_data['same_billing_address']
                 #save_info = form.cleaned_data['save_info']
-                billing_address = BillingAddress(
+                billing_address = Address(
                     user = self.request.user,
                     street_address = street_address,
                     apartment_address = apartment_address,
                     country = country,
                     zip = zip,
+                    address_type = 'Billing'
                             )
                 billing_address.save()
                 order.billing_address = billing_address

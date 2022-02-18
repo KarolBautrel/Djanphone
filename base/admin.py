@@ -6,7 +6,7 @@ from .models import (Product,
                     Ticket, 
                     Store, 
                     OrderItem, 
-                    BillingAddress, 
+                    Address,  
                     Message,
                     MessageReceiver,
                     Coupon
@@ -20,7 +20,7 @@ admin.site.register(Order)
 admin.site.register(Ticket)
 admin.site.register(Store)
 admin.site.register(OrderItem)
-admin.site.register(BillingAddress)
+admin.site.register(Address)
 admin.site.register(Message)
 admin.site.register(MessageReceiver)
 admin.site.register(Coupon)
