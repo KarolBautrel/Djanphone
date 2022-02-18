@@ -21,7 +21,8 @@ from base.online_shop import (
              CommentCreationView,
              OrderSummaryView,
              CheckoutView,
-             PaymentView
+             PaymentPaypalView,
+             PaymentSuccessView
 )       
 from base.user import (
         UpdateUserView, 
@@ -52,7 +53,8 @@ urlpatterns = [
     path('order_summary/', login_required(OrderSummaryView.as_view(),
                             login_url='/accounts/login/'),name='order-summary'),
     path('checkout/', login_required(CheckoutView.as_view(), login_url='/accounts/login/'),name='checkout'),
-    path('payment/<payment_option>', login_required(PaymentView.as_view(),login_url='/accounts/login/'), name='payment'),
+    path('checkout/paypal/', login_required(PaymentPaypalView.as_view(),login_url='/accounts/login/'), name='paypal'),
+    path('complete',login_required(PaymentSuccessView.as_view(),login_url='/accounts/login/'), name='payment-succes'),
     path('account_settings/', user.settingsPanel, name = 'account-settings'),
     path('account_settings/<int:pk>/profile/', UserDetailView.as_view(), name = 'profile'),
     path('account_settings/update_profile/<int:pk>', login_required(UpdateUserView.as_view(), 

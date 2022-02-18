@@ -1,0 +1,169 @@
+
+{%extends 'base.html'%}
+{%block content%}
+
+<style>
+    .card-body{
+
+        margin-top: 10px;
+        text-align: center;
+        justify-content: center;
+    }
+</style>
+
+
+<head>
+    <!-- Add meta tags for mobile and IE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title> PayPal Checkout  </title>
+</head>
+
+<body>
+
+            
+        <div class="container">
+            <div class="col-lg-6 mb-6">
+  
+
+              <div class="card z-depth-0 border border-light rounded-0">
+
+                <div class="card-body">
+                  <h4 class="mb-4 mt-1 h5 text-center font-weight-bold">Summary</h4>
+  
+                  <hr>
+                  {%for item in order.product.all%}
+                  <dl class="row">
+                    <dd class="col-sm-8">
+                      {{item.product.title}}
+                    </dd>
+                    {%if item.product.discount_price%}
+                    <dd class="col-sm-4">
+                      $ {{item.get_total_product_discount_price}}
+                    </dd>
+                    {%else%}
+                    <dd class="col-sm-4">
+                      $ {{item.get_total_product_price}}
+                    </dd>
+                    {%endif%}
+                  </dl>
+  
+                  <hr>
+                 
+                  {%endfor%}
+                  <dl class="row">
+                    <dt class="col-sm-8">
+                      Total
+                    </dt>
+                    <dt class="col-sm-4">
+                      $ {{order.get_total}}
+                    </dt>
+                  </dl>
+              
+
+  
+  
+  
+       
+
+
+
+
+
+
+
+
+
+    <!-- Set up a container element for the button -->
+    <div id="paypal-button-container"></div>
+
+    <!-- Include the PayPal JavaScript SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AVKKy1CunwRAdgNHfWJvZkBcnR7acnO2Q1iSlYX3lKMbjfOojIC1q8bCGkR4859JmECOBjChLFfHFmBU&currency=USD&disable-funding=p24"></script>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        var total = '{{order.get_total}}'
+        var order_id = '{{order.id}}'
+
+
+        function completeOrder(){
+            var url = "{%url 'payment-succes'%}"
+            
+            fetch(url, {
+                method: 'POST',
+                headers:{
+                    'Content-type':'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify({'order_id':order_id})
+            })
+        }
+        // Render the PayPal button into #paypal-button-container
+        paypal.Buttons({
+
+
+          
+          style: {
+                size: 'small',
+                color:  'blue',
+                shape:  'rect',
+                label:  'pay',
+                height: 40,
+            },
+
+            // Set up the transaction
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: total
+                        }
+                    }]
+                });
+            },
+
+            // Finalize the transaction
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(orderData) {
+                    // Successful capture! For demo purposes:
+                    completeOrder()
+                  
+                    // Replace the above to show a success message within this page, e.g.
+                    // const element = document.getElementById('paypal-button-container');
+                    // element.innerHTML = '';
+                    // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                    // Or go to another URL:  actions.redirect('thank_you.html');
+                });
+            }
+
+
+        }).render('#paypal-button-container');
+    </script>
+      </div>
+                
+    </div>
+         </div>
+        </div>
+</body>
+
+</html>
+  {% endblock %}
+
+
+  

@@ -23,6 +23,10 @@ from django.core.exceptions import ObjectDoesNotExist
 import stripe
 from django.conf import settings
 from django.http import JsonResponse
+import json
+
+
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class ProductListView(ListView):
@@ -200,6 +204,7 @@ class CheckoutView(View):
                 #same_shipping_address =form.cleaned_data['same_billing_address']
                 #save_info = form.cleaned_data['save_info']
                 payment_option = form.cleaned_data['payment_option']
+                print(payment_option)
                 billing_address = BillingAddress(
                     user = self.request.user,
                     street_address = street_address,
@@ -210,35 +215,27 @@ class CheckoutView(View):
                 billing_address.save()
                 order.billing_address = billing_address
                 order.save()
-                # TODO : REDIRECT PAYMENT OPTION
-                return redirect('checkout')
+                if payment_option == "Paypal":
+                    return redirect('paypal')
         except ObjectDoesNotExist:
             messages.error(self.request, 'You do not have active orders')
             return redirect ('/')
             return redirect('checkout')
 
 
-class PaymentView(View):
+class PaymentPaypalView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'base/payment.html')
+        order = Order.objects.get(user=self.request.user, ordered=False)
+        context = { 'order':order}
+        return render(request, 'base/paypal.html', context)
 
+class PaymentSuccessView(View):
+    
     def post(self, request, *args, **kwargs):
-        YOUR_DOMAIN = 'http://127.0.0.1:8000/'
-        checkout_session = stripe.checkout.Session.create(
-            line_items=[
-                {
-                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    'price': 'price_1KUHiVFziaqMNqDNe8NUbrd4',
-                    'quantity': 1,
-                },
-            ],
-            mode='payment',
-            success_url=YOUR_DOMAIN + '/home.html',
-            cancel_url=YOUR_DOMAIN + '/inbox.html',
-        )
-
-        context = {
-            'checkout_session':checkout_session.id,
-            'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
-        }
-        return redirect(checkout_session.url, code=303)
+        order = OrderItem.objects.filter(user=self.request.user, ordered = False)
+        body = json.loads(request.body)
+        print ('BODY:', body)
+        print(order)
+        order.delete()
+        JsonResponse('Payment completed', safe=False)
+        
