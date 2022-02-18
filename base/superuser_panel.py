@@ -11,8 +11,6 @@ from django.views.generic import CreateView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse
 
-
-
 def adminPanel(request):
     return render(request, 'base/superuser_panel.html')
 
@@ -30,7 +28,7 @@ class SendMessageCreationView(PermissionRequiredMixin,CreateView):
         fields =['subject','body']
         template_name = 'base/message.html'
         redirect_field_name = 'base/login.html'
-    
+
     # TODO CONFIGURE MASS SENDING
         def form_valid(self, form):
             obj = form.save(commit=False)
@@ -46,5 +44,6 @@ class SendMessageCreationView(PermissionRequiredMixin,CreateView):
                         )
             messages.success(self.request, f'Message has been sent')
             return HttpResponseRedirect(self.get_success_url())
+            
         def get_success_url(self):
             return reverse('home')

@@ -6,7 +6,6 @@ from django.urls import reverse
 
 class AuthorizationTestCase(TestCase):
     
-
     def setUp(self):
         self.client = Client()
         self.user = get_user_model().objects.create(
@@ -16,7 +15,6 @@ class AuthorizationTestCase(TestCase):
         )
         self.client.force_login(self.user)
 
-
     def test_authorized_user_access_to_contact_page(self):
         '''
         Authorized user getting into contact page
@@ -24,7 +22,6 @@ class AuthorizationTestCase(TestCase):
         response = self.client.get(reverse('contact'))
         self.assertEqual(response.status_code,200)
         
-
     def test_unauthorized_is_able_to_contact_page(self):    
         '''
         Unauthorized user is redirect to login page after clicking contact button
@@ -34,7 +31,6 @@ class AuthorizationTestCase(TestCase):
         response = self.user.get(url)
 
         self.assertEqual(response.status_code, 200)    
-
 
     def test_authorized_user_is_able_to_add_to_cart(self):
         '''
@@ -47,7 +43,6 @@ class AuthorizationTestCase(TestCase):
         self.assertRedirects(response, '/order_summary/', status_code = 302)
         self.assertEqual(response_button.status_code, 302)
     
-
     def test_redirect_unathorized_user_to_login_after_add_to_cart_action(self):
         '''
         Unauthorized user is unable to add to cart product
@@ -59,7 +54,6 @@ class AuthorizationTestCase(TestCase):
         
         self.assertEqual(response.status_code, 302)
         
-
     def test_regular_user_denied_acces_to_shop_management(self):
         '''
         User who is not moderator of shop cant enter shop management
@@ -70,7 +64,6 @@ class AuthorizationTestCase(TestCase):
 
         self.assertEqual(response.status_code, 404)
     
-
     def test_moderator_user_got_acces_to_shop_management(self):
         '''
         User who is moderator of shop cant enter shop management
@@ -80,7 +73,6 @@ class AuthorizationTestCase(TestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
-
 
     def test_regular_user_is_unable_to_use_mass_message(self):
         '''
@@ -92,7 +84,6 @@ class AuthorizationTestCase(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
-
     def test_uanuthorized_user_has_acces_to_products_page(self):
 
         '''
@@ -101,10 +92,8 @@ class AuthorizationTestCase(TestCase):
         self.client = Client()
         url = reverse('products')
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['products']),0)
-
 
     def test_product_list_view(self):
         '''

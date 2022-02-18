@@ -15,10 +15,7 @@ from django.views.generic import (UpdateView,
                                 ListView,
                                 DetailView,
                                 )
-
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-
 
 class UserDetailView(DetailView):
     model = User
@@ -71,7 +68,6 @@ def changeEmail(request):
 
 
 class InboxView( ListView):
-    
     model = MessageReceiver
     context_object_name = 'messages'
     paginate_by = 5
@@ -84,7 +80,6 @@ class InboxView( ListView):
 
 
 class MessageDetailView( DetailView):
-    
     model = MessageReceiver
     context_object_name = 'message'
     template_name = 'base/message_detail.html'
@@ -97,6 +92,7 @@ def read_message(request, pk):
     message.is_readed = True
     message.save()
     return redirect('inbox')
+
 
 @login_required
 def delete_message(request, pk):

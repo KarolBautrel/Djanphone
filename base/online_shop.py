@@ -101,10 +101,8 @@ def addToCart(request, slug):
         ordered = False
     )
     order_qs = Order.objects.filter(user=request.user, ordered = False)
-
     if order_qs.exists():
         order = order_qs[0]
-
         #check if the order item is in the order list
         if order.product.filter(product__slug = product.slug).exists():
             order_item.quantity += 1
@@ -134,8 +132,6 @@ def removeFromCart(request, slug):
             )[0]
             order_item.delete()
             order_qs.delete()
-            
-            
             messages.success(request, 'You removed the product from your cart')
             return redirect('order-summary')
         else:
@@ -186,7 +182,7 @@ class OrderSummaryView(View):
         
 
 class CheckoutShippingView(View):
-    
+
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered = False)
@@ -202,7 +198,6 @@ class CheckoutShippingView(View):
             messages.error(self.request, 'You do not have active orders')
             return redirect('home')
         
-
     def post(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST)
         try:
@@ -229,40 +224,39 @@ class CheckoutShippingView(View):
                     order.save()
                     if same_billing_address:
                         billing_address_qs = Address.objects.filter(
-                        user = self.request.user,
-                        street_address = street_address,
-                        apartment_address = apartment_address,
-                        country = country,
-                        zip = zip,
-                        address_type = 'Billing'
-                                )
+                                            user = self.request.user,
+                                            street_address = street_address,
+                                            apartment_address = apartment_address,
+                                            country = country,
+                                            zip = zip,
+                                            address_type = 'Billing'
+                                            )
                         if billing_address_qs.exists():
                             order.billing_address = billing_address_qs[0]
                             order.save()
                             return redirect('paypal' )
-                    
                     return redirect('billing')
                 shipping_address = Address(
-                user = self.request.user,
-                street_address = street_address,
-                apartment_address = apartment_address,
-                country = country,
-                zip = zip,
-                address_type = 'Shipping'
-                            )
+                                    user = self.request.user,
+                                    street_address = street_address,
+                                    apartment_address = apartment_address,
+                                    country = country,
+                                    zip = zip,
+                                    address_type = 'Shipping'
+                                    )
                 print(shipping_address)
                 shipping_address.save()
                 order.shipping_address = shipping_address
                 order.save()
                 if same_billing_address:
                     billing_address = Address(
-                    user = self.request.user,
-                    street_address = street_address,
-                    apartment_address = apartment_address,
-                    country = country,
-                    zip = zip,
-                    address_type = 'Billing'
-                                )
+                                    user = self.request.user,
+                                    street_address = street_address,
+                                    apartment_address = apartment_address,
+                                    country = country,
+                                    zip = zip,
+                                    address_type = 'Billing'
+                                    )
                     billing_address.save()
                     order.billing_address = billing_address
                     order.save()
@@ -271,7 +265,6 @@ class CheckoutShippingView(View):
         except ObjectDoesNotExist:
             messages.error(self.request, 'You do not have active orders')
             return redirect ('/')
-            return redirect('checkout')
 
 
 class CheckoutBillingView(View):
@@ -291,7 +284,6 @@ class CheckoutBillingView(View):
             messages.error(self.request, 'You do not have active orders')
             return redirect('home')
         
-
     def post(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST)
         try:
@@ -303,27 +295,25 @@ class CheckoutBillingView(View):
                 zip = form.cleaned_data['billing_zip']
                 # TO DO, DODAC LOGIKE
                 #save_info = form.cleaned_data['save_info']
-                
-                
                 billing_address_qs = Address.objects.filter(
+                                    user = self.request.user,
+                                    street_address = street_address,
+                                    apartment_address = apartment_address,
+                                    country = country,
+                                    zip = zip,
+                                    address_type = 'Billing'
+                                    )
+                if billing_address_qs.exists():
+                    order.billing_address = billing_address_qs[0]
+                    order.save()
+                    return redirect('paypal' )
+                billing_address = Address(
                                 user = self.request.user,
                                 street_address = street_address,
                                 apartment_address = apartment_address,
                                 country = country,
                                 zip = zip,
                                 address_type = 'Billing'
-                                                )
-                if billing_address_qs.exists():
-                    order.billing_address = billing_address_qs[0]
-                    order.save()
-                    return redirect('paypal' )
-                billing_address = Address(
-                    user = self.request.user,
-                    street_address = street_address,
-                    apartment_address = apartment_address,
-                    country = country,
-                    zip = zip,
-                    address_type = 'Billing'
                                 )
                 billing_address.save()
                 order.billing_address = billing_address
@@ -335,6 +325,7 @@ class CheckoutBillingView(View):
             
 
 class PaymentPaypalView(View):
+
     def get(self, request, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered=False)
         if order.billing_address:
@@ -347,11 +338,11 @@ class PaymentPaypalView(View):
             messages.error(self.request, 'You did not add a billing address ')
             return redirect ('home')
 
+
 class PaymentSuccessView(View):
     
     def post(self, request, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered = False)
-        
         order_items = OrderItem.objects.filter(user=self.request.user, ordered = False)
         body = json.loads(request.body)
         for product in order_items:

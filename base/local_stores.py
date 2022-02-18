@@ -19,7 +19,6 @@ def storeInfo(request, pk):
     products = store.products.all()
     productFilter = ProductFilter(request.GET, queryset=products)
     products = productFilter.qs
-
     paginator = Paginator(products, 4)
     page = request.GET.get('page')
     try:
@@ -28,7 +27,6 @@ def storeInfo(request, pk):
         response = paginator.page(1)
     except EmptyPage:
         response = paginator.page(paginator.num_pages)
-    
     context = {'store':store, 'response':response, 'productFilter':productFilter}
     return render(request, 'base/store_info.html', context)
 

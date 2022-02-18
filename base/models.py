@@ -92,7 +92,6 @@ class Product(models.Model):
 
 
 class OrderItem(models.Model):
-
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     ordered = models.BooleanField(default=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -119,13 +118,11 @@ class OrderItem(models.Model):
             return self.get_total_product_discount_price()
         return self.get_total_product_price()
 
-
     def get_cart_item_count(self):
         return self.quantity
 
         
 class Order(models.Model):
-
     product = models.ManyToManyField(OrderItem, blank=True   )
     status = models.CharField(default = 'Processed', choices = STATUS, max_length = 30,null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
@@ -148,9 +145,7 @@ class Order(models.Model):
         return total
 
 
-
 class Store(models.Model):
-
     city = models.CharField(max_length=30)
     street = models.CharField(max_length=30)
     owner = models.CharField(max_length = 20)
@@ -166,7 +161,6 @@ class Store(models.Model):
         return reverse('store_info', args = [str(self.id)])
 
 class Comment(models.Model):
-
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     body = models.TextField()
@@ -178,7 +172,6 @@ class Comment(models.Model):
 
 
 class Contact(models.Model):
-
     name = models.CharField(max_length=20)
     email = models.EmailField(max_length=30)
     phone = models.IntegerField(max_length=20)
@@ -197,7 +190,6 @@ class Contact(models.Model):
 
 
 class Ticket(models.Model):
-
     body = models.TextField(blank=False)
     subject = models.CharField(max_length=25, null=True)
     ticket_creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -216,7 +208,6 @@ class Address(models.Model):
     zip = models.CharField(max_length=100)
     address_type = models.CharField(max_length=10,blank=True, choices = ADDRESS_TYPES, default = 'Billing')
     default = models.BooleanField(default=False)
-
 
     def __str__(self):
         return f'{self.user.username} with {self.street_address} as {self.address_type}'
@@ -246,7 +237,6 @@ class MessageReceiver(models.Model):
 
 
 class ShipmentAddress(models.Model):
-
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     country = CountryField(blank_label='(select country)')
     state = models.CharField( max_length=255, null=False, blank=True)

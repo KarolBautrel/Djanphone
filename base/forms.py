@@ -74,6 +74,7 @@ class ContactForm(ModelForm):
         model = Contact
         fields = '__all__'
 
+
 class StoreForm(ModelForm):
     class Meta:
         model = Store

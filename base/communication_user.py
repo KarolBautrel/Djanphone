@@ -21,10 +21,7 @@ from django.views.generic import (
 from django.urls import reverse
 
 
-
-
 class TicketCreationView(CreateView):
-    
     model = Ticket
     form_class = TicketForm
     template_name  = 'base/ticket.html'
