@@ -10,7 +10,10 @@
 
 </style>
 <div class="container my-5 py-5">
-
+  {%if request.user == store.moderator%}
+  <a href = '{%url "modify-product-store" store.id%}' class="btn btn-primary" type="button">Modify Store</a>
+  {%endif %}
+  <hr>
   <section class="text-center">
     <form method="get" action="">
     <div>

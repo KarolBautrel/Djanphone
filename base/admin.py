@@ -8,7 +8,8 @@ from .models import (Product,
                     OrderItem, 
                     BillingAddress, 
                     Message,
-                    MessageReceiver
+                    MessageReceiver,
+                    Coupon
                     )
 
 # Register your models here.
@@ -22,3 +23,5 @@ admin.site.register(OrderItem)
 admin.site.register(BillingAddress)
 admin.site.register(Message)
 admin.site.register(MessageReceiver)
+admin.site.register(Coupon)
+

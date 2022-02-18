@@ -4,6 +4,7 @@ from .models import (Product,
                     Order,
                     OrderItem,
                     BillingAddress,
+                    Coupon
                     )
 from .forms import CheckoutForm                                 
 from django.contrib import messages
@@ -20,14 +21,13 @@ from django.views.generic import (
 from django.utils import timezone
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
-import stripe
 from django.conf import settings
 from django.http import JsonResponse
 import json
 
 
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
+
 
 class ProductListView(ListView):
     model = Product
@@ -216,7 +216,7 @@ class CheckoutView(View):
                 order.billing_address = billing_address
                 order.save()
                 if payment_option == "Paypal":
-                    return redirect('paypal')
+                    return redirect('paypal' )
         except ObjectDoesNotExist:
             messages.error(self.request, 'You do not have active orders')
             return redirect ('/')
@@ -234,8 +234,13 @@ class PaymentSuccessView(View):
     def post(self, request, *args, **kwargs):
         order = OrderItem.objects.filter(user=self.request.user, ordered = False)
         body = json.loads(request.body)
-        print ('BODY:', body)
-        print(order)
-        order.delete()
+        for product in order:
+            product.ordered = True
+            product.save()
         JsonResponse('Payment completed', safe=False)
-        
+
+
+def get_coupon(request, code):
+    try:
+        coupon = Coupon.objects.get(code=code)
+        return coupon

@@ -3,11 +3,6 @@ from .models import Product, User, Comment, Order, Store, Ticket,Contact,Message
 from django import forms
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
-PAYMENT_CHOICES=(
-    ('Paypal', 'Paypal'), 
-    ('Stripe','Stripe'), 
-    ('PayU','PayU')
-)
 
 class UserForm(ModelForm):
     class Meta:
@@ -49,7 +44,7 @@ class CheckoutForm(forms.Form):
     }))
     same_shipping_address = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
     save_info = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
-    payment_option = forms.ChoiceField(widget=forms.RadioSelect(), choices=PAYMENT_CHOICES)
+
 
 
 class ProductForm(ModelForm):

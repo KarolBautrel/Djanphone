@@ -139,7 +139,8 @@ class Order(models.Model):
     delivery = models.CharField(max_length = 200,choices = DELIVERY, null=True, blank=True)
     ordered = models.BooleanField(default=False)
     billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
-
+    coupon = models.ForeignKey('Coupon', on_delete=models.SET_NULL, blank=True, null=True)
+    
     def __str__(self):
         return self.user.name
 
@@ -251,3 +252,7 @@ class ShipmentAddress(models.Model):
     city = models.CharField( max_length=255, null=False, blank=True)
     street = models.CharField( max_length=255, null=False, blank=True)
     zip_code = models.CharField( max_length=255, null=False, blank=True)
+
+
+class Coupon(models.Model):
+    user=models.CharField(max_length=15, null=False, blank=True)
