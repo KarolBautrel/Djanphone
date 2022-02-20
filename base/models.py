@@ -213,7 +213,6 @@ class Address(models.Model):
         return f'{self.user.username} with {self.street_address} as {self.address_type}'
 
 
-# TODO
 class Message(models.Model):
     subject = models.CharField(max_length=30, blank=True, null=False)
     creator = models.ForeignKey(User, related_name="sender",on_delete=models.CASCADE)
