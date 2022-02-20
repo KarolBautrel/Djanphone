@@ -121,6 +121,8 @@ def addToCart(request, slug):
 def removeFromCart(request, slug):
     product = get_object_or_404(Product, slug=slug)
     order_qs = Order.objects.filter(user=request.user, ordered = False)
+    print(order_qs)
+    print(order_qs)
     if order_qs.exists():
         order = order_qs[0]
         #check if the order item is in the order list
@@ -130,8 +132,13 @@ def removeFromCart(request, slug):
                 user = request.user, 
                 ordered = False
             )[0]
+            if order.shipping_address:
+                order.shipping_address.delete()
+            if order.billing_address:
+                order.billing_address.delete()
             order_item.delete()
             order_qs.delete()
+           
             messages.success(request, 'You removed the product from your cart')
             return redirect('order-summary')
         else:
@@ -158,6 +165,10 @@ def removeSingleItemFromCart(request, slug):
             order_item.quantity -= 1
             order_item.save()
             if order_item.quantity == 0:
+                if order.shipping_address:
+                    order.shipping_address.delete()
+                if order.billing_address:
+                    order.billing_address.delete()
                 order_item.delete()
                 order_qs.delete()
             return redirect('order-summary')
