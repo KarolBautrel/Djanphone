@@ -6,11 +6,18 @@
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
 
 {% block content %}
-
+<style>
+  .row{
+      margin-top: 50px;
+  }
+  
+  </style>
+      <div class="row d-flex justify-content-center">
+          <div class="col-md-4">
 <h1>{% trans "Sign In" %}</h1>
 
 
-<div class="container my-5">
+
 
  <form class="login" method="POST" action="{% url 'account_login' %}">
   {% csrf_token %}
@@ -18,8 +25,10 @@
   {% if redirect_field_value %}
   <input type="hidden" name="{{ 'redirect_field_name' }}" value="{{ redirect_field_value }}" />
   {% endif %}
-  <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
   <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+  <hr>
+  <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+  
  </form>
 
 
@@ -31,7 +40,7 @@
 
 {% if socialaccount_providers %}
 <h3>Doesnt have account ?</h3>
- <a href="{{ signup_url }}" class = 'btn-google' >sign up</a>
+ <a href="{{ signup_url }}" class="btn btn-primary" >sign up</a>
 
 <div class="socialaccount_ballot">
 
@@ -40,6 +49,8 @@
  
 
 </div>
+          </div>
+          </div>
 
 {% include "socialaccount/snippets/login_extra.html" %}
 

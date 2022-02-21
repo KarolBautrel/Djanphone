@@ -46,7 +46,7 @@
             User Panel </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <li>
-                <a class="dropdown-item" href="{{request.user.get_absolute_url}}">{{request.user.name}}</a>
+                <a class="dropdown-item" href="{{request.user.get_absolute_url}}">{{request.user.username}}</a>
               </li>
                 <li>
                   <a class="dropdown-item" href="{%url 'account-settings' %}">Account Settings</a>
@@ -58,7 +58,7 @@
               <li>
                 <a class="dropdown-item" href="{%url 'ticket-panel' request.user.id%}">Ticket panel</a>
               </li>
-              {%if request.user.is_authenticated%}
+              {%if request.user.is_superuser%}
               <li>
                 <a class="dropdown-item" href="{%url 'superuser'%}">Admin Panel</a>
               </li>

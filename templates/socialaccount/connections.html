@@ -5,6 +5,13 @@
 {% block head_title %}{% trans "Account Connections" %}{% endblock %}
 
 {% block content %}
+<style>
+    .row{
+        margin-top: 50px;
+    }
+    </style>
+<div class="row d-flex justify-content-center">
+    <div class="col-md-4">
 <h1>{% trans "Account Connections" %}</h1>
 
 {% if form.accounts %}
@@ -50,5 +57,6 @@
 </ul>
 
 {% include "socialaccount/snippets/login_extra.html" %}
-
+</div>
+</div>
 {% endblock %}

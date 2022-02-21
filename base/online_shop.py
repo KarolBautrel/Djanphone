@@ -142,10 +142,10 @@ def removeFromCart(request, slug):
             messages.success(request, 'You removed the product from your cart')
             return redirect('order-summary')
         else:
-            messages.success(request, 'There is no product to remove')
+            messages.error(request, 'There is no product to remove')
             return redirect('product-detail', slug=slug)
     else: 
-        messages.success(request, 'User doesnt have order')
+        messages.info(request, 'User doesnt have order')
         return redirect('order-summary')
     
 
@@ -173,10 +173,10 @@ def removeSingleItemFromCart(request, slug):
                 order_qs.delete()
             return redirect('order-summary')
         else:
-            messages.success(request, 'There is no product to remove')
+            messages.info(request, 'There is no product to remove')
             return redirect('product-detail', slug=slug)
     else: 
-        messages.success(request, 'User doesnt have order')
+        messages.info(request, 'User doesnt have order')
         return redirect('order-summary')
     
 
@@ -188,7 +188,7 @@ class OrderSummaryView(View):
             context = {'order':order}
             return render(self.request, 'base/order_summary.html', context)
         except ObjectDoesNotExist:
-            messages.error(self.request, 'You do not have active orders')
+            messages.info(self.request, 'You do not have active orders')
             return redirect ('/')
         
 
@@ -206,7 +206,7 @@ class CheckoutShippingView(View):
                 }
             return render(self.request,'base/checkout_shipping.html', context)
         except ObjectDoesNotExist:
-            messages.error(self.request, 'You do not have active orders')
+            messages.info(self.request, 'You do not have active orders')
             return redirect('home')
         
     def post(self, *args, **kwargs):
@@ -274,7 +274,7 @@ class CheckoutShippingView(View):
                     return redirect('paypal' )
                 return redirect('billing')
         except ObjectDoesNotExist:
-            messages.error(self.request, 'You do not have active orders')
+            messages.info(self.request, 'You do not have active orders')
             return redirect ('/')
 
 
@@ -292,7 +292,7 @@ class CheckoutBillingView(View):
                 }
             return render(self.request,'base/checkout_billing.html', context)
         except ObjectDoesNotExist:
-            messages.error(self.request, 'You do not have active orders')
+            messages.info(self.request, 'You do not have active orders')
             return redirect('home')
         
     def post(self, *args, **kwargs):
@@ -331,7 +331,7 @@ class CheckoutBillingView(View):
                 order.save()
                 return redirect('paypal' )
         except ObjectDoesNotExist:
-            messages.error(self.request, 'You do not have active orders')
+            messages.info(self.request, 'You do not have active orders')
             return redirect ('/')
             
 
