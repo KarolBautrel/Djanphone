@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import timezone
 from .forms import CheckoutForm
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 class RegisterTest(TestCase):
 
@@ -380,3 +381,36 @@ class CheckoutTestCase(TestCase):
     ## TODO MORE TESTS
 
 
+class SuperUserTestCase(TestCase):
+    
+    def setUp(self):
+        self.client = Client()
+        self.user = get_user_model().objects.create(
+                        email = 'email@gmamg.com',
+                        password = 'test21',
+                        name = 'tes ffasf',
+                        is_superuser = True
+                        )
+        self.client.force_login(self.user)
+
+    def test_superuser_can_send_mass_messages(self):
+        '''
+        Admin(superuser) is able to send mass messages to regular users
+        '''
+        url=reverse('message')
+        self.client.post(url,{ 'subject':'Test Subject','body':'Test body'})
+        self.assertEqual(Message.objects.count(), 1)
+        self.assertEqual(Message.objects.last().subject, 'Test Subject')
+
+    def test_superuser_can_create_new_product(self):
+        '''
+        Admin is able to create new product
+        '''
+        url = reverse('create-product')
+        self.client.post(url,{'title':'Test title', 
+                                'brand':'Samsung',
+                                'description':'test description',
+                                'price':200,
+                                })
+        
+        self.assertEqual(Product.objects.count(), 1)
