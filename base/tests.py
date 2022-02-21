@@ -414,3 +414,33 @@ class SuperUserTestCase(TestCase):
                                 })
         
         self.assertEqual(Product.objects.count(), 1)
+
+class RegularUserTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        self.user = get_user_model().objects.create(
+                        username = 'test_username',
+                        email = 'email@gmamg.com',
+                        password = 'test21',
+                        name = 'tes ffasf',
+                        is_superuser = False
+                        )
+        self.client.force_login(self.user)
+
+    
+    def test_change_password(self):
+        '''
+        Test for changing password by user, unfortunetyl due to django-allauth and django hashing password
+        I am not able to check the new password. But status 200 tells us that everything went clear.
+        '''
+       
+        url = reverse('change-password')
+        response = self.client.post(url, {
+                            'old_password' : 'test21',
+                            'new_password1' : 'test',
+                            'new_password2' : 'test'
+                                })
+        
+        self.assertEqual(response.status_code, 200)
+        
