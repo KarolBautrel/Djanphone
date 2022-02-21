@@ -62,7 +62,7 @@ class AuthorizationTestCase(TestCase):
         self.assertRedirects(response, '/order_summary/', status_code = 302)
         self.assertEqual(response_button.status_code, 302)
     
-    def test_redirect_unathorized_user_to_login_after_add_to_cart_action(self):
+    def test_redirect_unauthorized_user_to_login_after_add_to_cart_action(self):
         '''
         Unauthorized user is unable to add to cart product
         '''
@@ -144,10 +144,6 @@ class AuthorizationTestCase(TestCase):
         self.assertEqual(response_billing.status_code, 302)
 
 
-    
-
-
-
 class ProductsaActionTestCase(TestCase):
 
     def setUp(self):
@@ -206,3 +202,61 @@ class ProductsaActionTestCase(TestCase):
         url = reverse('product-detail', kwargs={'slug': self.product.slug})
         response = self.client.get(url)
         self.assertQuerysetEqual(response.context['comments'], comments_qs)
+    
+    def test_add_comment(self):
+        '''
+        Test adding comment to product by authorized user
+        '''
+        url = reverse('add-comment', kwargs={'slug': self.product.slug})
+        self.client.post(url, {'body':'This is test'})
+        self.assertEqual(Comment.objects.last().body, "This is test")
+
+    def test_adding_blank_comment(self):
+        '''
+        Test adding blank comment which is not gonna be add
+        '''
+        url = reverse('add-comment', kwargs={'slug': self.product.slug})
+        self.client.post(url, {'body':''})
+        self.assertEqual(Comment.objects.last().body, "test123") # body from setUp comment
+
+    def test_delete_comment(self):
+        '''
+        Test of deleting comment, assertEqual remains 1 because there is one more comment
+        created in setUp function.
+        '''
+        comment = Comment.objects.create(
+                                        user = self.user,
+                                        product = self.product,
+                                        body = 'test123425'
+                                        )
+        url = reverse('delete-comment', kwargs= {'pk': comment.id})
+        comment_list_url = reverse('product-detail', kwargs={'slug': self.product.slug})
+        self.client.post(url)
+        response_product = self.client.get(comment_list_url)
+
+        self.assertEqual(len(response_product.context['comments']), 1 )
+
+
+    class CartAndCheckoutTestCase(TestCase):
+
+        def setUp(self):
+            self.client = Client()
+            self.user = get_user_model().objects.create(
+                email = 'email@gmamg.com',
+                password = 'test21',
+                name = 'tes ffasf',
+            )
+            self.client.force_login(self.user)
+            self.product = Product.objects.create(
+                                                title='test1234',
+                                                price=200,
+                                                slug='test1234')
+            
+        
+    def test_add_to_cart(self):
+
+        url = reverse('add-to-cart', kwargs={'slug': self.product.slug})
+        self.client.post(url)
+        cart_url = reverse('order-summary')
+        cart = self.client.get(cart_url)
+        self.assertEqual(cart.context['order'], self.product)
