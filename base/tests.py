@@ -194,7 +194,7 @@ class ProductsaActionTestCase(TestCase):
 
     def test_comments_queryset(self):
         '''
-        Test if the comments queryset contains appropiate comments
+        Test if the comments queryset contains correct comments
         '''
         comments_qs = Comment.objects.filter(
                                             product = self.product
@@ -252,11 +252,64 @@ class ProductsaActionTestCase(TestCase):
                                                 price=200,
                                                 slug='test1234')
             
-        
     def test_add_to_cart(self):
-
+        '''
+        Test of adding product to cart
+        '''
         url = reverse('add-to-cart', kwargs={'slug': self.product.slug})
-        self.client.post(url)
+        self.client.get(url)
         cart_url = reverse('order-summary')
         cart = self.client.get(cart_url)
-        self.assertEqual(cart.context['order'], self.product)
+        order_qs = cart.context['order'].product.all()
+        order_list = [i.product for i in order_qs]
+        self.assertEqual(order_list[0], self.product)
+        self.assertEqual((len(order_list)), 1)
+
+    def test_remove_from_cart(self):
+        '''
+        Test of removing product from cart, in this case there is need to 
+        create another product in the cart to show, that one will be deleted
+        '''
+        product = Product.objects.create(
+                                            title='secondTest',
+                                            price=200,
+                                            slug='secondTest')
+        url = reverse('add-to-cart', kwargs={'slug': product.slug})
+        self.client.get(url)
+        url_delete = reverse('remove-from-cart', kwargs={'slug': self.product.slug})
+        self.client.get(url_delete)
+        cart_url = reverse('order-summary')
+        cart = self.client.get(cart_url)
+        order_qs = cart.context['order'].product.all()
+        order_list = [i.product for i in order_qs]
+
+        self.assertEqual(cart.status_code, 200)
+        self.assertEqual(len(order_list), 1) 
+
+    def test_removing_last_product_in_cart_redirect(self):
+        '''
+        Test that deleting last object from cart will redirect to homepage
+        '''
+        url = reverse('add-to-cart', kwargs={'slug': self.product.slug})
+        self.client.get(url)
+        url_delete = reverse('remove-from-cart', kwargs={'slug': self.product.slug})
+        self.client.get(url_delete)
+        cart_url = reverse('order-summary')
+        cart = self.client.get(cart_url)
+        self.assertEqual(cart.status_code, 302)
+        
+    def test_total_price_in_cart(self):
+        '''
+        Test if total price of products in cart is correct
+        '''
+        product1 = Product.objects.create(title='test1', price=200, slug='test12345')
+        product2 = Product.objects.create(title='test12', price=500, slug='test123456')
+        product3 = Product.objects.create(title='test123', price=400, slug='test1234567')
+        self.client.get(reverse('add-to-cart', kwargs={'slug': product1.slug}))
+        self.client.get(reverse('add-to-cart', kwargs={'slug': product2.slug}))
+        self.client.get(reverse('add-to-cart', kwargs={'slug': product3.slug}))
+        cart = self.client.get(reverse('order-summary'))
+        
+        order_total = cart.context['order'].get_total()
+        self.assertEqual(order_total, 1100)
+        
