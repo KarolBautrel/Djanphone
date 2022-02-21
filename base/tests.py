@@ -1,7 +1,26 @@
 from django.test import TestCase, Client
-from base.models import User, Store, Product
+from base.models import User, Store, Product, Order, Comment
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+
+
+class RegisterTest(TestCase):
+
+    def test_create_user_with_email_successfull(self):
+        '''
+        Test creating a new user with an email is successful
+        '''
+        email = 'test@gmsail.com'
+        password = 'testpass123'
+        username =  'testpass123'
+        user = get_user_model().objects.create_user(
+                email = email,
+                password = password,
+                username = username
+            )
+
+        self.assertEqual(user.email, email)
+        self.assertTrue(user.check_password(password))
 
 
 class AuthorizationTestCase(TestCase):
@@ -24,7 +43,7 @@ class AuthorizationTestCase(TestCase):
         
     def test_unauthorized_is_able_to_contact_page(self):    
         '''
-        Unauthorized user is redirect to login page after clicking contact button
+        Unauthorized user is able to get to contact view
         '''
         self.user = Client()
         url = reverse('contact')
@@ -95,13 +114,95 @@ class AuthorizationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['products']),0)
 
+
+    def test_unauthorized_user_is_unable_to_checkout(self):
+        '''
+        Unauthorized user is unable to force proceed to checkout view(billing, shipping)
+        and redirected to login view
+        '''
+        self.client = Client()
+        url_shipping = reverse('shipping')
+        url_billing = reverse('billing')
+        response_shipping = self.client.get(url_shipping)
+        response_billing = self.client.get(url_billing)
+
+        self.assertEqual(response_shipping.status_code, 302)
+        self.assertEqual(response_billing.status_code, 302)
+
+    def test_authorized_user_without_orders_is_unable_to_checkout(self):
+        '''
+        Authorized user is unable to force proceed to checkout view(billing, shipping)
+        and redirected to home page.
+        '''
+     
+        url_shipping = reverse('shipping')
+        url_billing = reverse('billing')
+        response_shipping = self.client.get(url_shipping)
+        response_billing = self.client.get(url_billing)
+
+        self.assertEqual(response_shipping.status_code, 302)
+        self.assertEqual(response_billing.status_code, 302)
+
+
+    
+
+
+
+class ProductsaActionTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.user = get_user_model().objects.create(
+            email = 'email@gmamg.com',
+            password = 'test21',
+            name = 'tes ffasf',
+        )
+        self.client.force_login(self.user)
+        self.product = Product.objects.create(
+                                            title='test1234',
+                                            price=200,
+                                            slug='test1234')
+        self.comment = Comment.objects.create(
+                                        user = self.user,
+                                        product = self.product,
+                                        body = 'test123'
+                                        )
+        
     def test_product_list_view(self):
         '''
         Checking if number of product in list view is correct
         '''
-        Product.objects.create(title='test1234',  price=200, slug='test1234')
+        
         self.client = Client()
         url = reverse('products')
         response = self.client.get(url)
-
         self.assertEqual(len(response.context['products']),1)
+
+    def test_product_detail_view(self):
+        '''
+        Test which show correct detail product view
+        '''
+        url = reverse('product-detail', kwargs={'slug': self.product.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.context['product'], self.product)
+
+    def test_single_comment_creation_view(self):
+        '''
+        Test which shows created comment in product view
+        '''
+        
+        url = reverse('product-detail', kwargs={'slug': self.product.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.context['comments'][0], self.comment)
+
+    def test_comments_queryset(self):
+        '''
+        Test if the comments queryset contains appropiate comments
+        '''
+        comments_qs = Comment.objects.filter(
+                                            product = self.product
+                                            )
+        url = reverse('product-detail', kwargs={'slug': self.product.slug})
+        response = self.client.get(url)
+        self.assertQuerysetEqual(response.context['comments'], comments_qs)

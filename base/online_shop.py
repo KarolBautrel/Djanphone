@@ -57,8 +57,8 @@ class ProductDetailView(DetailView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        product = self.get_object().comment_set.all()
-        context['comments'] = product
+        comments = self.get_object().comment_set.all()
+        context['comments'] = comments
         return context
 
 
