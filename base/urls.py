@@ -81,7 +81,7 @@ urlpatterns = [
     path('store_info/<int:pk>', local_stores.storeInfo, name='store-info'),
     path('modify_store_product/<int:pk>', local_stores.modifyStoreProducts, name = 'modify-product-store'),
     path('superuser_panel', superuser_panel.adminPanel, name = 'superuser'),
-    path('superuser_panel/message', SendMessageCreationView .as_view(), name='message'),
+    path('superuser_panel/message', SendMessageCreationView.as_view(), name='message'),
     path('superuser_panel/createProduct', ProductCreateView.as_view(), name = 'create-product'),
 
 ]

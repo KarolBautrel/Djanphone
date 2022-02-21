@@ -184,7 +184,7 @@ class Contact(models.Model):
         send_mail(
             'Thank you for contact',
         'Our team is reviewing your message, stay tuned for answer.',
-        'testbautrel111@gmail.com',
+        'Djanphone@gmail.com',
         [f'{self.email}'],
         )
 

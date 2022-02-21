@@ -1,8 +1,9 @@
 from django.test import TestCase, Client
-from base.models import User, Store, Product, Order, Comment
+from base.models import User, Store, Product, Order, Comment, OrderItem, Address, Message
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-
+from django.utils import timezone
+from .forms import CheckoutForm
 
 class RegisterTest(TestCase):
 
@@ -48,7 +49,6 @@ class AuthorizationTestCase(TestCase):
         self.user = Client()
         url = reverse('contact')
         response = self.user.get(url)
-
         self.assertEqual(response.status_code, 200)    
 
     def test_authorized_user_is_able_to_add_to_cart(self):
@@ -70,7 +70,6 @@ class AuthorizationTestCase(TestCase):
         product = Product.objects.create(title='test1234',  price=200, slug='test1234')
         url = reverse('add-to-cart', kwargs={'slug': product.slug})
         response = self.user.get(url)
-        
         self.assertEqual(response.status_code, 302)
         
     def test_regular_user_denied_acces_to_shop_management(self):
@@ -80,7 +79,6 @@ class AuthorizationTestCase(TestCase):
         store = Store.objects.create(moderator = None)
         url = reverse('modify-product-store', args =str((store.id)))
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 404)
     
     def test_moderator_user_got_acces_to_shop_management(self):
@@ -90,21 +88,17 @@ class AuthorizationTestCase(TestCase):
         store = Store.objects.create(moderator = self.user)
         url = reverse('modify-product-store', args =str((store.id)))
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
 
     def test_regular_user_is_unable_to_use_mass_message(self):
         '''
         Superuser is able to send messages to users
         '''
-
         url = reverse('message')
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 403)
 
     def test_uanuthorized_user_has_acces_to_products_page(self):
-
         '''
         Unauthorized user is able to get to products list page
         '''
@@ -125,7 +119,6 @@ class AuthorizationTestCase(TestCase):
         url_billing = reverse('billing')
         response_shipping = self.client.get(url_shipping)
         response_billing = self.client.get(url_billing)
-
         self.assertEqual(response_shipping.status_code, 302)
         self.assertEqual(response_billing.status_code, 302)
 
@@ -139,7 +132,6 @@ class AuthorizationTestCase(TestCase):
         url_billing = reverse('billing')
         response_shipping = self.client.get(url_shipping)
         response_billing = self.client.get(url_billing)
-
         self.assertEqual(response_shipping.status_code, 302)
         self.assertEqual(response_billing.status_code, 302)
 
@@ -168,7 +160,6 @@ class ProductsaActionTestCase(TestCase):
         '''
         Checking if number of product in list view is correct
         '''
-        
         self.client = Client()
         url = reverse('products')
         response = self.client.get(url)
@@ -187,7 +178,6 @@ class ProductsaActionTestCase(TestCase):
         '''
         Test which shows created comment in product view
         '''
-        
         url = reverse('product-detail', kwargs={'slug': self.product.slug})
         response = self.client.get(url)
         self.assertEqual(response.context['comments'][0], self.comment)
@@ -224,22 +214,17 @@ class ProductsaActionTestCase(TestCase):
         Test of deleting comment, assertEqual remains 1 because there is one more comment
         created in setUp function.
         '''
-        comment = Comment.objects.create(
-                                        user = self.user,
-                                        product = self.product,
-                                        body = 'test123425'
-                                        )
+        comment = Comment.objects.create(user = self.user,product = self.product,body = 'test123425')
         url = reverse('delete-comment', kwargs= {'pk': comment.id})
         comment_list_url = reverse('product-detail', kwargs={'slug': self.product.slug})
         self.client.post(url)
         response_product = self.client.get(comment_list_url)
-
         self.assertEqual(len(response_product.context['comments']), 1 )
 
 
-    class CartAndCheckoutTestCase(TestCase):
+class CartTestCase(TestCase):
 
-        def setUp(self):
+    def setUp(self):
             self.client = Client()
             self.user = get_user_model().objects.create(
                 email = 'email@gmamg.com',
@@ -270,10 +255,7 @@ class ProductsaActionTestCase(TestCase):
         Test of removing product from cart, in this case there is need to 
         create another product in the cart to show, that one will be deleted
         '''
-        product = Product.objects.create(
-                                            title='secondTest',
-                                            price=200,
-                                            slug='secondTest')
+        product = Product.objects.create(title='secondTest',price=200,slug='secondTest')
         url = reverse('add-to-cart', kwargs={'slug': product.slug})
         self.client.get(url)
         url_delete = reverse('remove-from-cart', kwargs={'slug': self.product.slug})
@@ -282,7 +264,6 @@ class ProductsaActionTestCase(TestCase):
         cart = self.client.get(cart_url)
         order_qs = cart.context['order'].product.all()
         order_list = [i.product for i in order_qs]
-
         self.assertEqual(cart.status_code, 200)
         self.assertEqual(len(order_list), 1) 
 
@@ -309,7 +290,93 @@ class ProductsaActionTestCase(TestCase):
         self.client.get(reverse('add-to-cart', kwargs={'slug': product2.slug}))
         self.client.get(reverse('add-to-cart', kwargs={'slug': product3.slug}))
         cart = self.client.get(reverse('order-summary'))
-        
         order_total = cart.context['order'].get_total()
         self.assertEqual(order_total, 1100)
         
+    def test_add_single_item_to_cart(self):
+        '''
+        Test of adding single item to cart
+        '''
+        product1 = Product.objects.create(title='test1', price=200, slug='test12345')
+        product2 = Product.objects.create(title='test12', price=200, slug='test123456')
+        self.client.get(reverse('add-to-cart', kwargs={'slug': product1.slug}))
+        self.client.get(reverse('add-to-cart', kwargs={'slug': product2.slug}))
+        self.client.get(reverse('add-to-cart', kwargs={'slug': product1.slug}))
+        self.client.get(reverse('remove-single-item-from-cart', kwargs={'slug': product1.slug}))
+        cart = self.client.get(reverse('order-summary'))
+        order_qs=cart.context['order'].product.all()
+        order_quantity = sum(i.quantity for i in order_qs)
+        self.assertEqual(order_quantity, 2)
+        
+    def test_removing_last_objects_redirects_home(self):
+        '''
+        Test of redirecting user after deleteing last object from cart with minus symbol
+        '''
+        self.client.get(reverse('remove-single-item-from-cart', kwargs={'slug': self.product.slug}))
+        cart = self.client.get(reverse('order-summary'))
+        self.assertEqual(cart.status_code, 302)
+
+
+class CheckoutTestCase(TestCase):
+    def setUp(self):
+            self.client = Client()
+            self.user = get_user_model().objects.create(
+                email = 'email@gmamg.com',
+                password = 'test21',
+                name = 'tes ffasf',
+            )
+            self.client.force_login(self.user)
+            self.product = Product.objects.create(
+                                                title='test1234',
+                                                price=200,
+                                                slug='test1234'
+                                                )
+            self.order_item = OrderItem.objects.create(
+                                                       user = self.user,
+                                                       product = self.product)
+            self.order = Order.objects.create(
+                                            user =self.user,
+                                            ordered_date=timezone.now(),
+                                            )
+            self.order.product.add(self.order_item)
+
+    def test_shipping_form_valid(self):
+        form = CheckoutForm(data = {'shipping_city':'Test city',
+                            'shipping_zip':'Test Zip',
+                            'shipping_address':'Test Address',
+                            'same_billing_address':'True'})
+        self.assertTrue(form.is_valid())
+
+    def test_shipping_address(self):
+        '''
+        Test for redirect after shipping to billing form.
+        '''
+
+        url = reverse('shipping')
+        shipping_address = self.client.post(url, 
+                            {'shipping_city':'Test city',
+                            'shipping_zip':'Test Zip',
+                            'shipping_address':'Test Address',},
+                            user = self.user)
+        self.assertEqual(shipping_address.status_code, 302)
+        self.assertRedirects(shipping_address, '/checkout/billing', 302)
+
+    def test_redirect_payment_after_same_shipping_as_billing_radio(self):
+        '''
+        Test for saving billing address same as shipping address after selecting it
+        and redirect directly to payment view
+        '''
+        
+        url = reverse('shipping')
+        shipping_address = self.client.post(url,    
+                            {'shipping_city':'Test city',
+                            'shipping_zip':'Test Zip',
+                            'shipping_address':'Test Address',
+                            'same_billing_address':'True'},
+                            user = self.user)
+       
+        self.assertRedirects(shipping_address, '/checkout/paypal/', 302)
+
+    ## TODO MORE TESTS
+
+
