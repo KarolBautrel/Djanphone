@@ -128,7 +128,6 @@
         <h3 class="font-weight-bold text-center mb-5">Product Reviews</h3>
     {% for comment in comments %}
     <div class="media mb-3">
-      <img class="card-img-100 rounded-circle z-depth-1-half d-flex mr-3" src="{{comment.user.avatar.url}}" width="80" >
       <div class="media-body">
         {%if request.user == comment.user%}
         <a href="{%url 'profile' comment.user.id%}">

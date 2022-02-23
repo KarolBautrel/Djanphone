@@ -29,6 +29,13 @@ class SendMessageCreationView(PermissionRequiredMixin,CreateView):
         template_name = 'base/message.html'
         redirect_field_name = 'base/login.html'
 
+        def get_form(self, form_class=None):
+            form = super(SendMessageCreationView, self).get_form(form_class)
+            form.fields['subject'].required = True
+            form.fields['body'].required = True
+            return form
+
+
     # TODO CONFIGURE MASS SENDING
         def form_valid(self, form):
             obj = form.save(commit=False)

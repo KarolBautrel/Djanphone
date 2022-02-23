@@ -38,11 +38,6 @@ class User(AbstractUser):
     email= models.EmailField(null=True, unique = True)
     country = models.CharField(max_length = 100,blank=True,null=True)
     city = models.CharField(max_length = 100,blank=True, null=True)
-    avatar = models.ImageField(null=True, default = 'avatar.svg')
-    avatar_thumbnail = ImageSpecField(source='avatar',
-                                  processors=[ResizeToFill(100, 50)],
-                                  format='JPEG',
-                                  options={'quality': 60})
     is_superuser = models.BooleanField(null=True, default=False)
 
     USERNAME_FIELD = 'email'

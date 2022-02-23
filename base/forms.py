@@ -23,26 +23,23 @@ class EmailChangeForm(ModelForm):
             print("Dupa")
 
 
-class CheckoutForm(forms.Form):
-    shipping_city = forms.CharField( required = False)
-    shipping_address = forms.CharField(required = False)
+class CheckoutShippingForm(forms.Form):
+    shipping_city = forms.CharField( required = True)
+    shipping_address = forms.CharField(required = True)
     shipping_country = CountryField(blank_label='(select country)').formfield(widget=CountrySelectWidget(attrs={
         'class':'form-control'
-    }), required = False)
-    shipping_zip = forms.CharField(required = False)
-    billing_city = forms.CharField( required = False)
-    billing_address = forms.CharField(required = False)
+    }), required = True)
+    shipping_zip = forms.CharField(required = True)
+    
+    same_billing_address = forms.BooleanField(required = False)
+
+class CheckoutBillingForm(forms.Form):
+    billing_city = forms.CharField( required = True)
+    billing_address = forms.CharField(required = True)
     billing_country = CountryField(blank_label='(select country)').formfield(widget=CountrySelectWidget(attrs={
         'class':'form-control'
-    }), required = False)
-    billing_zip = forms.CharField(required = False)
-    same_billing_address = forms.BooleanField(required = False)
-    set_default_shipping = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
-    use_default_shipping = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
-    set_default_billing = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
-    use_default_billing = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
-    save_info = forms.BooleanField(widget=forms.CheckboxInput(), required=False)
-
+    }), required = True)
+    billing_zip = forms.CharField(required = True)
 
 
 class ProductForm(ModelForm):
@@ -89,14 +86,6 @@ class MessageForm(ModelForm):
     class Meta:
         model = Message
         fields = ['is_readed']
-
-"""    def clean(self, *args, **kwargs):
-        cleaned_data = super().clean()
-        sender = self.request.user
-        receiver = self.cleaned_data['receiver']
-        if sender == receiver:
-            raise ValidationError ("You cant send message to yourself")"""
-
 
 class CouponForm(forms.Form):
     code = forms.CharField(widget = TextInput(attrs = {

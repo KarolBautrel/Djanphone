@@ -6,7 +6,7 @@ from .models import (Product,
                     Address,
                     Coupon
                     )
-from .forms import CheckoutForm, CouponForm                            
+from .forms import CheckoutShippingForm,CheckoutBillingForm, CouponForm                            
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import  HttpResponseRedirect
@@ -200,7 +200,7 @@ class CheckoutShippingView(View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered = False)
-            form = CheckoutForm()
+            form = CheckoutShippingForm()
             context = {
                 'form': form,
                  'order':order,
@@ -213,7 +213,7 @@ class CheckoutShippingView(View):
             return redirect('home')
         
     def post(self, *args, **kwargs):
-        form = CheckoutForm(self.request.POST)
+        form = CheckoutShippingForm(self.request.POST)
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
             if form.is_valid():
@@ -276,6 +276,9 @@ class CheckoutShippingView(View):
                     order.save()
                     return redirect('paypal' )
                 return redirect('billing')
+            else:
+                messages.info(self.request, 'Please fullfill everything')
+                return redirect ('shipping')
         except ObjectDoesNotExist:
             messages.info(self.request, 'You do not have active orders')
             return redirect ('/')
@@ -286,7 +289,7 @@ class CheckoutBillingView(View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered = False)
-            form = CheckoutForm()
+            form = CheckoutBillingForm()
             context = {
                 'form': form,
                  'order':order,
@@ -299,7 +302,7 @@ class CheckoutBillingView(View):
             return redirect('home')
         
     def post(self, *args, **kwargs):
-        form = CheckoutForm(self.request.POST)
+        form = CheckoutBillingForm(self.request.POST)
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
             if form.is_valid():
@@ -333,6 +336,9 @@ class CheckoutBillingView(View):
                 order.billing_address = billing_address
                 order.save()
                 return redirect('paypal' )
+            else:
+                messages.info(self.request, 'Please fullfill everything')
+                return redirect('billing')
         except ObjectDoesNotExist:
             messages.info(self.request, 'You do not have active orders')
             return redirect ('/')
