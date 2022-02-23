@@ -28,7 +28,7 @@ class CheckoutShippingForm(forms.Form):
     shipping_address = forms.CharField(required = True)
     shipping_country = CountryField(blank_label='(select country)').formfield(widget=CountrySelectWidget(attrs={
         'class':'form-control'
-    }), required = True)
+    }), required = False)
     shipping_zip = forms.CharField(required = True)
     
     same_billing_address = forms.BooleanField(required = False)
@@ -38,7 +38,7 @@ class CheckoutBillingForm(forms.Form):
     billing_address = forms.CharField(required = True)
     billing_country = CountryField(blank_label='(select country)').formfield(widget=CountrySelectWidget(attrs={
         'class':'form-control'
-    }), required = True)
+    }), required = False)
     billing_zip = forms.CharField(required = True)
 
 

@@ -3,7 +3,7 @@ from base.models import User, Store, Product, Order, Comment, OrderItem, Address
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import timezone
-from .forms import CheckoutForm
+from .forms import CheckoutShippingForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 class RegisterTest(TestCase):
@@ -342,10 +342,11 @@ class CheckoutTestCase(TestCase):
             self.order.product.add(self.order_item)
 
     def test_shipping_form_valid(self):
-        form = CheckoutForm(data = {'shipping_city':'Test city',
+        form = CheckoutShippingForm(data = {'shipping_city':'Test city',
                             'shipping_zip':'Test Zip',
                             'shipping_address':'Test Address',
-                            'same_billing_address':'True'})
+                            'same_billing_address':'True',
+                            })
         self.assertTrue(form.is_valid())
 
     def test_shipping_address(self):
@@ -357,7 +358,7 @@ class CheckoutTestCase(TestCase):
         shipping_address = self.client.post(url, 
                             {'shipping_city':'Test city',
                             'shipping_zip':'Test Zip',
-                            'shipping_address':'Test Address',},
+                            'shipping_address':'Test Address'},
                             user = self.user)
         self.assertEqual(shipping_address.status_code, 302)
         self.assertRedirects(shipping_address, '/checkout/billing', 302)
@@ -373,11 +374,21 @@ class CheckoutTestCase(TestCase):
                             {'shipping_city':'Test city',
                             'shipping_zip':'Test Zip',
                             'shipping_address':'Test Address',
-                            'same_billing_address':'True'},
+                            'same_billing_address':'True',
+                            },
                             user = self.user)
        
         self.assertRedirects(shipping_address, '/checkout/paypal/', 302)
 
+    def test_redirect_to_shipping_from_billing_if_shipping_is_not_created(self):
+        '''
+        Test if view is redirecting user to shipping if its not created and 
+        user is trying to get to billing address before.
+        '''
+        self.order.shipping_address = None
+        url = reverse('billing')
+        response = self.client.get(url)
+        self.assertRedirects(response, '/checkout/shipping', 302)
     ## TODO MORE TESTS
 
 
@@ -444,3 +455,22 @@ class RegularUserTestCase(TestCase):
         
         self.assertEqual(response.status_code, 200)
         
+    def test_change_email(self):
+        '''
+        Test for user change mail
+        ''' 
+        url = reverse('change-email')
+        response = self.client.post(url,{
+                            'email':'newemail@gmamg.com',
+                            'email2': 'newemail@gmamg.com'
+        })
+        self.assertEqual(response.status_code, 302)
+        
+    def test_wrong_mail_confirmation(self):
+        url = reverse('change-email')
+        response = self.client.post(url,{
+                            'email':'newemail@gmamg.com',
+                            'email2': 'wrongnewemail@gmamg.com'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Invalid email')

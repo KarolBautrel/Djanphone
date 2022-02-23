@@ -25,7 +25,7 @@ class UserDetailView(DetailView):
 
 class UpdateUserView(UpdateView, LoginRequiredMixin):
     model = User
-    fields = ['name', 'avatar', 'country', 'city']
+    fields = ['name', 'country', 'city']
     template_name  = 'base/update_profile.html'
     
 
@@ -69,7 +69,7 @@ def changeEmail(request):
 
 class InboxView( ListView):
     model = MessageReceiver
-    context_object_name = 'messages'
+    context_object_name = 'notifications'
     paginate_by = 5
     template_name = 'base/inbox.html'
 

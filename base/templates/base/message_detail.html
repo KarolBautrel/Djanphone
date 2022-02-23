@@ -1,9 +1,21 @@
 {%extends 'base.html'%}
 
 {%block content%}
-{{message.message.subject}}
-{{message.message.body}}
-{{message.is_readed}}
+
+<style>
+    .row {
+
+        margin-top:50px;
+    }
+
+</style>
+<div class="row d-flex justify-content-center">
+    <div class="col-md-4">
+
+    <h3>Subject : {{message.message.subject}}</h3>
+    <hr>
+    <h4>Message id: {{message.message.body}}</h4>
+
 <form class="form" action="#" method = "POST">
     {%csrf_token%}
     <div class="form__group">
@@ -11,7 +23,12 @@
     </div>
         
     <div class="for__group">
-       <a href = '{%url "message-read" message.id%}'  class="btn btn--main" type="submit" value="Confirm">Mark as readed</a>
+        {%if not message.is_readed%}
+       <a href = '{%url "message-read" message.id%}'  class="btn btn-success" type="submit" onclick="toastr.info('Hi! I am info message.');">Mark as readed</a>
+        {%else%}
+        <a href = '{%url "inbox"%}'  class="btn btn--main" type="submit" value="Confirm">Get back to inbox</a>
+
+       {%endif%}
     </div>
 
 </form>

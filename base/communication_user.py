@@ -34,7 +34,7 @@ class TicketCreationView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('home')
+        return reverse('ticket-panel', kwargs = {'pk': self.request.user.id})
 
 
 class ContactView(CreateView):
