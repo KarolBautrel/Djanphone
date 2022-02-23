@@ -5,13 +5,7 @@
 {%block content%}
 <div class="container my-5">
 
-	<style>
-    .border-top {
-      border-top: 5px solid #33b5e5 !important;
-      border-top-left-radius: .25rem!important;
-    	border-top-right-radius: .25rem!important;
-    }
-  </style>
+	
 
   <!--Section: Content-->
   <section class="text-center dark-grey-text mb-5">
@@ -22,14 +16,13 @@
         <!-- Section heading -->
         <h3 class="font-weight-bold my-4">Contact Us</h3>
         <!-- Section description -->
-        <p class="font-weight-light mx-auto mb-4 pb-2">Lorem ipsum dolor, sit amet consectetur<br> adipisicing elit. Id quam sapiente molestiae.</p>
-
+        
         <form class="mb-4 mx-md-5" action="" method="post">
 
             {%csrf_token %}
 
           <div class="row">
-            <div class="col-md-6 mb-4">
+            <div class="col-md-4 mb-4">
 
               <!-- Name -->
               <div>
@@ -37,22 +30,22 @@
               {{form.name}}
 
             </div>
-            <div class="col-md-6 mb-4">
+            <div class="col-md-4 mb-4">
 
                 <div>
                     <label>Email</label></div>
                     {{form.email}}
             </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-12 mb-4">
+           
+            <div class="col-md-4 mb-4">
 
               <!-- Subject -->
               <div>
                 <label>Phone Number</label></div>
                 {{form.phone}}
             </div>
+          </div>
+
           </div>
 
           <div class="row">

@@ -400,7 +400,50 @@ class CheckoutTestCase(TestCase):
         url = reverse('billing')
         response = self.client.get(url)
         self.assertRedirects(response, '/checkout/shipping', 302)
-    ## TODO MORE TESTS
+   
+
+    def test_billing_address_redirect_to_payment_after_creation(self):
+        '''
+        Test of redirecting user to payment after succesfully created billing address
+        '''
+        url_shipping = reverse('shipping')
+        self.client.post(url_shipping,    
+                        {'shipping_city':'Test city',
+                        'shipping_zip':'Test Zip',
+                        'shipping_address':'Test Address',
+                        'same_billing_address':'True',
+                        },
+                        user = self.user)
+        url = reverse('billing')
+        response = self.client.post(url,
+                            {'billing_city':'Test city',
+                            'billing_zip':'Test Zip',
+                            'billing_address':'Test Address',
+                            },
+                            user = self.user )
+        self.assertRedirects(response, '/checkout/paypal/', 302)
+
+    def test_billing_address_wont_redirect_if_not_all_required_fields_fullfiled(self):
+        '''
+        Test of redirecting user to payment after succesfully created billing address
+        '''
+        url_shipping = reverse('shipping')
+        self.client.post(url_shipping,    
+                        {'shipping_city':'Test city',
+                        'shipping_zip':'Test Zip',
+                        'shipping_address':'Test Address',
+                        'same_billing_address':'True',
+                        },
+                        user = self.user)
+        url = reverse('billing')
+        response = self.client.post(url,
+                            {'billing_city':'Test city',
+                            'billing_zip':'Test Zip',
+                            'billing_address':'',
+                            },
+                            user = self.user )
+        self.assertRedirects(response, '/checkout/billing', 302)    
+         ## TODO QUERYSETS
 
 
 class SuperUserTestCase(TestCase):
@@ -515,3 +558,24 @@ class RegularUserTestCase(TestCase):
                     })
         self.assertEqual(response.status_code, 200)
         self.assertTrue(User.objects.last().name, 'testing name')
+
+    def test_profile_user_can_delete_message_from_inbox(self):
+        user = User.objects.create(name='testname',is_superuser=True)
+        self.client.force_login(user)
+        url=reverse('message')
+        self.client.post(url,{ 'subject':'Test Subject','body':'Test body'})
+        message = Message.objects.last()
+        reverse('message-delete', kwargs={'pk':message.id})
+        response = self.client.get(reverse('inbox') )
+        self.assertEqual(len(response.context['notifications']),0)
+
+    #TODO 
+    def test_profile_user_can_read_messages_from_inbox(self):
+        user = User.objects.create(name='testname',is_superuser=True)
+        self.client.force_login(user)
+        url=reverse('message')
+        self.client.post(url,{ 'subject':'Test Subject','body':'Test body'})
+        message = Message.objects.last()
+        reverse('message-delete', kwargs={'pk':message.id})
+        response = self.client.get(reverse('inbox') )
+        self.assertEqual(len(response.context['notifications']),0)

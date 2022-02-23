@@ -16,20 +16,19 @@
     <hr>
     <h4>Message id: {{message.message.body}}</h4>
 
-<form class="form" action="#" method = "POST">
-    {%csrf_token%}
+
     <div class="form__group">
         <p></p>
     </div>
         
     <div class="for__group">
         {%if not message.is_readed%}
-       <a href = '{%url "message-read" message.id%}'  class="btn btn-success" type="submit" onclick="toastr.info('Hi! I am info message.');">Mark as readed</a>
+       <a href = '{%url "message-read" message.id%}'  class="btn btn-success" type="submit">Mark as readed</a>
         {%else%}
         <a href = '{%url "inbox"%}'  class="btn btn--main" type="submit" value="Confirm">Get back to inbox</a>
 
        {%endif%}
     </div>
 
-</form>
+
 {%endblock%}
