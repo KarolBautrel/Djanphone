@@ -289,14 +289,17 @@ class CheckoutBillingView(View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered = False)
-            form = CheckoutBillingForm()
-            context = {
-                'form': form,
-                 'order':order,
-                 'couponform':CouponForm(),
-                 'DISPLAY_COUPON_FORM': False
-                }
-            return render(self.request,'base/checkout_billing.html', context)
+            if order.shipping_address:
+                form = CheckoutBillingForm()
+                context = {
+                    'form': form,
+                    'order':order,
+                    'couponform':CouponForm(),
+                    'DISPLAY_COUPON_FORM': False
+                    }
+                return render(self.request,'base/checkout_billing.html', context)
+            else:
+                return redirect('shipping')
         except ObjectDoesNotExist:
             messages.info(self.request, 'You do not have active orders')
             return redirect('home')
