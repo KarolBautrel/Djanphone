@@ -26,7 +26,7 @@
         
                     <div class="d-flex">
                       {%if user.is_authenticated%}
-                      <h6 class="flex-grow-1">{{request.user.city}}</h6>
+                      <h6 class="flex-grow-1">{{city}}</h6>
                       {%else%}
                       <h6 class="flex-grow-1">London</h6>
                       {%endif%}

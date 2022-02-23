@@ -282,17 +282,17 @@ class CartTestCase(TestCase):
         
     def test_total_price_in_cart(self):
         '''
-        Test if total price of products in cart is correct
+        Test if total price of products in cart is correct including floating numbers.
         '''
-        product1 = Product.objects.create(title='test1', price=200, slug='test12345')
-        product2 = Product.objects.create(title='test12', price=500, slug='test123456')
-        product3 = Product.objects.create(title='test123', price=400, slug='test1234567')
+        product1 = Product.objects.create(title='test1', price=200.4, slug='test12345')
+        product2 = Product.objects.create(title='test12', price=500.2, slug='test123456')
+        product3 = Product.objects.create(title='test123', price=400.2, slug='test1234567')
         self.client.get(reverse('add-to-cart', kwargs={'slug': product1.slug}))
         self.client.get(reverse('add-to-cart', kwargs={'slug': product2.slug}))
         self.client.get(reverse('add-to-cart', kwargs={'slug': product3.slug}))
         cart = self.client.get(reverse('order-summary'))
         order_total = cart.context['order'].get_total()
-        self.assertEqual(order_total, 1100)
+        self.assertEqual(order_total, 1100.8)
         
     def test_add_single_item_to_cart(self):
         '''
@@ -316,6 +316,17 @@ class CartTestCase(TestCase):
         self.client.get(reverse('remove-single-item-from-cart', kwargs={'slug': self.product.slug}))
         cart = self.client.get(reverse('order-summary'))
         self.assertEqual(cart.status_code, 302)
+        self.assertRedirects(cart, '/', 302)
+
+    def test_removing_last_objects_from_one_product_type_not_redirects_home(self):
+        '''
+        Test of preventing bug which redirect to homepage if u delete completely one of product
+        '''
+        product = Product.objects.create(title='test1', price=200, slug='test12345')
+        self.client.get(reverse('add-to-cart', kwargs={'slug': product.slug}))
+        self.client.get(reverse('remove-single-item-from-cart', kwargs={'slug': self.product.slug}))
+        cart = self.client.get(reverse('order-summary'))
+        self.assertEqual(cart.status_code, 200)
 
 
 class CheckoutTestCase(TestCase):
@@ -434,7 +445,9 @@ class RegularUserTestCase(TestCase):
                         username = 'test_username',
                         email = 'email@gmamg.com',
                         password = 'test21',
-                        name = 'tes ffasf',
+                        name = 'testing name',
+                        country = 'testing country 2',
+                        city = 'testing city',
                         is_superuser = False
                         )
         self.client.force_login(self.user)
@@ -474,3 +487,31 @@ class RegularUserTestCase(TestCase):
         })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Invalid email')
+
+    def test_profile_update_info(self):
+        '''
+        Test for user updating info
+        '''
+        url = reverse('update-user', kwargs={'pk': self.user.id})
+        response = self.client.post(url,
+                    {
+                        'name':'Test name2', 
+                        'country':'Test Country2',
+                        'city':'Test City2'
+                    })
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(User.objects.last().name, 'Test name2')
+
+    def test_profile_wont_be_updated_without_required_fields(self):
+        '''
+        Test for user wont update info without fullfill all requireds fields
+        '''
+        url = reverse('update-user', kwargs={'pk': self.user.id})
+        response = self.client.post(url,
+                    {
+                        'name':'Test name2', 
+                        'country':'Test Country2',
+                        'city':''
+                    })
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(User.objects.last().name, 'testing name')

@@ -28,6 +28,12 @@ class UpdateUserView(UpdateView, LoginRequiredMixin):
     fields = ['name', 'country', 'city']
     template_name  = 'base/update_profile.html'
     
+    def get_form(self, form_class=None):
+        form = super(UpdateUserView, self).get_form(form_class)
+        form.fields['name'].required = True
+        form.fields['country'].required = True
+        form.fields['city'].required = True
+        return form
 
 def settingsPanel(request):
     return render(request, 'base/account_setting.html')

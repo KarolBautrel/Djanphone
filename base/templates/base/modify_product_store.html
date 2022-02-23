@@ -1,16 +1,27 @@
 {%extends 'base.html'%}
-
+{% load crispy_forms_tags %}
 
 {%block content%}
 
+<style>
+    .container{
 
+        margin-top: 50px;
+        align-self: center;
+    }
+
+</style>
+
+
+
+<div class="container">
 <form method="POST" action=''>
   
     {%csrf_token %}
-   {{store_form.as_p}}
+   {{store_form|crispy}}
     <input type="submit" value="OK">
 </form>
-    
+</div>    
 
 
 {%endblock%}
