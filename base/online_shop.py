@@ -125,6 +125,7 @@ def removeFromCart(request, slug):
     print(order_qs)
     if order_qs.exists():
         order = order_qs[0]
+        print(order)
         #check if the order item is in the order list
         if order.product.filter(product__slug = product.slug).exists():
             order_item = OrderItem.objects.filter(
@@ -137,7 +138,8 @@ def removeFromCart(request, slug):
             if order.billing_address:
                 order.billing_address.delete()
             order_item.delete()
-            order_qs.delete()
+            if not order.product.all():
+                order_qs.delete()
            
             messages.success(request, 'You removed the product from your cart')
             return redirect('order-summary')
@@ -170,7 +172,8 @@ def removeSingleItemFromCart(request, slug):
                 if order.billing_address:
                     order.billing_address.delete()
                 order_item.delete()
-                order_qs.delete()
+                if not order.product.all():
+                    order_qs.delete()
             return redirect('order-summary')
         else:
             messages.info(request, 'There is no product to remove')
