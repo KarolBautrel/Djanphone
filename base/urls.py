@@ -76,7 +76,7 @@ urlpatterns = [
     path('create_ticket/', login_required(TicketCreationView.as_view(),
                             login_url='/accounts/login/'),name = 'ticket'),
     path('ticket_panel/<int:pk>', communication_user.ticketPanel, name='ticket-panel'),
-    path('ticket_info/<int:pk>', communication_user.ticketInfo, name='ticket-info'),
+    path('ticket_info/<int:pk>', communication_user.ticketInfo, name='ticket-detail'),
     path('stores/', local_stores.stores, name = 'stores'),
     path('store_info/<int:pk>', local_stores.storeInfo, name='store-info'),
     path('modify_store_product/<int:pk>', local_stores.modifyStoreProducts, name = 'modify-product-store'),

@@ -610,6 +610,7 @@ class TicketTestCase(TestCase):
                         is_superuser = True
                         )
         self.client.force_login(self.user)
+        
 
     def test_user_can_create_ticket(self):
         url = reverse('ticket')
@@ -617,4 +618,28 @@ class TicketTestCase(TestCase):
         url_ticket = reverse('ticket-panel', kwargs={'pk': self.user.id})
         tickets = self.client.get(url_ticket)
         self.assertEqual(len(tickets.context['tickets']),1)
+        
+    def test_user_cant_create_ticket_without_all_req_fields(self):
+        url = reverse('ticket')
+        self.client.post(url,{'subject':'', 'body':''})
+        url_ticket = reverse('ticket-panel', kwargs={'pk': self.user.id})
+        tickets = self.client.get(url_ticket)
+        self.assertEqual(len(tickets.context['tickets']),0)
+
+    def test_user_can_check_all_tickets_in_ticket_panel(self):
+        url = reverse('ticket')
+        self.client.post(url,{'subject':'Test subject1', 'body':'Test body1'})
+        url_ticket_panel = reverse('ticket-panel', kwargs = {'pk': self.user.id})
+        tickets = self.client.get(url_ticket_panel)
+        self.assertEqual(tickets.status_code, 200)
+    
+    def test_user_can_check_detail_of_ticket(self):
+        url = reverse('ticket')
+        self.client.post(url,{'subject':'Test subject1', 'body':'Test body1'})
+        ticket = Ticket.objects.last()
+        response = self.client.get(reverse('ticket-detail', kwargs={"pk": ticket.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['ticket'].body, 'Test body1')
+        
+
         
