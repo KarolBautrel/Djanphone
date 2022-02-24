@@ -109,7 +109,6 @@ class AuthorizationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['products']),0)
 
-
     def test_unauthorized_user_is_unable_to_checkout(self):
         '''
         Unauthorized user is unable to force proceed to checkout view(billing, shipping)
@@ -447,7 +446,7 @@ class CheckoutTestCase(TestCase):
 
 
 class SuperUserTestCase(TestCase):
-    
+
     def setUp(self):
         self.client = Client()
         self.user = get_user_model().objects.create(
@@ -480,6 +479,7 @@ class SuperUserTestCase(TestCase):
         
         self.assertEqual(Product.objects.count(), 1)
 
+
 class RegularUserTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -495,7 +495,6 @@ class RegularUserTestCase(TestCase):
                         )
         self.client.force_login(self.user)
 
-    
     def test_change_password(self):
         '''
         Test for changing password by user, unfortunetyl due to django-allauth and django hashing password
@@ -572,7 +571,6 @@ class RegularUserTestCase(TestCase):
         response = self.client.get(reverse('inbox') )
         self.assertEqual(len(response.context['notifications']),0)
 
-    
     def test_user_can_read_messages_from_inbox(self):
         '''
         Test of making messages "readed" from inbox
@@ -599,7 +597,6 @@ class RegularUserTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         
 
-
 class TicketTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -611,7 +608,6 @@ class TicketTestCase(TestCase):
                         )
         self.client.force_login(self.user)
         
-
     def test_user_can_create_ticket(self):
         url = reverse('ticket')
         self.client.post(url,{'subject':'Test subject1', 'body':'Test body1'})
@@ -642,4 +638,74 @@ class TicketTestCase(TestCase):
         self.assertEqual(response.context['ticket'].body, 'Test body1')
         
 
-        
+
+class LocalStoreTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.user = get_user_model().objects.create(
+                        email = 'email@gmamg.com',
+                        password = 'test21',
+                        name = 'tes ffasf',
+                        is_superuser = True
+                        )
+        self.client.force_login(self.user)
+
+        self.store = Store.objects.create(
+                    city = 'Test City',
+                    street =  'Test Street',
+                    owner = 'Test Owner',
+                    moderator = self.user
+        )
+        product = Product.objects.create(title = 'TestProduct',
+                                        brand = 'Samsung',
+                                        price = 500)
+        self.store.products.add(product)
+
+    def test_moderator_of_shop_can_get_to_store_management_view(self):
+        url = reverse('modify-product-store', kwargs = {'pk': self.store.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_regular_user_is_404_when_trying_to_get_to_manage_view(self):
+        user = User.objects.create(
+                        username = 'testing name',
+                        email = 'email1@gmamg.com',
+                        password = 'test211',
+                        name = 'tes ffasf1',
+                        is_superuser = False
+        )
+        self.client.force_login(user)
+        url = reverse('modify-product-store', kwargs = {'pk': self.store.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_stores_view(self):
+        '''
+        Test of getting to the store view
+        Unfortunetly in this case, because of view
+        there need to be atleast two local stores to get
+        to the view, otherwise I couldnt implement google
+        map localization.
+        '''
+        Store.objects.create(
+                    city = 'Test City',
+                    street =  'Test Street',
+                    owner = 'Test Owner',
+                    moderator = self.user
+        )
+        url = reverse('stores')
+        stores = self.client.get(url)
+        self.assertEqual(stores.status_code, 200)
+
+    def test_store_detail_view(self):
+        '''
+        Test of getting to the store detail view
+        '''
+        url = reverse ('store-detail', kwargs= {'pk': self.store.id})
+        store = self.client.get(url)
+        store_products = store.context['store'].products.all()
+        product = [i for i in store_products]
+        self.assertEqual(product[0].title, 'TestProduct')
+        self.assertEqual(product[0].price, 500)
+        self.assertEqual(product[0].brand, 'Samsung')

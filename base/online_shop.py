@@ -397,9 +397,10 @@ class AddCouponView(View):
                 messages.success(request, 'Coupon added')
                 return redirect('shipping')
             except ObjectDoesNotExist:
-                messages.error(request, 'Coupon does not exists')
+                messages.info(request, 'Coupon does not exists')
                 return redirect('shipping')
-# TODO RAISE ERROR
-        return None
+        else: 
+            messages.info(request, 'Something went wrong')
+            return redirect('shipping')
 
    
