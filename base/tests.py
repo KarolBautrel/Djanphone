@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from base.models import User, Store, Product, Order, Comment, OrderItem, Address, Message, MessageReceiver,Ticket
+from base.models import User, Store, Product, Order,Coupon, Comment, OrderItem, Address, Message, MessageReceiver,Ticket
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import timezone
@@ -709,3 +709,25 @@ class LocalStoreTestCase(TestCase):
         self.assertEqual(product[0].title, 'TestProduct')
         self.assertEqual(product[0].price, 500)
         self.assertEqual(product[0].brand, 'Samsung')
+
+
+class CouponTestCase(TestCase):
+
+    def setUp (self):
+        self.client = Client()
+        self.user = get_user_model().objects.create(
+                        email = 'email@gmamg.com',
+                        password = 'test21',
+                        name = 'tes ffasf',
+                        is_superuser = True
+                        )
+        self.client.force_login(self.user)
+        
+    coupon = Coupon.objects.get(code='TEST')
+
+    def test_add_get_coupon(self):
+        url = reverse('add-coupon')
+        coupon = self.client.post(url, {'code': 'TEST'})
+        self.assertEqual(coupon.status_code, 302)
+        
+       
