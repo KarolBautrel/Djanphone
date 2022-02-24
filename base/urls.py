@@ -83,6 +83,5 @@ urlpatterns = [
     path('superuser_panel', superuser_panel.adminPanel, name = 'superuser'),
     path('superuser_panel/message', SendMessageCreationView.as_view(), name='message'),
     path('superuser_panel/createProduct', ProductCreateView.as_view(), name = 'create-product'),
-
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

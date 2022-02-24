@@ -3,7 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from .models import (
                     User,
-                     MessageReceiver
+                     MessageReceiver,
+                     Message
                     )
 from .forms import EmailChangeForm
 from django.contrib import messages

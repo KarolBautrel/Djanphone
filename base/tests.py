@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from base.models import User, Store, Product, Order, Comment, OrderItem, Address, Message
+from base.models import User, Store, Product, Order, Comment, OrderItem, Address, Message, MessageReceiver,Ticket
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import timezone
@@ -559,7 +559,10 @@ class RegularUserTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(User.objects.last().name, 'testing name')
 
-    def test_profile_user_can_delete_message_from_inbox(self):
+    def test_user_can_delete_message_from_inbox(self):
+        '''
+        Test of deleting messages from inbox
+        '''
         user = User.objects.create(name='testname',is_superuser=True)
         self.client.force_login(user)
         url=reverse('message')
@@ -569,13 +572,49 @@ class RegularUserTestCase(TestCase):
         response = self.client.get(reverse('inbox') )
         self.assertEqual(len(response.context['notifications']),0)
 
-    #TODO 
-    def test_profile_user_can_read_messages_from_inbox(self):
+    
+    def test_user_can_read_messages_from_inbox(self):
+        '''
+        Test of making messages "readed" from inbox
+        '''
         user = User.objects.create(name='testname',is_superuser=True)
         self.client.force_login(user)
         url=reverse('message')
-        self.client.post(url,{ 'subject':'Test Subject','body':'Test body'})
-        message = Message.objects.last()
-        reverse('message-delete', kwargs={'pk':message.id})
-        response = self.client.get(reverse('inbox') )
-        self.assertEqual(len(response.context['notifications']),0)
+        self.client.post(url,{ 'subject':'Test Subject','body':'Test body', 'receiver': self.user})
+        message = MessageReceiver.objects.filter(receiver = self.user)
+        response = self.client.get(reverse('message-read', kwargs = {'pk' : message[0].id}))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(message[0].is_readed, True)
+
+    def test_user_can_view_message_details(self):
+        """
+        Test of reading the detail view of message
+        """
+        user = User.objects.create(name='testname',is_superuser=True)
+        self.client.force_login(user)
+        url=reverse('message')
+        self.client.post(url,{ 'subject':'Test Subject','body':'Test body', 'receiver': self.user})
+        message = MessageReceiver.objects.filter(receiver = self.user)
+        response = self.client.get(reverse('message-detail', kwargs = {'pk' : message[0].id}))
+        self.assertEqual(response.status_code, 200)
+        
+
+
+class TicketTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = get_user_model().objects.create(
+                        email = 'email@gmamg.com',
+                        password = 'test21',
+                        name = 'tes ffasf',
+                        is_superuser = True
+                        )
+        self.client.force_login(self.user)
+
+    def test_user_can_create_ticket(self):
+        url = reverse('ticket')
+        self.client.post(url,{'subject':'Test subject1', 'body':'Test body1'})
+        url_ticket = reverse('ticket-panel', kwargs={'pk': self.user.id})
+        tickets = self.client.get(url_ticket)
+        self.assertEqual(len(tickets.context['tickets']),1)
+        
