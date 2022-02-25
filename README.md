@@ -76,4 +76,12 @@ Product list includes all available products to buy from shop, the pagination is
 is bestseller we can see patch of it, and when product is on discount we can see non discount price so we know how much money we can save. 
 If we click on <strong>DETAIL</strong> button, we are going to be redirected to product detail view
 <!-- TO DO PICTURES -->
+#### Product Detail
+After click on <strong>DETAIL</strong> button in product List we are going to product detail view, which includes the full picture of product, his price, patch and description. In this view we have two buttons. <strong>Add to cart</strong> is adding the product to the cart and also redirects us to cart view and the second one <strong>Add review of product</strong> is allowing authenticated user to make a comment which is shown under the product detail.
+<!-- TO DO PICTURES -->
+#### Adding comments
+After click on <strong>Add review of product</strong> if we are logged in we are able to write a review of product which is shown in detail product view. Also if we want to delete it we are able to do this but only to reviews we made. 
+####Buying products
+After click on <strong>Add to cart</strong> we are getting redirected to 
+
 
