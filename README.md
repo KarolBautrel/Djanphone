@@ -6,7 +6,6 @@
   * [ General Info](#general-info) 
   * [Technologies](#technologies)
   * [Setup](#setup)
-  * [App structure](#app-structure)
   * [Features](#features)
 
 ## General info
@@ -36,10 +35,7 @@ After instalation complete you can run server with project
 ```
 python manage.py runserver
 ```
-## App Structure
-```
 
-```
 ## Features
 The main goal of this project is creating an online shop which will include all features that the real shop has. 
 ### Feateures list
