@@ -38,6 +38,7 @@ python manage.py runserver
 ## Features
 The main goal of this project is creating an online shop which will include all features that the real shop has. 
 ### Feateures list
+* [Home](#Home)
 * [Product List](#Product-list)
 * [Product detail](#Product-detail)
 * [Adding comments](#Adding-comments)
@@ -45,3 +46,8 @@ The main goal of this project is creating an online shop which will include all 
 * [Writing tickets](#Writing-tickets)
 * [Moderator panel](#Moderator-panel)
 * [User panel](#User-panel)
+* [Contact](#Contact)
+
+#### Home
+In home screen I've decided to put an little widget, which shows user's city actual temperature, weather, humidity and pressure. This widget is using with external
+api called "weather-api". There is also a log in button which redirects to login view. 
