@@ -37,8 +37,11 @@ python manage.py runserver
 ```
 ## Features
 The main goal of this project is creating an online shop which will include all features that the real shop has. 
-### Feateures
-* [Product List](#Product_list)
-* [Product detail](#Product_detail)
-* [Adding comments](#Adding_comments)
-* [Buying Products]
+### Feateures list
+* [Product List](#Product-list)
+* [Product detail](#Product-detail)
+* [Adding comments](#Adding-comments)
+* [Buying products](#Buying-products)
+* [Writing tickets](#Writing-tickets)
+* [Moderator panel](#Moderator-panel)
+* [User panel](#User-panel)
