@@ -49,6 +49,7 @@ The main goal of this project is creating an online shop which will include all 
 * [Product detail](#Product-detail)
 * [Adding comments](#Adding-comments)
 * [Buying products](#Buying-products)
+* [Local stores](#Local-stores)
 * [Writing tickets](#Writing-tickets)
 * [Notifications](#Notifications)
 * [Moderator panel](#Moderator-panel)
@@ -92,20 +93,19 @@ If we dont have any product we are getting redirect to homepage with flash messa
 After proceeding to chekout we need to fulfill the shipping address. If we select option called <b>Billing address is the same as my shipping address</b> the billing address 
 will be created automatically and we will be redirect strict to payment view. Also on right side of screen we have option of adding coupons. If we have one, and add it our 
 total price will decrease of amount of coupon. Payment at this moment is set only for paypal.
+### Local Stores
+Djanphone also has 2 local stores which are place in Vaticano and in Poland, Zielona Gora. In view we can see google map which shows exactly where the shop is. Also we can get
+into shop detail and see list of product available in local store. Also if user is shop moderator he can manage products and add/remove products which are not or which are arrived to local store.
 #### Tickets
 In navbar dropdown menu on right side we can see options <b> Ticket</b> and <b>Ticket panel</b>. The first is redirect us to ticket creation view, where we can write subject of ticket and description of problem. After createin in <b> Ticket panel </b> created ticket is visible, we can see subject, created date and also status of ticket which can be open or closed. After clicking on <b> Ticket details</b> we are able to see details of ticket which include all informations about it. 
-
 #### Notifications(Messages)
 The last object on navbar is notification icon. This tool is set if staff wants to notificates regular users about something. If notification is send then there will be red
 exclamation on icon. If we click on it we are able to see our inbox which stores all messages from staff, we are able to see details of message and we can from there mark it as readed. And also we can delete message. If message will be mark as readed or deleted, then exclamation will vanish. 
-
 #### Moderator Panel 
 If user is moderator, in dropdown menu there will be option called "Admin Panel", from there he is able to send mass messages and creating new products, new products must be 
 approved by superuser(admin) to prevent mistakes. 
-
 #### User Panel
 In user panel, regular user is able to make some crud options about his account like update informations but also he can reset password, change password, change email and link his account with social account ( right now with google account)
-
 #### Contact
 Contact view is declared for users without account or for users who doesnt want to be linked with account. After fullfill required fields, on email writed in view will be 
 send email with confirmation that message is sent. 
