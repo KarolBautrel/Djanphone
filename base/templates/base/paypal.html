@@ -30,23 +30,9 @@
         <div class="container">
            {%include 'base/order-snippet.html'%}
 
-  
-  
-  
-       
 
-
-
-
-
-
-
-
-
-    <!-- Set up a container element for the button -->
     <div id="paypal-button-container"></div>
 
-    <!-- Include the PayPal JavaScript SDK -->
     <script src="https://www.paypal.com/sdk/js?client-id=AVKKy1CunwRAdgNHfWJvZkBcnR7acnO2Q1iSlYX3lKMbjfOojIC1q8bCGkR4859JmECOBjChLFfHFmBU&currency=USD&disable-funding=p24"></script>
 
     <script>
@@ -56,7 +42,6 @@
                 const cookies = document.cookie.split(';');
                 for (let i = 0; i < cookies.length; i++) {
                     const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
                     if (cookie.substring(0, name.length + 1) === (name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
@@ -83,7 +68,7 @@
                 body: JSON.stringify({'order_id':order_id})
             })
         }
-        // Render the PayPal button into #paypal-button-container
+       
         paypal.Buttons({
 
 
@@ -96,7 +81,7 @@
                 height: 40,
             },
 
-            // Set up the transaction
+            
             createOrder: function(data, actions) {
                 return actions.order.create({
                     purchase_units: [{
@@ -107,17 +92,12 @@
                 });
             },
 
-            // Finalize the transaction
+           
             onApprove: function(data, actions) {
                 return actions.order.capture().then(function(orderData) {
-                    // Successful capture! For demo purposes:
                     completeOrder()
                     window.location.href = "{% url 'home' %}"
-                    // Replace the above to show a success message within this page, e.g.
-                    // const element = document.getElementById('paypal-button-container');
-                    // element.innerHTML = '';
-                    // element.innerHTML = '<h3>Thank you for your payment!</h3>';
-                    // Or go to another URL:  actions.redirect('thank_you.html');
+                
                 });
             }
 

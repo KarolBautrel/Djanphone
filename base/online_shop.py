@@ -17,16 +17,12 @@ from django.views.generic import (
                                 View, 
                                 CreateView,
                                 )
-
 from django.utils import timezone
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.http import JsonResponse
 import json
-
-
-
 
 
 class ProductListView(ListView):
@@ -373,7 +369,7 @@ class PaymentSuccessView(View):
             product.save()
         order.ordered = True   
         order.save()
-        JsonResponse('Payment completed', safe=False)
+        return JsonResponse('Payment completed', safe=False)
 
 
 def get_coupon(request, code):

@@ -725,7 +725,7 @@ class CouponTestCase(TestCase):
         
     coupon = Coupon.objects.get(code='TEST')
 
-    def test_add_get_coupon(self):
+    def test_add_coupon(self):
         url = reverse('add-coupon')
         coupon = self.client.post(url, {'code': 'TEST'})
         self.assertEqual(coupon.status_code, 302)
