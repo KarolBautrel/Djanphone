@@ -453,7 +453,7 @@ class SuperUserTestCase(TestCase):
                         email = 'email@gmamg.com',
                         password = 'test21',
                         name = 'tes ffasf',
-                        is_superuser = True
+                        is_moderator = True
                         )
         self.client.force_login(self.user)
 
@@ -491,7 +491,7 @@ class RegularUserTestCase(TestCase):
                         name = 'testing name',
                         country = 'testing country 2',
                         city = 'testing city',
-                        is_superuser = False
+                        is_moderator = False
                         )
         self.client.force_login(self.user)
 
@@ -562,7 +562,7 @@ class RegularUserTestCase(TestCase):
         '''
         Test of deleting messages from inbox
         '''
-        user = User.objects.create(name='testname',is_superuser=True)
+        user = User.objects.create(name='testname',is_moderator=True)
         self.client.force_login(user)
         url=reverse('message')
         self.client.post(url,{ 'subject':'Test Subject','body':'Test body'})
@@ -575,7 +575,7 @@ class RegularUserTestCase(TestCase):
         '''
         Test of making messages "readed" from inbox
         '''
-        user = User.objects.create(name='testname',is_superuser=True)
+        user = User.objects.create(name='testname',is_moderator=True)
         self.client.force_login(user)
         url=reverse('message')
         self.client.post(url,{ 'subject':'Test Subject','body':'Test body', 'receiver': self.user})
@@ -588,7 +588,7 @@ class RegularUserTestCase(TestCase):
         """
         Test of reading the detail view of message
         """
-        user = User.objects.create(name='testname',is_superuser=True)
+        user = User.objects.create(name='testname',is_moderator=True)
         self.client.force_login(user)
         url=reverse('message')
         self.client.post(url,{ 'subject':'Test Subject','body':'Test body', 'receiver': self.user})
@@ -604,7 +604,7 @@ class TicketTestCase(TestCase):
                         email = 'email@gmamg.com',
                         password = 'test21',
                         name = 'tes ffasf',
-                        is_superuser = True
+                        is_moderator = True
                         )
         self.client.force_login(self.user)
         
@@ -647,7 +647,7 @@ class LocalStoreTestCase(TestCase):
                         email = 'email@gmamg.com',
                         password = 'test21',
                         name = 'tes ffasf',
-                        is_superuser = True
+                        is_moderator = True
                         )
         self.client.force_login(self.user)
 
@@ -673,7 +673,7 @@ class LocalStoreTestCase(TestCase):
                         email = 'email1@gmamg.com',
                         password = 'test211',
                         name = 'tes ffasf1',
-                        is_superuser = False
+                        is_moderator = False
         )
         self.client.force_login(user)
         url = reverse('modify-product-store', kwargs = {'pk': self.store.id})
@@ -719,7 +719,7 @@ class CouponTestCase(TestCase):
                         email = 'email@gmamg.com',
                         password = 'test21',
                         name = 'tes ffasf',
-                        is_superuser = True
+                        is_moderator = True
                         )
         self.client.force_login(self.user)
         
