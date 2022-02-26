@@ -71,7 +71,6 @@ urlpatterns = [
     path('delete_message/<int:pk>', user.delete_message, name= 'message-delete' ),
     
     path('accounts/', include('allauth.urls')),
-    path('ratings/', include('star_ratings.urls', namespace='ratings')),
     path('contact', ContactView.as_view(), name = 'contact'),
     path('create_ticket/', login_required(TicketCreationView.as_view(),
                             login_url='/accounts/login/'),name = 'ticket'),

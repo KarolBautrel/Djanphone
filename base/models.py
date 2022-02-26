@@ -56,11 +56,7 @@ class Product(models.Model):
     brand = models.CharField(default = 'Different',max_length = 100,null=True, blank=True, choices = BRAND)
     price = models.FloatField(null=True, blank=True)
     discount_price = models.FloatField(null=True, blank = True)
-    image = models.ImageField(  default = 'pobrane.png')
-    image_thumbnail = ImageSpecField(source='image',
-                                  processors=[ResizeToFill(100, 100)],
-                                  format='JPEG',
-                                  options={'quality': 60})
+    image = models.URLField(null=True, blank=True  )
     thumbnail = models.ImageField( default = 'pobrane.png')
     description = models.TextField(max_length=200,null=True, default = 'This is test field')
     created = models.DateTimeField(auto_now_add = True)

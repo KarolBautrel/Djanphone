@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'django_filters',
     'allauth.socialaccount.providers.google',
-    'star_ratings',
      "crispy_forms",
     "crispy_bootstrap5",
     'bootstrap5',
