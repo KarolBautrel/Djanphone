@@ -35,7 +35,18 @@ After instalation complete you can run server with project
 ```
 python manage.py runserver
 ```
+!!! Because of email verification system if you dont want to make new account I created 2 of them, one is superuser, second is reguler user
 
+Superuser account
+```
+email: testdjanphone@gmail.com
+password: djanphone123
+```
+Regular user
+```
+testbautrel111@gmail.com	
+djanphone123
+```
 ## Features
 The main goal of this project is creating an online shop which will include all features that the real shop has. 
 ### Feateures list
