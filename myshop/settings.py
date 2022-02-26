@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+import django_heroku
 import os
 from pathlib import Path
 
@@ -26,7 +27,6 @@ SECRET_KEY = 'django-insecure-*epbs5)kw3c(a4o$t_%vluhv306-6o@cr$l9h-j(j)dy%&3(eb
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -139,8 +139,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+PROJECT_ROOT  = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_ROOT , 'static')
 
 MEDIA_URL = '/images/'
 
@@ -187,6 +187,5 @@ ACCOUNT_SIGNUP_REDIRECT_URL = '/'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-STRIPE_PUBLIC_KEY = 'pk_test_51KUH47FziaqMNqDNFzAJZ0fZ5QCPyGwsgwBukTWvZvigStoVlf3zLMxclYLSL6W9qMoqbl3F3ZgDHHpxYyapIV0E00lUvGHoMf'
-STRIPE_SECRET_KEY = 'sk_test_51KUH47FziaqMNqDNP5vyY7qYbrxjIGdFZgo16I8wBJnHtsCSDOpoZwPwHreWBYKI5M18UpR0fjBqfUFGj1xWtW5g00uwJcaCVG'
-STRIPE_WEBHOOK_SECRET= ''
+
+django_heroku.settings(locals())

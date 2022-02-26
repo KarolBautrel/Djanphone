@@ -1,1 +1,1 @@
-web: run this thing 
+"web: gunicorn myshop.wsgi --log-file -" 
