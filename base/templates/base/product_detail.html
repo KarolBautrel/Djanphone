@@ -32,10 +32,11 @@
           <strong>{{product.title}}</strong>
         </h2>
         {%if product.discount_price%}
-        <span class="badge badge-danger product mb-4 ml-xl-0 ml-4">bestseller</span>
         <span class="badge badge-warning product mb-4 ml-xl-0 ml-4">discount !</span>
         {%else%}
-        <span class="badge badge-danger product mb-4 ml-xl-0 ml-4">bestseller</span>
+        {%if product.outlet%}
+        <span class="badge badge-danger product mb-4 ml-xl-0 ml-4">{{product.outlet}}</span>
+        {%endif%}
         {%endif%}
         <h3 class="h3-responsive text-center text-md-left mb-5 ml-xl-0 ml-4">
           {%if product.discount_price%}

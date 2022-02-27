@@ -32,6 +32,12 @@ ADDRESS_TYPES = (
     ('Billing', 'Billing')
 )
 
+OUTLET = (
+    ('Bestseller','Bestseller'),
+    ('Last items', 'Last items'),
+    ('','')
+
+)
 
 class User(AbstractUser):
     name = models.CharField(max_length=200,blank=True,null=True)
@@ -62,7 +68,7 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     is_approved = models.BooleanField(default=False)
     slug = AutoSlugField(populate_from=['title'],max_length=50,null=True, blank=True)
-    status = models.CharField(default = 'Different',max_length = 100,null=True, blank=True, choices = BRAND)
+    outlet = models.CharField(default = '',max_length = 100,null=True, blank=True, choices = OUTLET)
     class Meta:
         ordering = ['-created']
 

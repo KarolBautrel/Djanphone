@@ -13,11 +13,6 @@
   
     margin: 5%;
   }
-  .image {
-    width:300px;
-    height:150px !important;
-
-  }
 
 </style>
 <div class="container my-5 py-5">
@@ -39,7 +34,7 @@
       <div class="row">
         {%for item in response%}
         {%if item.is_approved %}
-        <div class="col-3">
+        <div class="col-6">
           
           <a href="{{item.get_absolute_url}}" class="waves-effect waves-light"><img
             src="{{item.image}}" class="img-fluid" width="150" height="150!important"

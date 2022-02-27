@@ -6,20 +6,58 @@
 {%endblock%}
 
 {%block content%}
+<style>
+.row{
+  margin-top: 50px;
+  
+}
+</style>
+
+
 <div class="p-5 text-center bg-light">
   <h1 class="mb-3">Djanphone</h1>
-  <h4 class="mb-3">From passionates to passionates</h4>
+  <h4 class="mb-3">For passionates from passionates</h4>
   {%if not user.is_authenticated%}
   <a class="btn btn-primary" href="{%url 'account_login'%}" role="button">Login </a>
   {%endif%}
-</div>
+  <div class="row d-flex justify-content-center wow fadeIn">
 
-  
+    <!--Grid column-->
+    <div class="col-md-6 text-center">
+
+      <h4 class="my-4 h4">Today Bestsellers</h4>
+      <p>Proceed to products to get all products info or get to the product detail by clicking of one of our bestsellers !</p>
+    </div>
+    <!--Grid column-->
+
+  </div>
+  <div class="row wow fadeIn">
+    {%for item in products%}
+    {%if item.is_approved %}
+    <!--Grid column-->
+    
+    <div class="col-lg-4 col-md-6 mb-3">
+
+      <a href="{{item.get_absolute_url}}"><img src="{{item.image}}"class="img-fluid" alt="" width="300" height="300!important"></a>
+      <p class="mb-1"><a href="{{item.get_absolute_url}}" class="font-weight-bold black-text">{{item.title}}</a></p>
+      {%if item.discount_price %}
+      <p class="mb-1"><small class="mr-1"><s></h1>${{item.price}}</s></small><strong>$ {{item.discount_price}}<span class="badge badge-secondary">Discount!</span></strong></p>
+
+      {%else%}
+    <p class="mb-1"></small><strong>${{item.price}}</strong></p>
+    <a href ="{{item.get_absolute_url}}" type="button" class="btn btn-outline-black btn-rounded btn-sm px-3 waves-effect" >Details</a>
+      {%endif%}              
+    
+    </div>
+    <!--Grid column-->
+
+    {%endif%}
+    {%endfor%}
+        
         <section class="vh-50" >
           <div class="container py-3 h-50">
-        
             <div class="row d-flex justify-content-center align-items-center h-50">
-              <div class="col-md-6 col-lg-4 col-xl-3">
+              <div class="col-md-3 col-lg-2 col-xl-3">
         
                 <div class="card" style="color: #505661; border-radius: 35px;">
                   <div class="card-body p-3">

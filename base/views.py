@@ -2,10 +2,12 @@ from django.shortcuts import render
 from django.views.generic import View
 import urllib.request
 import json
+from base.models import Product
 
 class HomeView(View):       
     
     def get(self, *args, **kwargs):
+        products = Product.objects.filter(outlet = "Bestseller")
         if self.request.user.is_authenticated:
             city = self.request.user.city
             try:
@@ -15,7 +17,7 @@ class HomeView(View):
                 source = urllib.request.urlopen(f'http://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid=25cbc478902e4cec447fa217ca54132d').read()
             list_of_data = json.loads(source)
            
-            data = {
+            context = {
                 'country_code' : str(list_of_data['sys']['country']),
                 'coordinate' : str(list_of_data['coord']['lon']) +','+
                                 str(list_of_data['coord']['lat']) ,                           
@@ -25,14 +27,15 @@ class HomeView(View):
                 'main' : str(list_of_data['weather'][0]['main']),
                 'description' : str(list_of_data['weather'][0]['description']),
                 'icon' : list_of_data['weather'][0]['icon'],
-                'city':city
+                'city':city,
+                'products':products
             }
         else : 
             city = 'London'
             source = urllib.request.urlopen(f'http://api.openweathermap.org/data/2.5/weather?q=London&units=metric&appid=25cbc478902e4cec447fa217ca54132d').read()
             list_of_data = json.loads(source)
 
-            data = {
+            context = {
                 'country_code' : str(list_of_data['sys']['country']),
                 'coordinate' : str(list_of_data['coord']['lon']) +','+
                                 str(list_of_data['coord']['lat']) ,                           
@@ -42,9 +45,10 @@ class HomeView(View):
                 'main' : str(list_of_data['weather'][0]['main']),
                 'description' : str(list_of_data['weather'][0]['description']),
                 'icon' : list_of_data['weather'][0]['icon'],
-                 'city':city
+                'city':city,
+                'products':products
             }
-        return render(self.request, 'base/home.html', data )
+        return render(self.request, 'base/home.html', context )
 
 
 
