@@ -10,16 +10,27 @@ from django.http import HttpResponseRedirect
 from django.views.generic import CreateView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse
+from django import forms
 
 def adminPanel(request):
     return render(request, 'base/superuser_panel.html')
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = 'is_staff'
     model = Product
     fields = ['title','brand','price','image','description']
     template_name = 'base/product_create.html'
+    
+    def get_form(self, form_class=None):
+            form = super(ProductCreateView, self).get_form(form_class)
+            form.fields['title'].required = True
+            form.fields['brand'].required = True
+            form.fields['price'].required = True
+            form.fields['image'].required = True
+            form.fields['description'].required = True
 
+            return form
 
 class SendMessageCreationView(PermissionRequiredMixin,CreateView):
         permission_required = 'is_staff'

@@ -36,7 +36,6 @@ OUTLET = (
     ('Bestseller','Bestseller'),
     ('Last items', 'Last items'),
     ('','')
-
 )
 
 class User(AbstractUser):
@@ -69,6 +68,7 @@ class Product(models.Model):
     is_approved = models.BooleanField(default=False)
     slug = AutoSlugField(populate_from=['title'],max_length=50,null=True, blank=True)
     outlet = models.CharField(default = '',max_length = 100,null=True, blank=True, choices = OUTLET)
+    
     class Meta:
         ordering = ['-created']
 
