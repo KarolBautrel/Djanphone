@@ -37,13 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'base.apps.BaseConfig',
-     'django.contrib.sites',
+    'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'django_filters',
     'allauth.socialaccount.providers.google',
-     "crispy_forms",
+    "crispy_forms",
     "crispy_bootstrap5",
     'bootstrap5',
     'rest_framework',
@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
+
 ]
 
 ROOT_URLCONF = 'myshop.urls'
@@ -96,7 +96,7 @@ DATABASES = {
     }
 }
 AUTHENTICATION_BACKENDS = [
-    
+
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 
@@ -143,8 +143,8 @@ MEDIA_URL = '/images/'
 
 MEDIA_ROOT = BASE_DIR / 'static/images'
 
-STATICFILES_DIRS =[
-    BASE_DIR /'static'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
 
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -161,8 +161,6 @@ CORS_ALLOWED_ALL_ORIGINS = True
 AUTH_USER_MODEL = 'base.User'
 
 
-
-
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -172,9 +170,7 @@ EMAIL_HOST_USER = 'Djanphone@gmail.com'
 EMAIL_HOST_PASSWORD = 'Oknosimrch123    '
 
 
-
-
-SITE_ID=1
+SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "none"
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
@@ -182,4 +178,3 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_SIGNUP_REDIRECT_URL = '/'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 SOCIALACCOUNT_LOGIN_ON_GET = True
-

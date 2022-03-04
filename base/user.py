@@ -2,10 +2,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from .models import (
-                    User,
-                     MessageReceiver,
-                     Message
-                    )
+    User,
+    MessageReceiver,
+    Message
+)
 from .forms import EmailChangeForm
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
@@ -13,10 +13,11 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import (UpdateView,
-                                ListView,
-                                DetailView,
-                                )
+                                  ListView,
+                                  DetailView,
+                                  )
 from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 class UserDetailView(DetailView):
     model = User
@@ -27,14 +28,15 @@ class UserDetailView(DetailView):
 class UpdateUserView(UpdateView, LoginRequiredMixin):
     model = User
     fields = ['name', 'country', 'city']
-    template_name  = 'base/update_profile.html'
-    
+    template_name = 'base/update_profile.html'
+
     def get_form(self, form_class=None):
         form = super(UpdateUserView, self).get_form(form_class)
         form.fields['name'].required = True
         form.fields['country'].required = True
         form.fields['city'].required = True
         return form
+
 
 def settingsPanel(request):
     return render(request, 'base/account_setting.html')
@@ -50,47 +52,48 @@ def changePassword(request):
             messages.success(request, 'Change completed')
             return redirect('home')
         else:
-            messages.error(request, 'Old password incorrect or new passwords doesnt match')
+            messages.error(
+                request, 'Old password incorrect or new passwords doesnt match')
     else:
         form = PasswordChangeForm(request.user)
-    context = {'form':form}
+    context = {'form': form}
     return render(request, 'base/change_password.html', context)
 
 
 def changeEmail(request):
     user = request.user
     if request.method == 'POST':
-        form = EmailChangeForm(request.POST, instance = user)
+        form = EmailChangeForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
             messages.success(request, 'Change completed')
             return redirect('home')
         else:
-             messages.error(request, 'Invalid email')
+            messages.error(request, 'Invalid email')
     else:
         request.method == 'GET'
-        form = EmailChangeForm(instance = user) 
-    context={'form':form}
+        form = EmailChangeForm(instance=user)
+    context = {'form': form}
     return render(request, 'base/change_email.html', context)
 
 
-class InboxView( ListView):
+class InboxView(ListView):
     model = MessageReceiver
     context_object_name = 'notifications'
     paginate_by = 5
     template_name = 'base/inbox.html'
 
     def get_queryset(self, *args, **kwargs):
-        qs = super().get_queryset() 
-        queryset = qs.filter(receiver = self.request.user)
+        qs = super().get_queryset()
+        queryset = qs.filter(receiver=self.request.user)
         return queryset
 
 
-class MessageDetailView( DetailView):
+class MessageDetailView(DetailView):
     model = MessageReceiver
     context_object_name = 'message'
     template_name = 'base/message_detail.html'
-    
+
 
 # TODO: support
 @login_required
