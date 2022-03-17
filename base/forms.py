@@ -15,15 +15,11 @@ class EmailChangeForm(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         new_email = cleaned_data.get('email')
-        print(new_email)
         new_email2 = cleaned_data.get('email2')
-        print(new_email2)
         email_db = User.objects.filter(email=new_email)
         if new_email != new_email2 or email_db:
             raise ValidationError("Not valid email")
-        else:
-            print("Dupa")
-
+        
 
 class CheckoutShippingForm(forms.Form):
     shipping_city = forms.CharField(required=True)
